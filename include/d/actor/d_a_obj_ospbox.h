@@ -23,9 +23,14 @@ namespace daObjOspbox {
         void init_ground();
         virtual BOOL Execute(Mtx**);
         virtual BOOL Draw();
+
+        static const char M_arcname[];
+
+    private:
+        static Mtx M_tmp_mtx;
     
     public:
-        /* Place member variables here */
+        /* 0x2D0 */ J3DModel *mpModel;
     };
 };
 

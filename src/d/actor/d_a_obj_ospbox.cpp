@@ -4,12 +4,22 @@
 //
 
 #include "d/actor/d_a_obj_ospbox.h"
+#include "d/d_com_inf_game.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
+#include "d/res/res_ospbox.h"
+#include "m_Do/m_Do_mtx.h"
+
+const char daObjOspbox::Act_c::M_arcname[] = "Ospbox";
+
+Mtx daObjOspbox::Act_c::M_tmp_mtx;
 
 /* 000000EC-000001A0       .text CreateHeap__Q211daObjOspbox5Act_cFv */
 BOOL daObjOspbox::Act_c::CreateHeap() {
-    /* Nonmatching */
+    J3DModelData* model_data = (J3DModelData*)dComIfG_getObjectRes(M_arcname, OSPBOX_BDL_OSPBOX);
+    JUT_ASSERT(0x186, model_data != NULL);
+    mpModel = mDoExt_J3DModel__create(model_data,0x80000,0x11000022);
+    return mpModel != NULL;
 }
 
 /* 000001A0-00000294       .text Create__Q211daObjOspbox5Act_cFv */
@@ -24,7 +34,7 @@ cPhs_State daObjOspbox::Act_c::Mthd_Create() {
 
 /* 00000BAC-00000BB4       .text Delete__Q211daObjOspbox5Act_cFv */
 BOOL daObjOspbox::Act_c::Delete() {
-    /* Nonmatching */
+    return TRUE;
 }
 
 /* 00000BB4-00000C04       .text Mthd_Delete__Q211daObjOspbox5Act_cFv */
@@ -34,12 +44,16 @@ BOOL daObjOspbox::Act_c::Mthd_Delete() {
 
 /* 00000C04-00000C84       .text set_mtx__Q211daObjOspbox5Act_cFv */
 void daObjOspbox::Act_c::set_mtx() {
-    /* Nonmatching */
+    MTXTrans(mDoMtx_stack_c::get(), current.pos.x, current.pos.y, current.pos.z);
+    mDoMtx_ZXYrotM(mDoMtx_stack_c::get(), shape_angle.x, shape_angle.y, shape_angle.z);
+    mpModel->setBaseTRMtx(mDoMtx_stack_c::get());
+    PSMTXCopy(mDoMtx_stack_c::get(), M_tmp_mtx);
 }
 
 /* 00000C84-00000CC0       .text init_mtx__Q211daObjOspbox5Act_cFv */
 void daObjOspbox::Act_c::init_mtx() {
-    /* Nonmatching */
+    mpModel->setBaseScale(scale);
+    set_mtx();
 }
 
 /* 00000CC0-00000D7C       .text make_item__Q211daObjOspbox5Act_cFv */
