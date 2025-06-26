@@ -11,6 +11,8 @@
 #include "m_Do/m_Do_mtx.h"
 
 const char daObjOspbox::Act_c::M_arcname[] = "Ospbox";
+const dCcD_SrcCyl daObjOspbox::Act_c::M_cyl_src = {
+};
 
 Mtx daObjOspbox::Act_c::M_tmp_mtx;
 
@@ -24,7 +26,30 @@ BOOL daObjOspbox::Act_c::CreateHeap() {
 
 /* 000001A0-00000294       .text Create__Q211daObjOspbox5Act_cFv */
 BOOL daObjOspbox::Act_c::Create() {
-    /* Nonmatching */
+    //*(int *)(this + 0x22c) = *(int *)(this + 0x2d0) + 0x24;
+    init_mtx();
+    fopAcM_setCullSizeBox(this, -76.0f, -1.0f, -76.0f, 76.0f, 151.0f, 76.0f);
+    mStts.Init(0xFF, 0xFF, this);
+    mCyl.Set(M_cyl_src);
+
+    //*(Act_c **)(this + 0x354) = this + 0x2d4;
+    //*(float *)(this + 0x3c4) = ::cXyz::Zero.x;
+    //*(float *)(this + 0x3c8) = ::cXyz::Zero.y;
+    //*(float *)(this + 0x3cc) = ::cXyz::Zero.z;
+    //*(uint *)(this + 0x3a4) = *(uint *)(this + 0x3a4) | 4;
+    //*(float *)(this + 0x278) = *(float *)(this + 0x1fc) + 75.0;
+    
+    
+    //*(undefined4 *)(this + 0x260) = *(undefined4 *)(this + 0x274);
+    //*(undefined4 *)(this + 0x264) = *(undefined4 *)(this + 0x278);
+    //*(undefined4 *)(this + 0x268) = *(undefined4 *)(this + 0x27c);
+    // that means:
+    // eyePos = attention_info.position;
+
+    init_ground();
+
+    //this[0x49a] = (Act_c)0x2;
+    return TRUE;
 }
 
 /* 00000294-000004F8       .text Mthd_Create__Q211daObjOspbox5Act_cFv */
@@ -39,7 +64,9 @@ BOOL daObjOspbox::Act_c::Delete() {
 
 /* 00000BB4-00000C04       .text Mthd_Delete__Q211daObjOspbox5Act_cFv */
 BOOL daObjOspbox::Act_c::Mthd_Delete() {
-    /* Nonmatching */
+    BOOL result = MoveBGDelete();
+    dComIfG_deleteObjectRes(M_arcname);
+    return result;
 }
 
 /* 00000C04-00000C84       .text set_mtx__Q211daObjOspbox5Act_cFv */
@@ -73,12 +100,25 @@ void daObjOspbox::Act_c::sound_break() {
 
 /* 00000F20-00000FE0       .text set_ground__Q211daObjOspbox5Act_cFv */
 void daObjOspbox::Act_c::set_ground() {
-    /* Nonmatching */
+    if (m498 <= 0) {
+        return;
+    }
+
+    mGndChk.m_pos.set(current.pos.x, current.pos.y + 100.0f, current.pos.z);
+    mGndChk.SetActorPid(this != NULL ? base.mBsPcId : 0xFFFFFFFF);
+    
+    m494 = dComIfG_Bgsp()->GroundCross(&mGndChk);
+    if (m494 > -1e+09) {
+        m498 = 0;
+    } else {
+        m498 = m498 - 1;
+    }
 }
 
 /* 00000FE0-00001008       .text init_ground__Q211daObjOspbox5Act_cFv */
 void daObjOspbox::Act_c::init_ground() {
-    /* Nonmatching */
+    m498 = 5;
+    set_ground();
 }
 
 /* 00001008-000010DC       .text Execute__Q211daObjOspbox5Act_cFPPA3_A4_f */
