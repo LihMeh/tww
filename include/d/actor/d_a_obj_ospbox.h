@@ -40,6 +40,7 @@ namespace daObjOspbox {
         /* 0x478 */ u8 notMatched2[20];     // TODO: please match
         /* 0x494 */ f32 m494;
         /* 0x498 */ s16 m498;
+        /* 0x49a */ u8 m49a;            // TODO: please find out if it's signed or not (but it's definitely 1 byte). it's saved with stb
     };
 };
 

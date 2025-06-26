@@ -26,29 +26,23 @@ BOOL daObjOspbox::Act_c::CreateHeap() {
 
 /* 000001A0-00000294       .text Create__Q211daObjOspbox5Act_cFv */
 BOOL daObjOspbox::Act_c::Create() {
-    //*(int *)(this + 0x22c) = *(int *)(this + 0x2d0) + 0x24;
+    fopAcM_SetMtx(this, mpModel->getBaseTRMtx());
     init_mtx();
+
     fopAcM_setCullSizeBox(this, -76.0f, -1.0f, -76.0f, 76.0f, 151.0f, 76.0f);
+
     mStts.Init(0xFF, 0xFF, this);
     mCyl.Set(M_cyl_src);
+    mCyl.SetStts(&mStts);
+    mCyl.SetTgVec((cXyz&)cXyz::Zero);
+    mCyl.OnTgNoHitMark();
 
-    //*(Act_c **)(this + 0x354) = this + 0x2d4;
-    //*(float *)(this + 0x3c4) = ::cXyz::Zero.x;
-    //*(float *)(this + 0x3c8) = ::cXyz::Zero.y;
-    //*(float *)(this + 0x3cc) = ::cXyz::Zero.z;
-    //*(uint *)(this + 0x3a4) = *(uint *)(this + 0x3a4) | 4;
-    //*(float *)(this + 0x278) = *(float *)(this + 0x1fc) + 75.0;
-    
-    
-    //*(undefined4 *)(this + 0x260) = *(undefined4 *)(this + 0x274);
-    //*(undefined4 *)(this + 0x264) = *(undefined4 *)(this + 0x278);
-    //*(undefined4 *)(this + 0x268) = *(undefined4 *)(this + 0x27c);
-    // that means:
-    // eyePos = attention_info.position;
+    attention_info.position.y = (current.pos.y) + 75.0f;
+    eyePos = attention_info.position;
 
     init_ground();
 
-    //this[0x49a] = (Act_c)0x2;
+    m49a = 2;
     return TRUE;
 }
 
