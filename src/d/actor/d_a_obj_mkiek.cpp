@@ -130,7 +130,16 @@ void daObjMkiek::Act_c::init_mtx() {
 
 /* 000008A0-00000940       .text check__Q210daObjMkiek5Act_cFv */
 void daObjMkiek::Act_c::check() {
-    /* Nonmatching */
+    bool check_result = dComIfGp_getDetect().chk_light(fopAcM_GetPosition_p(this)); // TODO: more readable condition?
+    if (!(!check_result && mSph.ChkTgHit() == FALSE)) {
+        m460++;
+        if (m460 >= 0x14) {
+          fopAcM_orderOtherEventId(this,mDieEventIdx);
+          this->m45C = 1;
+        }
+    } else {
+      m460 = 0;
+  }
 }
 
 /* 00000940-00000B28       .text demo_wait__Q210daObjMkiek5Act_cFv */

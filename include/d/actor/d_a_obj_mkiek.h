@@ -29,7 +29,7 @@ namespace daObjMkiek {
         };
 
         static const char M_arcname[];
-        
+
    private:
         static Mtx M_tmp_mtx;        
     
@@ -44,7 +44,7 @@ namespace daObjMkiek {
         /* 0x459 */ u8 unmatched1; // TODO: match
         /* 0x45A */ s16 mDieEventIdx;
         /* 0x45C */ u32 m45C; //TODO: check type
-        /* 0x460 */ u32 m460; //TODO: check type
+        /* 0x460 */ s32 m460;
     };
 };
 
