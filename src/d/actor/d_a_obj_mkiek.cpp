@@ -42,6 +42,8 @@ static dCcD_SrcSph sph_check_src = {
 
 const char daObjMkiek::Act_c::M_arcname[] = "MkieK";
 
+Mtx daObjMkiek::Act_c::M_tmp_mtx;
+
 /* 00000078-00000240       .text CreateHeap__Q210daObjMkiek5Act_cFv */
 BOOL daObjMkiek::Act_c::CreateHeap() {
     J3DModelData* model_data = (J3DModelData*)dComIfG_getObjectRes(M_arcname, 6); // TODO: find const
@@ -111,12 +113,19 @@ BOOL daObjMkiek::Act_c::Mthd_Delete() {
 
 /* 000007B4-00000848       .text set_mtx__Q210daObjMkiek5Act_cFv */
 void daObjMkiek::Act_c::set_mtx() {
-    /* Nonmatching */
+    mDoMtx_stack_c::transS(current.pos.x, current.pos.y, current.pos.z);
+    mDoMtx_stack_c::ZXYrotM(shape_angle);
+
+    mpModel->setBaseTRMtx(mDoMtx_stack_c::get());
+    mDoMtx_copy(mDoMtx_stack_c::get(), M_tmp_mtx);
+    mpModelV->setBaseTRMtx(mDoMtx_stack_c::get());
 }
 
 /* 00000848-000008A0       .text init_mtx__Q210daObjMkiek5Act_cFv */
 void daObjMkiek::Act_c::init_mtx() {
-    /* Nonmatching */
+    mpModel->setBaseScale(scale);
+    mpModelV->setBaseScale(scale);
+    set_mtx();
 }
 
 /* 000008A0-00000940       .text check__Q210daObjMkiek5Act_cFv */
