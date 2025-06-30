@@ -4,9 +4,12 @@
 //
 
 #include "d/actor/d_a_obj_mkiek.h"
+#include "d/d_com_inf_game.h"
+#include "d/d_a_obj.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "d/d_cc_d.h"
+#include "f_op/f_op_actor_mng.h"
 
 static dCcD_SrcSph sph_check_src = {
     // dCcD_SrcGObjInf
@@ -37,30 +40,73 @@ static dCcD_SrcSph sph_check_src = {
     },
 };
 
+const char daObjMkiek::Act_c::M_arcname[] = "MkieK";
 
 /* 00000078-00000240       .text CreateHeap__Q210daObjMkiek5Act_cFv */
 BOOL daObjMkiek::Act_c::CreateHeap() {
-    /* Nonmatching */
+    J3DModelData* model_data = (J3DModelData*)dComIfG_getObjectRes(M_arcname, 6); // TODO: find const
+    JUT_ASSERT(0x96, model_data != 0);
+    mpModel = mDoExt_J3DModel__create(model_data, 0, 0x11020203);
+
+    J3DModelData* model_data_v = (J3DModelData*)dComIfG_getObjectRes(M_arcname, 9); // TODO: find const
+    JUT_ASSERT(0x9C, model_data_v != 0);
+    mpModelV = mDoExt_J3DModel__create(model_data_v, 0, 0x11020203);
+
+    J3DAnmTevRegKey* brk = (J3DAnmTevRegKey*)dComIfG_getObjectRes(M_arcname, 0xC); // TODO: find const
+    JUT_ASSERT(0xA2, brk != 0);
+
+    int result = mBrkAnm.init(model_data_v, brk, true, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, false, FALSE);
+    return result == 0 ? FALSE : mpModel != NULL && mpModelV != NULL;
 }
 
 /* 00000240-00000314       .text Create__Q210daObjMkiek5Act_cFv */
 BOOL daObjMkiek::Act_c::Create() {
-    /* Nonmatching */
+    mStts.Init(0xFF, 0xFF, this);
+
+    mSph.Set(sph_check_src);
+    mSph.SetStts(&mStts);
+
+    //fopAcM_SetMtx(this, (MTX34 *)(this->field2_0x2d0[0] + 0x24);
+    init_mtx();
+    fopAcM_setCullSizeBox(this, -200.0f, -100.0f, -200.0f, 200.0f, 305.0f, 200.0f);
+
+    m458 = false;
+    mDieEventIdx = dComIfGp_evmng_getEventIdx("MkieK_die");
+    m45C = 0;
+    m460 = 0;
+
+    return TRUE;
 }
 
 /* 00000314-000004F8       .text Mthd_Create__Q210daObjMkiek5Act_cFv */
 cPhs_State daObjMkiek::Act_c::Mthd_Create() {
-    /* Nonmatching */
+    fopAcM_SetupActor(this, Act_c);
+
+    int switch_index = daObj::PrmAbstract(this, PRM_SWITCH_W, PRM_SWITCH_S);
+    if (fopAcM_isSwitch(this, switch_index)) {
+        return cPhs_STOP_e;        
+    }
+
+    cPhs_State phase_state = dComIfG_resLoad(&mPhs, M_arcname);
+    if (phase_state == cPhs_COMPLEATE_e) {
+        phase_state = MoveBGCreate(M_arcname, 0xF, NULL, 0x1220);
+        JUT_ASSERT(0xD9, (phase_state == cPhs_COMPLEATE_e) || (phase_state == cPhs_ERROR_e))
+    }
+    return phase_state;
 }
 
 /* 00000754-0000075C       .text Delete__Q210daObjMkiek5Act_cFv */
 BOOL daObjMkiek::Act_c::Delete() {
-    /* Nonmatching */
+    return TRUE;
 }
 
 /* 0000075C-000007B4       .text Mthd_Delete__Q210daObjMkiek5Act_cFv */
 BOOL daObjMkiek::Act_c::Mthd_Delete() {
-    /* Nonmatching */
+    BOOL result = this->MoveBGDelete();
+    if (fpcM_CreateResult(this) != 3) {
+        dComIfG_resDelete(&mPhs, M_arcname);
+    }
+    return result;
 }
 
 /* 000007B4-00000848       .text set_mtx__Q210daObjMkiek5Act_cFv */

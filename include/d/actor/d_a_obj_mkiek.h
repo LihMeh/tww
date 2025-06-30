@@ -2,6 +2,7 @@
 #define D_A_OBJ_MKIEK_H
 
 #include "d/d_bg_s_movebg_actor.h"
+#include "m_Do/m_Do_ext.h"
 
 namespace daObjMkiek {
     class Act_c : public dBgS_MoveBgActor {
@@ -21,9 +22,26 @@ namespace daObjMkiek {
         void demo();
         virtual BOOL Execute(Mtx**);
         virtual BOOL Draw();
+
+        enum Prm_e {
+            PRM_SWITCH_W = 0x08,
+            PRM_SWITCH_S = 0x00,
+        };
+
+        static const char M_arcname[];
     
     public:
-        /* Place member variables here */
+        /* 0x2C8 */ request_of_phase_process_class mPhs;
+        /* 0x2D0 */ J3DModel* mpModel;
+        /* 0x2D4 */ J3DModel* mpModelV;
+        /* 0x2D8 */ mDoExt_brkAnm mBrkAnm;
+        /* 0x2F0 */ dCcD_Stts mStts;
+        /* 0x32C */ dCcD_Sph mSph;
+        /* 0x458 */ bool m458; // TODO: check type
+        /* 0x459 */ u8 unmatched1; // TODO: match
+        /* 0x45A */ s16 mDieEventIdx;
+        /* 0x45C */ u32 m45C; //TODO: check type
+        /* 0x460 */ u32 m460; //TODO: check type
     };
 };
 
