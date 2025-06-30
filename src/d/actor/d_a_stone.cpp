@@ -8,12 +8,12 @@
 #include "d/d_priority.h"
 
 /* 000000EC-00000110       .text CreateHeapCB__7daStoneFP10fopAc_ac_c */
-BOOL daStone::CreateHeapCB(fopAc_ac_c*) {
-    /* Nonmatching */
+BOOL daStone::CreateHeapCB(fopAc_ac_c* i_actor) {
+    return static_cast<Act_c*>(i_actor)->create_heap();
 }
 
 /* 00000110-000002B0       .text create_heap__Q27daStone5Act_cFv */
-void daStone::Act_c::create_heap() {
+bool daStone::Act_c::create_heap() {
     /* Nonmatching */
 }
 
@@ -213,28 +213,28 @@ bool daStone::Act_c::_draw() {
 }
 
 /* 0000344C-0000346C       .text Create__Q27daStone6MethodFPv */
-cPhs_State daStone::Method::Create(void*) {
-    /* Nonmatching */
+cPhs_State daStone::Method::Create(void* i_actor) {
+    return static_cast<Act_c*>(i_actor)->_create();
 }
 
 /* 0000346C-00003490       .text Delete__Q27daStone6MethodFPv */
-BOOL daStone::Method::Delete(void*) {
-    /* Nonmatching */
+BOOL daStone::Method::Delete(void* i_actor) {
+    return static_cast<Act_c*>(i_actor)->_delete();
 }
 
 /* 00003490-000034B4       .text Execute__Q27daStone6MethodFPv */
-BOOL daStone::Method::Execute(void*) {
-    /* Nonmatching */
+BOOL daStone::Method::Execute(void* i_actor) {
+    return static_cast<Act_c*>(i_actor)->_execute();
 }
 
 /* 000034B4-000034D8       .text Draw__Q27daStone6MethodFPv */
-BOOL daStone::Method::Draw(void*) {
-    /* Nonmatching */
+BOOL daStone::Method::Draw(void* i_actor) {
+    return static_cast<Act_c*>(i_actor)->_draw();
 }
 
 /* 000034D8-000034E0       .text IsDelete__Q27daStone6MethodFPv */
-BOOL daStone::Method::IsDelete(void*) {
-    /* Nonmatching */
+BOOL daStone::Method::IsDelete(void* i_actor) {
+    return TRUE;
 }
 
 actor_method_class daStone::Method::Table = {

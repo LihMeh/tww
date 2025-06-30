@@ -21,7 +21,7 @@ namespace daStone {
         void prm_get_type() const {}
         void prm_off_moveBg() {}
         
-        void create_heap();
+        bool create_heap();
         void chk_appear();
         cPhs_State _create();
         bool _delete();
