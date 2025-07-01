@@ -26,6 +26,9 @@ namespace daObjMkiek {
         enum Prm_e {
             PRM_SWITCH_W = 0x08,
             PRM_SWITCH_S = 0x00,
+
+            PRM_UNKNOWN_W = 0x01,   // TODO: find names
+            PRM_UNKNOWN_S = 0x08
         };
 
         static const char M_arcname[];

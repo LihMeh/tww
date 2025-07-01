@@ -6,6 +6,7 @@
 #include "d/actor/d_a_obj_mkiek.h"
 #include "d/d_com_inf_game.h"
 #include "d/d_a_obj.h"
+#include "d/d_particle_name.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "d/d_cc_d.h"
@@ -143,8 +144,43 @@ void daObjMkiek::Act_c::check() {
 }
 
 /* 00000940-00000B28       .text demo_wait__Q210daObjMkiek5Act_cFv */
-void daObjMkiek::Act_c::demo_wait() {
-    /* Nonmatching */
+void daObjMkiek::Act_c::demo_wait() {                                   // TODO: reorder
+    if (eventInfo.getCommand() == dEvtCmd_INDEMO_e) {
+        if (daObj::PrmAbstract(this, PRM_UNKNOWN_W, PRM_UNKNOWN_S) == 0) {
+            mDoAud_seStart(JA_SE_READ_RIDDLE_1);
+        }
+        if (m460 < 0x14) {
+            m460++;
+        } else {
+            int bgw_id = mpBgW->GetId();
+            bool some = bgw_id < 0 || bgw_id > 0xFF;
+            if (some) {
+                dComIfG_Bgsp()->Release(mpBgW);
+            }
+            GXColor color = {
+                tevStr.mColorC0.r,
+                tevStr.mColorC0.g,
+                tevStr.mColorC0.b,
+                tevStr.mColorC0.a
+            };
+            dComIfGp_particle_setProjection(dPa_name::ID_SCENE_819F,
+                &current.pos, &current.angle, NULL,
+                0xFF, NULL,
+                fopAcM_GetRoomNo(this),
+                &color, &color,
+                NULL);
+
+            int switch_idx = daObj::PrmAbstract(this, PRM_SWITCH_W, PRM_SWITCH_S);
+            dComIfGs_onSwitch(switch_idx, fopAcM_GetRoomNo(this));
+
+            int snd_idx = dComIfGp_getReverb(fopAcM_GetRoomNo(this));
+            mDoAud_seStart(JA_SE_OBJ_L_OBJ_BRK_TAME, &current.pos, 0, snd_idx);
+            m458 = true;
+            m45C = 2;
+        }
+    } else {
+        fopAcM_orderOtherEventId(this, mDieEventIdx);
+    }
 }
 
 /* 00000B28-00000C1C       .text demo__Q210daObjMkiek5Act_cFv */
