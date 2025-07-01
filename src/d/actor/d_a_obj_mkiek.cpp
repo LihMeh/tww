@@ -159,7 +159,23 @@ BOOL daObjMkiek::Act_c::Execute(Mtx**) {
 
 /* 00000D00-00000E1C       .text Draw__Q210daObjMkiek5Act_cFv */
 BOOL daObjMkiek::Act_c::Draw() {
-    /* Nonmatching */
+    g_env_light.settingTevStruct(TEV_TYPE_BG0, &current.pos, &tevStr);
+
+    if (m458) {
+        g_env_light.setLightTevColorType(mpModelV, &tevStr);
+        J3DModelData* model_v_data = mpModelV->getModelData();
+        mBrkAnm.entry(model_v_data, mBrkAnm.getFrameCtrl()->getFrame());
+        dComIfGd_setListBG();
+        mDoExt_modelUpdateDL(mpModelV);
+        dComIfGd_setList();
+    } else {
+        g_env_light.setLightTevColorType(mpModel, &tevStr);
+        dComIfGd_setListBG();
+        mDoExt_modelUpdateDL(mpModel);
+        dComIfGd_setList();
+    }
+
+    return TRUE;
 }
 
 namespace daObjMkiek {
