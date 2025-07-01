@@ -149,7 +149,17 @@ void daObjMkiek::Act_c::demo_wait() {
 
 /* 00000B28-00000C1C       .text demo__Q210daObjMkiek5Act_cFv */
 void daObjMkiek::Act_c::demo() {
-    /* Nonmatching */
+    mBrkAnm.play();
+    
+    if (mBrkAnm.isStop()) {
+        return;
+    }
+
+    dComIfGp_onStatus(8);
+    s8 room_no = fopAcM_GetRoomNo(this);
+    mDoAud_seStart(JA_SE_OBJ_L_WALL_BREAK, &current.pos, 0, room_no);
+    dComIfGp_getVibration().StartShock(4, -0x21, cXyz(0.0f, 1.0f, 0.0f));
+    fopAcM_delete(this);
 }
 
 /* 00000C1C-00000D00       .text Execute__Q210daObjMkiek5Act_cFPPA3_A4_f */
