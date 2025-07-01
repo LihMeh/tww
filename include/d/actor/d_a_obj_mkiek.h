@@ -32,6 +32,7 @@ namespace daObjMkiek {
         };
 
         static const char M_arcname[];
+        static const char M_envname[];
 
    private:
         static Mtx M_tmp_mtx;        
@@ -46,7 +47,7 @@ namespace daObjMkiek {
         /* 0x458 */ bool m458;
         /* 0x459 */ u8 unmatched1; // TODO: match
         /* 0x45A */ s16 mDieEventIdx;
-        /* 0x45C */ s32 m45C;
+        /* 0x45C */ s32 m45C;       // TODO: why not s16? It's compared with cmpwi. Please double-check
         /* 0x460 */ s32 m460;
     };
 };

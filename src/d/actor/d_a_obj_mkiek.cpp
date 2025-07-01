@@ -42,6 +42,7 @@ static dCcD_SrcSph sph_check_src = {
 };
 
 const char daObjMkiek::Act_c::M_arcname[] = "MkieK";
+const char daObjMkiek::Act_c::M_envname[] = "MkieK";
 
 Mtx daObjMkiek::Act_c::M_tmp_mtx;
 
@@ -69,7 +70,7 @@ BOOL daObjMkiek::Act_c::Create() {
     mSph.Set(sph_check_src);
     mSph.SetStts(&mStts);
 
-    //fopAcM_SetMtx(this, (MTX34 *)(this->field2_0x2d0[0] + 0x24);
+    cullMtx = mpModel->getBaseTRMtx();
     init_mtx();
     fopAcM_setCullSizeBox(this, -200.0f, -100.0f, -200.0f, 200.0f, 305.0f, 200.0f);
 
@@ -200,13 +201,14 @@ void daObjMkiek::Act_c::demo() {
 
 /* 00000C1C-00000D00       .text Execute__Q210daObjMkiek5Act_cFPPA3_A4_f */
 BOOL daObjMkiek::Act_c::Execute(Mtx** o_mtx) {
-    cXyz sph_pos_offset(0.0f, 0.0f, 150.f);
+    cXyz sph_pos_offset(0.0f, 0.0f, 0.0f);
+    sph_pos_offset.y = 150.f;
     mSph.SetC(current.pos + sph_pos_offset);
     dComIfG_Ccsp()->Set(&mSph);
 
     if (m45C == 1) {
         demo_wait();
-    } else if (m45C == 0) {
+    } else if (m45C < 1 && m45C > -1) {
         check();
     } else if (m45C < 3) {
         demo();
