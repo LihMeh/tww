@@ -153,8 +153,23 @@ void daObjMkiek::Act_c::demo() {
 }
 
 /* 00000C1C-00000D00       .text Execute__Q210daObjMkiek5Act_cFPPA3_A4_f */
-BOOL daObjMkiek::Act_c::Execute(Mtx**) {
-    /* Nonmatching */
+BOOL daObjMkiek::Act_c::Execute(Mtx** o_mtx) {
+    cXyz sph_pos_offset(0.0f, 0.0f, 150.f);
+    mSph.SetC(current.pos + sph_pos_offset);
+    dComIfG_Ccsp()->Set(&mSph);
+
+    if (m45C == 1) {
+        demo_wait();
+    } else if (m45C == 0) {
+        check();
+    } else if (m45C < 3) {
+        demo();
+    }
+
+    set_mtx();
+    *o_mtx = &M_tmp_mtx;
+
+    return TRUE;
 }
 
 /* 00000D00-00000E1C       .text Draw__Q210daObjMkiek5Act_cFv */
