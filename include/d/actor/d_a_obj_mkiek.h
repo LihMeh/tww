@@ -7,8 +7,8 @@
 namespace daObjMkiek {
     class Act_c : public dBgS_MoveBgActor {
     public:
-        void prm_get_sound() const {}
-        void prm_get_swSave() const {}
+        int prm_get_sound() const;
+        int prm_get_swSave() const;
     
         virtual BOOL CreateHeap();
         virtual BOOL Create();
@@ -24,11 +24,11 @@ namespace daObjMkiek {
         virtual BOOL Draw();
 
         enum Prm_e {
-            PRM_SWITCH_W = 0x08,
-            PRM_SWITCH_S = 0x00,
+            PRM_SWSAVE_W = 0x08,
+            PRM_SWSAVE_S = 0x00,
 
-            PRM_UNKNOWN_W = 0x01,   // TODO: find names
-            PRM_UNKNOWN_S = 0x08
+            PRM_SOUND_W = 0x01,
+            PRM_SOUND_S = 0x08
         };
 
         static const char M_arcname[];

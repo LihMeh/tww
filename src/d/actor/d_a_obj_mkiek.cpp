@@ -70,7 +70,7 @@ BOOL daObjMkiek::Act_c::Create() {
     mSph.Set(sph_check_src);
     mSph.SetStts(&mStts);
 
-    cullMtx = mpModel->getBaseTRMtx();
+    fopAcM_SetMtx(this, mpModel->getBaseTRMtx());
     init_mtx();
     fopAcM_setCullSizeBox(this, -200.0f, -100.0f, -200.0f, 200.0f, 305.0f, 200.0f);
 
@@ -86,7 +86,7 @@ BOOL daObjMkiek::Act_c::Create() {
 cPhs_State daObjMkiek::Act_c::Mthd_Create() {
     fopAcM_SetupActor(this, Act_c);
 
-    int switch_index = daObj::PrmAbstract(this, PRM_SWITCH_W, PRM_SWITCH_S);
+    int switch_index = daObj::PrmAbstract(this, PRM_SWSAVE_W, PRM_SWSAVE_S);
     if (fopAcM_isSwitch(this, switch_index)) {
         return cPhs_STOP_e;        
     }
@@ -107,7 +107,7 @@ BOOL daObjMkiek::Act_c::Delete() {
 /* 0000075C-000007B4       .text Mthd_Delete__Q210daObjMkiek5Act_cFv */
 BOOL daObjMkiek::Act_c::Mthd_Delete() {
     BOOL result = this->MoveBGDelete();
-    if (fpcM_CreateResult(this) != 3) {
+    if (fpcM_CreateResult(this) != cPhs_STOP_e) {
         dComIfG_resDelete(&mPhs, M_arcname);
     }
     return result;
@@ -132,7 +132,7 @@ void daObjMkiek::Act_c::init_mtx() {
 
 /* 000008A0-00000940       .text check__Q210daObjMkiek5Act_cFv */
 void daObjMkiek::Act_c::check() {
-    bool check_result = dComIfGp_getDetect().chk_light(fopAcM_GetPosition_p(this)); // TODO: more readable condition?
+    bool check_result = dComIfGp_getDetect().chk_light(&current.pos); // TODO: more readable condition?
     if (!(!check_result && mSph.ChkTgHit() == FALSE)) {
         m460++;
         if (m460 >= 0x14) {
@@ -144,18 +144,25 @@ void daObjMkiek::Act_c::check() {
   }
 }
 
+inline int daObjMkiek::Act_c::prm_get_sound() const {
+    return daObj::PrmAbstract(this, PRM_SOUND_W, PRM_SOUND_S);
+}
+
+inline int daObjMkiek::Act_c::prm_get_swSave() const {
+    return daObj::PrmAbstract(this, PRM_SWSAVE_W, PRM_SWSAVE_S);
+}
+
 /* 00000940-00000B28       .text demo_wait__Q210daObjMkiek5Act_cFv */
 void daObjMkiek::Act_c::demo_wait() {                                   // TODO: reorder
-    if (eventInfo.getCommand() == dEvtCmd_INDEMO_e) {
-        if (daObj::PrmAbstract(this, PRM_UNKNOWN_W, PRM_UNKNOWN_S) == 0) {
+    if (eventInfo.checkCommandDemoAccrpt()) {
+        if (prm_get_sound() == 0) {
             mDoAud_seStart(JA_SE_READ_RIDDLE_1);
         }
+        // TODO: dComIfGp_getVibration is somewhere after mDoAud_seStart and before ChkUsed__9cBgW_BgIdCFv
         if (m460 < 0x14) {
             m460++;
         } else {
-            int bgw_id = mpBgW->GetId();
-            bool some = bgw_id < 0 || bgw_id > 0xFF;
-            if (some) {
+            if (mpBgW->ChkUsed()) {
                 dComIfG_Bgsp()->Release(mpBgW);
             }
             GXColor color = {
@@ -171,11 +178,9 @@ void daObjMkiek::Act_c::demo_wait() {                                   // TODO:
                 &color, &color,
                 NULL);
 
-            int switch_idx = daObj::PrmAbstract(this, PRM_SWITCH_W, PRM_SWITCH_S);
-            dComIfGs_onSwitch(switch_idx, fopAcM_GetRoomNo(this));
+            dComIfGs_onSwitch(prm_get_swSave(), fopAcM_GetRoomNo(this));
 
-            int snd_idx = dComIfGp_getReverb(fopAcM_GetRoomNo(this));
-            mDoAud_seStart(JA_SE_OBJ_L_OBJ_BRK_TAME, &current.pos, 0, snd_idx);
+            fopAcM_seStartCurrent(this, JA_SE_OBJ_L_OBJ_BRK_TAME, 0);
             m458 = true;
             m45C = 2;
         }
@@ -193,8 +198,7 @@ void daObjMkiek::Act_c::demo() {
     }
 
     dComIfGp_onStatus(8);
-    s8 room_no = fopAcM_GetRoomNo(this);
-    mDoAud_seStart(JA_SE_OBJ_L_WALL_BREAK, &current.pos, 0, room_no);
+    mDoAud_seStart(JA_SE_OBJ_L_WALL_BREAK, &current.pos, 0, fopAcM_GetRoomNo(this));
     dComIfGp_getVibration().StartShock(4, -0x21, cXyz(0.0f, 1.0f, 0.0f));
     fopAcM_delete(this);
 }
