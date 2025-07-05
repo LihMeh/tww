@@ -1458,7 +1458,7 @@ config.libs = [
     ActorRel(Equivalent, "d_a_tag_kk1", extra_cflags=['-pragma "nosyminline on"']), # weak func order
     ActorRel(NonMatching, "d_a_tag_light"),
     ActorRel(Matching,    "d_a_tag_msg"),
-    ActorRel(NonMatching, "d_a_tag_photo"),
+    ActorRel(Matching, "d_a_tag_photo"),
     ActorRel(Matching,    "d_a_tag_waterlevel"),
     ActorRel(Matching,    "d_a_tama", extra_cflags=['-pragma "nosyminline on"']),
     ActorRel(MatchingFor("GZLJ01", "GZLE01", "GZLP01"),    "d_a_tbox", extra_cflags=['-pragma "nosyminline on"']),
@@ -1703,7 +1703,7 @@ config.libs = [
     ActorRel(Matching,    "d_a_obj_mtest", extra_cflags=['-pragma "nosyminline on"']),
     ActorRel(Matching,    "d_a_obj_nest"),
     ActorRel(MatchingFor("GZLJ01", "GZLE01", "GZLP01"),    "d_a_obj_ojtree"),
-    ActorRel(NonMatching, "d_a_obj_ospbox"),
+    ActorRel(MatchingFor("GZLJ01", "GZLE01", "GZLP01"),    "d_a_obj_ospbox", extra_cflags=['-pragma "nosyminline on"']),
     ActorRel(Matching,    "d_a_obj_paper", extra_cflags=['-pragma "nosyminline on"']),
     ActorRel(MatchingFor("GZLJ01", "GZLE01", "GZLP01"),    "d_a_obj_pbka"),
     ActorRel(MatchingFor("GZLJ01", "GZLE01", "GZLP01"), "d_a_obj_pfall", extra_cflags=['-pragma "nosyminline on"']),
