@@ -133,8 +133,7 @@ void daObjMkiek::Act_c::init_mtx() {
 
 /* 000008A0-00000940       .text check__Q210daObjMkiek5Act_cFv */
 void daObjMkiek::Act_c::check() {
-    bool check_result = dComIfGp_getDetect().chk_light(&current.pos); // TODO: more readable condition?
-    if (!(!check_result && mSph.ChkTgHit() == FALSE)) {
+    if (!(!dComIfGp_getDetect().chk_light(&current.pos) && !mSph.ChkTgHit())) {
         m460++;
         if (m460 >= 0x14) {
           fopAcM_orderOtherEventId(this,mDieEventIdx);
