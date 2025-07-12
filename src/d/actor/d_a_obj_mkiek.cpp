@@ -193,13 +193,13 @@ void daObjMkiek::Act_c::demo_wait() {                                   // TODO:
 /* 00000B28-00000C1C       .text demo__Q210daObjMkiek5Act_cFv */
 void daObjMkiek::Act_c::demo() {
     mBrkAnm.play();
-    
-    if (mBrkAnm.isStop()) {
+    if (!mBrkAnm.isStop()) {
         return;
     }
 
-    dComIfGp_onStatus(8);
-    mDoAud_seStart(JA_SE_OBJ_L_WALL_BREAK, &current.pos, 0, fopAcM_GetRoomNo(this));
+    dComIfGp_event_onEventFlag(8);
+    mDoAud_seStart(JA_SE_OBJ_L_WALL_BREAK, &current.pos, 0,
+        dComIfGp_getReverb(fopAcM_GetRoomNo(this)));
     dComIfGp_getVibration().StartShock(4, -0x21, cXyz(0.0f, 1.0f, 0.0f));
     fopAcM_delete(this);
 }
