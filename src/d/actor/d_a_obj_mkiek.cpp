@@ -10,6 +10,7 @@
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "d/d_cc_d.h"
+#include "d/res/res_mkiek.h"
 #include "f_op/f_op_actor_mng.h"
 
 static dCcD_SrcSph sph_check_src = {
@@ -48,15 +49,15 @@ Mtx daObjMkiek::Act_c::M_tmp_mtx;
 
 /* 00000078-00000240       .text CreateHeap__Q210daObjMkiek5Act_cFv */
 BOOL daObjMkiek::Act_c::CreateHeap() {
-    J3DModelData* model_data = (J3DModelData*)dComIfG_getObjectRes(M_arcname, 6); // TODO: find const
+    J3DModelData* model_data = (J3DModelData*)dComIfG_getObjectRes(M_arcname, MKIEK_BDL_MKIEK);
     JUT_ASSERT(0x96, model_data != 0);
     mpModel = mDoExt_J3DModel__create(model_data, 0, 0x11020203);
 
-    J3DModelData* model_data_v = (J3DModelData*)dComIfG_getObjectRes(M_arcname, 9); // TODO: find const
+    J3DModelData* model_data_v = (J3DModelData*)dComIfG_getObjectRes(M_arcname, MKIEK_BDL_YLSMK00);
     JUT_ASSERT(0x9C, model_data_v != 0);
     mpModelV = mDoExt_J3DModel__create(model_data_v, 0, 0x11020203);
 
-    J3DAnmTevRegKey* brk = (J3DAnmTevRegKey*)dComIfG_getObjectRes(M_arcname, 0xC); // TODO: find const
+    J3DAnmTevRegKey* brk = (J3DAnmTevRegKey*)dComIfG_getObjectRes(M_arcname, MKIEK_BRK_YLSMK00);
     JUT_ASSERT(0xA2, brk != 0);
 
     int result = mBrkAnm.init(model_data_v, brk, true, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, false, FALSE);
@@ -93,7 +94,7 @@ cPhs_State daObjMkiek::Act_c::Mthd_Create() {
 
     cPhs_State phase_state = dComIfG_resLoad(&mPhs, M_arcname);
     if (phase_state == cPhs_COMPLEATE_e) {
-        phase_state = MoveBGCreate(M_arcname, 0xF, NULL, 0x1220);
+        phase_state = MoveBGCreate(M_arcname, MKIEK_DZB_MKIEK, NULL, 0x1220);
         JUT_ASSERT(0xD9, (phase_state == cPhs_COMPLEATE_e) || (phase_state == cPhs_ERROR_e))
     }
     return phase_state;
