@@ -85,7 +85,6 @@ void daNpc_Pm1_c::chngAnmAtr(unsigned char) {
 
 /* 00000AF4-00000AF8       .text ctrlAnmAtr__11daNpc_Pm1_cFv */
 void daNpc_Pm1_c::ctrlAnmAtr() {
-    /* Nonmatching */
 }
 
 /* 00000AF8-00000B60       .text setAnm_ATR__11daNpc_Pm1_cFi */
@@ -104,13 +103,13 @@ void daNpc_Pm1_c::setStt(signed char) {
 }
 
 /* 00000C74-00000C7C       .text next_msgStatus__11daNpc_Pm1_cFPUl */
-void daNpc_Pm1_c::next_msgStatus(unsigned long*) {
-    /* Nonmatching */
+u16 daNpc_Pm1_c::next_msgStatus(u32* pMsgNo) {
+    return fopMsgStts_MSG_ENDS_e;
 }
 
 /* 00000C7C-00000C84       .text getMsg__11daNpc_Pm1_cFv */
-void daNpc_Pm1_c::getMsg() {
-    /* Nonmatching */
+u32 daNpc_Pm1_c::getMsg() {
+    return 0;
 }
 
 /* 00000C84-00000CD4       .text eventOrder__11daNpc_Pm1_cFv */

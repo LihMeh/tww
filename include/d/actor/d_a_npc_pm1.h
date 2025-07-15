@@ -1,9 +1,9 @@
 #ifndef D_A_NPC_PM1_H
 #define D_A_NPC_PM1_H
 
-#include "f_op/f_op_actor.h"
+#include "d/d_npc.h"
 
-class daNpc_Pm1_c : public fopAc_ac_c {
+class daNpc_Pm1_c : public fopNpc_npc_c {
 public:
     struct anm_prm_c {
         
@@ -35,8 +35,8 @@ public:
     void setAnm_ATR(int);
     void anmAtr(unsigned short);
     void setStt(signed char);
-    void next_msgStatus(unsigned long*);
-    void getMsg();
+    u16 next_msgStatus(u32* pMsgNo);
+    u32 getMsg();
     void eventOrder();
     void checkOrder();
     void lookBack();
