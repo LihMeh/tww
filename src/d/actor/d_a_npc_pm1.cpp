@@ -4,9 +4,13 @@
  */
 
 #include "d/actor/d_a_npc_pm1.h"
-#include "m_Do/m_Do_ext.h"
+#include "d/d_com_inf_game.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
+#include "f_op/f_op_actor_mng.h"
+#include "m_Do/m_Do_ext.h"
+
+daNpc_Pm1_HIO_c l_HIO;
 
 /* 000000EC-00000144       .text __ct__15daNpc_Pm1_HIO_cFv */
 daNpc_Pm1_HIO_c::daNpc_Pm1_HIO_c() {
@@ -20,7 +24,11 @@ static BOOL nodeCallBack_Pm(J3DNode*, int) {
 
 /* 0000033C-0000044C       .text createInit__11daNpc_Pm1_cFv */
 void daNpc_Pm1_c::createInit() {
-    /* Nonmatching */
+    mEventCut.setActorInfo2("Pm1", this);
+    attention_info.flags = fopAc_Attn_LOCKON_TALK_e | fopAc_Attn_TALKFLAG_LOOK_e;
+    attention_info.distances[fopAc_Attn_TYPE_TALK_e] = 0xAB;
+    attention_info.distances[fopAc_Attn_TYPE_SPEAK_e] = 0xA9;
+    gravity = -4.0f;
 }
 
 /* 0000044C-0000055C       .text setMtx__11daNpc_Pm1_cFv */
@@ -98,8 +106,16 @@ void daNpc_Pm1_c::anmAtr(unsigned short) {
 }
 
 /* 00000C1C-00000C74       .text setStt__11daNpc_Pm1_cFSc */
-void daNpc_Pm1_c::setStt(signed char) {
-    /* Nonmatching */
+void daNpc_Pm1_c::setStt(s8 i_new_value) {
+    s8 old_value = field_0x7D0;
+    field_0x7C5 = i_new_value;
+    if (field_0x7D0 == 0x2) {
+        field_0x7D2 = 0x1;
+        field_0x7CB = 0xFF;
+        field_0x7D1 = old_value;
+    } else {
+        setAnm();
+    }
 }
 
 /* 00000C74-00000C7C       .text next_msgStatus__11daNpc_Pm1_cFPUl */
@@ -119,7 +135,18 @@ void daNpc_Pm1_c::eventOrder() {
 
 /* 00000CD4-00000D14       .text checkOrder__11daNpc_Pm1_cFv */
 void daNpc_Pm1_c::checkOrder() {
-    /* Nonmatching */
+    u16 command = eventInfo.getCommand();
+    if (command == dEvtCmd_INDEMO_e) {
+        return;
+    }
+    if (command != dEvtCmd_INTALK_e) {
+        return;
+    }
+    if (field_0x7CF != 1 && field_0x7CF != 2) {
+        return;
+    }
+    field_0x7CF = 0;
+    field_0x7C5 = 1;
 }
 
 /* 00000D14-00000EA4       .text lookBack__11daNpc_Pm1_cFv */
@@ -134,7 +161,17 @@ void daNpc_Pm1_c::chkAttention() {
 
 /* 00000F24-00000F88       .text setAttention__11daNpc_Pm1_cFv */
 void daNpc_Pm1_c::setAttention() {
-    /* Nonmatching */
+    float y = current.pos.y + l_HIO.field_0x20;
+    attention_info.position.x = current.pos.x;
+    attention_info.position.y = y;
+    attention_info.position.z = current.pos.z;
+
+    if (field_0x7BC == 0 && field_0x7C0 == 0) {
+        return;
+    }
+
+    eyePos = field_0x78C;
+    field_0x7BC = 0;
 }
 
 /* 00000F88-00000FB4       .text decideType__11daNpc_Pm1_cFi */
@@ -164,7 +201,11 @@ void daNpc_Pm1_c::endEvent() {
 
 /* 00001174-000011D4       .text event_proc__11daNpc_Pm1_cFv */
 void daNpc_Pm1_c::event_proc() {
-    /* Nonmatching */
+    if (!mEventCut.cutProc()) {
+        privateCut();
+    }
+    lookBack();
+    shape_angle = current.angle;
 }
 
 /* 000011D4-00001280       .text set_action__11daNpc_Pm1_cFM11daNpc_Pm1_cFPCvPvPv_iPv */
@@ -204,12 +245,19 @@ BOOL daNpc_Pm1_c::_execute() {
 
 /* 00001818-0000189C       .text _delete__11daNpc_Pm1_cFv */
 BOOL daNpc_Pm1_c::_delete() {
-    /* Nonmatching */
+    dComIfG_resDelete(&mPhs, "Pm");
+    if (mpMorf != NULL) {
+        mpMorf->stopZelAnime();
+    }
+
+    // TODO: match the HIO part
+
+    return TRUE;
 }
 
 /* 0000189C-000018BC       .text CheckCreateHeap__FP10fopAc_ac_c */
-static BOOL CheckCreateHeap(fopAc_ac_c*) {
-    /* Nonmatching */
+static BOOL CheckCreateHeap(fopAc_ac_c* i_this) {
+    return static_cast<daNpc_Pm1_c*>(i_this)->CreateHeap();
 }
 
 /* 000018BC-00001A2C       .text _create__11daNpc_Pm1_cFv */
@@ -218,8 +266,8 @@ cPhs_State daNpc_Pm1_c::_create() {
 }
 
 /* 00001E5C-00002168       .text CreateHeap__11daNpc_Pm1_cFv */
-void daNpc_Pm1_c::CreateHeap() {
-    /* Nonmatching */
+BOOL daNpc_Pm1_c::CreateHeap() {
+    return TRUE;
 }
 
 /* 00002168-00002188       .text daNpc_Pm1_Create__FP10fopAc_ac_c */
