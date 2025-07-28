@@ -8435,7 +8435,6 @@ BOOL daPy_lk_c::procIceSlipFallUp() {
 
 /* 8011970C-801197D4       .text procIceSlipAlmostFall_init__9daPy_lk_cFv */
 BOOL daPy_lk_c::procIceSlipAlmostFall_init() {
-
     commonProcInit(daPyProc_ICE_SLIP_ALMOST_FALL_e);
     current.angle.y = cM_atan2s(m36AC.x, m36AC.z);
     int direction = getDirectionFromAngle(current.angle.y - shape_angle.y);
@@ -11879,16 +11878,16 @@ void daPy_lk_c::initTextureAnime() {
 /* 80123360-80123830       .text initTextureScroll__9daPy_lk_cFv */
 void daPy_lk_c::initTextureScroll() {
     m_tex_scroll_heap.m_buffer = new(0x20) u8[0x800];
-    JUT_ASSERT(VERSION_SELECT(20757, 20944, 20944, 20944), m_tex_scroll_heap.m_buffer != NULL);
+    JUT_ASSERT(DEMO_SELECT(20757, 20944), m_tex_scroll_heap.m_buffer != NULL);
     
     JKRReadIdxResource(m_tex_scroll_heap.m_buffer, 0x800, LKANM_BTK_TMABA, dComIfGp_getAnmArchive());
     J3DAnmTextureSRTKey* btk = static_cast<J3DAnmTextureSRTKey*>(J3DAnmLoaderDataBase::load(m_tex_scroll_heap.m_buffer));
     btk->searchUpdateMaterialID(mpCLModelData);
     u16 material_num = btk->getUpdateMaterialNum();
-    JUT_ASSERT(VERSION_SELECT(20771, 20958, 20958, 20958), material_num == 2);
+    JUT_ASSERT(DEMO_SELECT(20771, 20958), material_num == 2);
     
     m_texMtxAnm = new J3DTexMtxAnm[material_num];
-    JUT_ASSERT(VERSION_SELECT(20774, 20961, 20961, 20961), m_texMtxAnm != NULL);
+    JUT_ASSERT(DEMO_SELECT(20774, 20961), m_texMtxAnm != NULL);
     
     for (u16 no = 0; no < material_num; no++) {
         u16 matID = btk->getUpdateMaterialID(no);
@@ -11897,7 +11896,7 @@ void daPy_lk_c::initTextureScroll() {
         }
         
         m_tex_eye_scroll[no] = new daPy_matAnm_c();
-        JUT_ASSERT(VERSION_SELECT(20785, 20972, 20972, 20972), m_tex_eye_scroll[no] != NULL);
+        JUT_ASSERT(DEMO_SELECT(20785, 20972), m_tex_eye_scroll[no] != NULL);
         
         mpCLModelData->getMaterialNodePointer(matID)->change();
         mpCLModelData->getMaterialNodePointer(matID)->setMaterialAnm(m_tex_eye_scroll[no]);
@@ -11911,7 +11910,7 @@ void daPy_lk_c::initTextureScroll() {
         J3DTexMtx* tmtx;
         if (mtl->getTexMtx(texMtxID) == NULL) {
             tmtx = new J3DTexMtx();
-            JUT_ASSERT(VERSION_SELECT(20797, 20984, 20984, 20984), tmtx != NULL);
+            JUT_ASSERT(DEMO_SELECT(20797, 20984), tmtx != NULL);
             mtl->setTexMtx(texMtxID, tmtx);
         }
         if (mtl->getTexCoord(texMtxID) != NULL) {
@@ -11928,7 +11927,7 @@ void daPy_lk_c::initTextureScroll() {
         tmtxinfo.mCenter.y = btk->getSRTCenter(no).y;
         tmtxinfo.mCenter.z = btk->getSRTCenter(no).z;
         
-        JUT_ASSERT(VERSION_SELECT(20814, 21001, 21001, 21001), mtl->getMaterialAnm() != NULL);
+        JUT_ASSERT(DEMO_SELECT(20814, 21001), mtl->getMaterialAnm() != NULL);
         
         mtl->getMaterialAnm()->setTexMtxAnm(texMtxID, &m_texMtxAnm[no]);
     }
@@ -12109,7 +12108,7 @@ J3DModelData* daPy_lk_c::initModel(J3DModel** i_model, int i_fileIndex, u32 i_di
 J3DAnmTextureSRTKey* daPy_lk_c::entryBtk(J3DModelData* param_1, int param_2) {
     J3DAnmTextureSRTKey* btk_anm =
         static_cast<J3DAnmTextureSRTKey*>(dComIfG_getObjectRes(l_arcName, param_2));
-    JUT_ASSERT(21373, btk_anm != 0);
+    JUT_ASSERT(21373, btk_anm != NULL);
     btk_anm->searchUpdateMaterialID(param_1);
     param_1->entryTexMtxAnimator(btk_anm);
     btk_anm->setFrame(0.0f);
@@ -12120,7 +12119,7 @@ J3DAnmTextureSRTKey* daPy_lk_c::entryBtk(J3DModelData* param_1, int param_2) {
 J3DAnmTevRegKey* daPy_lk_c::entryBrk(J3DModelData* param_1, int param_2) {
     J3DAnmTevRegKey* brk_anm =
         static_cast<J3DAnmTevRegKey*>(dComIfG_getObjectRes(l_arcName, param_2));
-    JUT_ASSERT(21395, brk_anm != 0);
+    JUT_ASSERT(21395, brk_anm != NULL);
     brk_anm->searchUpdateMaterialID(param_1);
     param_1->entryTevRegAnimator(brk_anm);
     brk_anm->setFrame(0.0f);

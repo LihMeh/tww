@@ -4197,7 +4197,7 @@ daNpcPeople_c::daNpcPeople_c() {
     m794 = 0;
     mEtcFlag = 0;
     m7A1 = 0;
-    mbIsNight = dKy_daynight_check() & 0x1; // this is weird but it generates the clrlwi
+    mbIsNight = dKy_daynight_check() & dKy_TIME_NIGHT_e; // this is weird but it generates the clrlwi
     mpNpcDat = l_npc_dat[mNpcType][mbIsNight];
     m730 = NULL;
 }
@@ -8353,7 +8353,7 @@ void daNpcPeople_c::warp() {
 }
 
 /* 000098DC-000098FC       .text daNpc_PeopleCreate__FPv */
-static s32 daNpc_PeopleCreate(void* i_this) {
+static cPhs_State daNpc_PeopleCreate(void* i_this) {
     return static_cast<daNpcPeople_c*>(i_this)->_create();
 }
 
