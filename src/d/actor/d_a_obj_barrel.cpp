@@ -3,6 +3,7 @@
 // Translation Unit: d_a_obj_barrel.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_barrel.h"
 #include "d/actor/d_a_obj_eff.h"
 #include "d/res/res_ktaru_01.h"
@@ -11,8 +12,6 @@
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "d/d_com_inf_game.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 const char daObjBarrel::Act_c::M_arcname[] = "Ktaru_01";
 const float daObjBarrel::Act_c::l_s_radius = 45.0f;
@@ -51,11 +50,11 @@ const dCcD_SrcCyl daObjBarrel::Act_c::M_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ l_l_radius,
         /* Height */ 100.0f,
-    },
+    }},
 };
 
 const daObjBarrel::Act_c::Attr_c daObjBarrel::Act_c::M_attr = {
@@ -201,7 +200,7 @@ void daObjBarrel::Act_c::mode_carry_init() {
     cLib_offBit<u32>(attention_info.flags, fopAc_Attn_ACTION_CARRY_e);
     mMode = MODE_CARRY;
     if (strcmp(dComIfGp_getStartStageName(), "majroom") == 0 || strcmp(dComIfGp_getStartStageName(), "MajyuE") == 0) {
-        dComIfGs_onEventBit(0x401);
+        dComIfGs_onEventBit(dSv_event_flag_c::UNK_0401);
     }
     mTimer = 15;
 }

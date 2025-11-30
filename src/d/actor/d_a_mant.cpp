@@ -3,6 +3,7 @@
  * Object - Phantom Ganon's cape/Darknut cape
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_mant.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -79,10 +80,10 @@ static cPhs_State daMant_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 200.0f,
-        },
+        }},
     };
     static dCcD_SrcSph mesh_cc_sph_src = {
         // dCcD_SrcGObjInf
@@ -107,10 +108,10 @@ static cPhs_State daMant_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 30.0f,
-        },
+        }},
     };
 }
 

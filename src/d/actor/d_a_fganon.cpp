@@ -3,6 +3,7 @@
  * Mini-Boss - Phantom Ganon
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_fganon.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -19,9 +20,6 @@
 #include "d/res/res_fganon.h"
 #include "d/res/res_pgsw.h"
 #include "f_op/f_op_camera.h"
-
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 fganon_class* master;
 u8 hio_set;
@@ -252,15 +250,14 @@ void shot(fganon_class* i_this) {
     cLib_addCalcAngleS2(&i_this->shape_angle.y, fopAcM_searchPlayerAngleY(actor), 10, 0x400);
     switch(i_this->mMode) {
         case 0: {
-            if (!i_this->m408) {
-                anm_init(i_this, FGANON_BCK_TAME1, 10.0f, J3DFrameCtrl::EMode_LOOP, 1.0f, -1);
-                i_this->mMode++;
-                i_this->m3A4[0] = 40;
-                fopAcM_monsSeStart(actor, JA_SE_CV_PG_EBALL_MAKE_S, 0);
-                // Fall-through
-            } else {
+            if (i_this->m408) {
                 break;
             }
+            anm_init(i_this, FGANON_BCK_TAME1, 10.0f, J3DFrameCtrl::EMode_LOOP, 1.0f, -1);
+            i_this->mMode++;
+            i_this->m3A4[0] = 40;
+            fopAcM_monsSeStart(actor, JA_SE_CV_PG_EBALL_MAKE_S, 0);
+            // Fall-through
         }
         case 1: {
             if (i_this->m3A4[0] == 30) {
@@ -278,7 +275,7 @@ void shot(fganon_class* i_this) {
             break;
         }
         case 2: {
-            s32 mFrame = i_this->mpMorf->mFrameCtrl.getFrame();
+            s32 mFrame = i_this->mpMorf->getFrame();
             if (REG0_S(0) + 14 == mFrame) {
                 i_this->m409 = 1;
                 i_this->m688 = 0;
@@ -348,7 +345,7 @@ void spinattack(fganon_class* i_this) {
     fopAc_ac_c* a_this = (fopAc_ac_c*)i_this;
     fopAc_ac_c* player = (fopAc_ac_c*)dComIfGp_getPlayer(0);
     dBgS_LinChk linChk;
-    int mFrame = i_this->mpMorf->mFrameCtrl.getFrame();
+    int mFrame = i_this->mpMorf->getFrame();
     switch(i_this->mMode) {
         case 0: {
             i_this->shape_angle.y = player->shape_angle.y;
@@ -571,7 +568,7 @@ void shot2(fganon_class* i_this) {
     fopAc_ac_c* actor = i_this;
 
     cLib_addCalcAngleS2(&i_this->shape_angle.y, fopAcM_searchPlayerAngleY(i_this), 10, 0x400);
-    int mFrame = i_this->mpMorf->mFrameCtrl.getFrame();
+    int mFrame = i_this->mpMorf->getFrame();
     switch(i_this->mMode) {
         case 0: {
             anm_init(i_this, FGANON_BCK_TAME_S1, 5.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
@@ -613,15 +610,14 @@ void shot2(fganon_class* i_this) {
         }
         case 2: {
             fopAcM_seStart(i_this, JA_SE_CM_PG_EBALL_MAKING_L, 0);
-            if (i_this->m3A4[0] == 0) {
-                anm_init(i_this, FGANON_BCK_NAGERU_S1, 3.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
-                i_this->mMode++;
-                i_this->mEmitters2[0] = dComIfGp_particle_set(dPa_name::ID_SCENE_821C, &i_this->current.pos, NULL);
-                i_this->mEmitters2[1] = dComIfGp_particle_set(dPa_name::ID_SCENE_821D, &i_this->current.pos, NULL);
-            }
-            else {
+            if (i_this->m3A4[0] != 0) {
                 break;
             }
+            anm_init(i_this, FGANON_BCK_NAGERU_S1, 3.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
+            i_this->mMode++;
+            i_this->mEmitters2[0] = dComIfGp_particle_set(dPa_name::ID_SCENE_821C, &i_this->current.pos, NULL);
+            i_this->mEmitters2[1] = dComIfGp_particle_set(dPa_name::ID_SCENE_821D, &i_this->current.pos, NULL);
+            // Fall-through
         }
         case 3: {
             if (mFrame == REG8_S(5) + 15) {
@@ -681,7 +677,7 @@ void spinattack2(fganon_class* i_this) {
     fopAc_ac_c* a_this = (fopAc_ac_c*)i_this;
     fopAc_ac_c* player = (fopAc_ac_c*)dComIfGp_getPlayer(0);
     dBgS_LinChk linChk;
-    int mFrame = i_this->mpMorf->mFrameCtrl.getFrame();
+    int mFrame = i_this->mpMorf->getFrame();
     switch(i_this->mMode) {
         case 0: {
             i_this->shape_angle.y = player->shape_angle.y + i_this->m68F * 0x3333;
@@ -701,7 +697,7 @@ void spinattack2(fganon_class* i_this) {
             cXyz transformedPos;
             MtxPosition(&offset, &transformedPos);
             i_this->current.pos = player->current.pos + transformedPos;
-            anm_init(i_this, 10, 1.0f, J3DFrameCtrl::EMode_LOOP, 1.0f, -1);
+            anm_init(i_this, FGANON_BCK_KAITEN_S1, 1.0f, J3DFrameCtrl::EMode_LOOP, 1.0f, -1);
             i_this->mMode = 2;
             deru_brk(i_this);
             i_this->m38C = player->current.pos;
@@ -714,15 +710,12 @@ void spinattack2(fganon_class* i_this) {
             cXyz local_e4;
             local_e4 = i_this->m38C - i_this->current.pos;
             if (local_e4.abs() < l_HIO.m38) {
-                anm_init(i_this, 9, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
+                anm_init(i_this, FGANON_BCK_KAITEN1, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
                 i_this->mMode = 3;
                 i_this->speedF = 0.0f;
                 fopAcM_monsSeStart(i_this, JA_SE_CV_PG_EBALL_FIRE_S, 0);
-                break;
             }
-            else {
-                break;
-            }
+            break;
         }
         case 3: {
             if (mFrame == 14) {
@@ -762,7 +755,7 @@ void spinattack2(fganon_class* i_this) {
 void down(fganon_class* i_this) {
     switch(i_this->mMode) {
         case 0: {
-            anm_init(i_this, 6, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
+            anm_init(i_this, FGANON_BCK_DAMAGE1, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
             i_this->mMode++;
             i_this->speed.y = 0.0f;
         }
@@ -780,19 +773,19 @@ void down(fganon_class* i_this) {
         case 2: {
             if (i_this->mpMorf->isStop()) {
                 i_this->mMode++;
-                anm_init(i_this, 8, 2.0f, J3DFrameCtrl::EMode_LOOP, 1.0f, -1);
+                anm_init(i_this, FGANON_BCK_DOWN1, 2.0f, J3DFrameCtrl::EMode_LOOP, 1.0f, -1);
             }
             break;
         }
         case 3: {
-            int mFrame = i_this->mpMorf->mFrameCtrl.getFrame();
+            int mFrame = i_this->mpMorf->getFrame();
             if (mFrame == 2) {
                 fopAcM_monsSeStart(i_this, JA_SE_CV_PG_TIRED, 0);
             }
             break;
         }
         case 10: {
-            anm_init(i_this, 7, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
+            anm_init(i_this, FGANON_BCK_DAMAGE2, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
             i_this->mMode = 2;
         }
         default:
@@ -942,53 +935,51 @@ void fail(fganon_class* i_this) {
         case 0: {
             kieru_brk(i_this, 1);
             i_this->mMode = 1;
-            anm_init(i_this, 7, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
+            anm_init(i_this, FGANON_BCK_DAMAGE2, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
             break;
         }
         case 1: {
-            if (i_this->mpMorf->isStop()) {
-                i_this->mMode = 2;
-                i_this->m3A4[0] = 30;
-                
-                dBgS_LinChk linChk;
-                
-                cMtx_YrotS(*calc_mtx, i_this->home.angle.y);
-
-                cXyz offset;
-                offset.x = 0.0f;
-                offset.y = 0.0f;
-                offset.z = 10000.0f;
-
-                cXyz transformedPos;
-                MtxPosition(&offset, &transformedPos);
-
-                offset = i_this->home.pos;
-                offset.y += 100.0f;
-
-                transformedPos += offset;
-
-                linChk.Set(&offset, &transformedPos, a_this);
-
-                cMtx_copy(i_this->mpMorf->getModel()->getAnmMtx(0x18), *calc_mtx);
-                
-                offset.x = 0.0f;
-                offset.y = 0.0f;
-                offset.z = 0.0f;
-
-                MtxPosition(&offset, &transformedPos);
-
-                if (dComIfG_Bgsp()->LineCross(&linChk)) {
-                    offset = linChk.GetCross();
-                }
-
-                i_this->m6A0 = i_this->shape_angle.y - cM_atan2s(transformedPos.x - offset.x, transformedPos.z - offset.z) + 0x7058 + REG0_S(8);
-                i_this->m6A4 = REG0_S(5) + 0x80;
-                i_this->m6A8 = 100;
+            if (!i_this->mpMorf->isStop()) {
                 break;
             }
-            else {
-                break;
+            i_this->mMode = 2;
+            i_this->m3A4[0] = 30;
+            
+            dBgS_LinChk linChk;
+            
+            cMtx_YrotS(*calc_mtx, i_this->home.angle.y);
+
+            cXyz offset;
+            offset.x = 0.0f;
+            offset.y = 0.0f;
+            offset.z = 10000.0f;
+
+            cXyz transformedPos;
+            MtxPosition(&offset, &transformedPos);
+
+            offset = i_this->home.pos;
+            offset.y += 100.0f;
+
+            transformedPos += offset;
+
+            linChk.Set(&offset, &transformedPos, a_this);
+
+            cMtx_copy(i_this->mpMorf->getModel()->getAnmMtx(0x18), *calc_mtx);
+            
+            offset.x = 0.0f;
+            offset.y = 0.0f;
+            offset.z = 0.0f;
+
+            MtxPosition(&offset, &transformedPos);
+
+            if (dComIfG_Bgsp()->LineCross(&linChk)) {
+                offset = linChk.GetCross();
             }
+
+            i_this->m6A0 = i_this->shape_angle.y - cM_atan2s(transformedPos.x - offset.x, transformedPos.z - offset.z) + 0x7058 + REG0_S(8);
+            i_this->m6A4 = REG0_S(5) + 0x80;
+            i_this->m6A8 = 100;
+            break;
         }
         case 2: {
             if (i_this->m3A4[0] == 0) {
@@ -1028,21 +1019,21 @@ void fail(fganon_class* i_this) {
                 kieru_brk(i_this, 2);
                 i_this->m3A4[0] = 10;
                 i_this->mMode = 4;
-                i_this->mBokoID = fopAcM_create(PROC_BOKO, 5, &i_this->current.pos, i_this->current.roomNo);
+                i_this->mBokoID = fopAcM_create(PROC_BOKO, daBoko_c::Type_PGANON_SWORD_e, &i_this->current.pos, i_this->current.roomNo);
             }
             break;
         }
         case 4: {
-            daBoko_c* act = (daBoko_c*)fopAcM_SearchByID(i_this->mBokoID);
-            if (act != NULL) {
-                if (!fopAcM_checkCarryNow(act)) {
-                    fopAcM_setCarryNow(act, 0);
+            daBoko_c* boko = (daBoko_c*)fopAcM_SearchByID(i_this->mBokoID);
+            if (boko != NULL) {
+                if (!fopAcM_checkCarryNow(boko)) {
+                    fopAcM_setCarryNow(boko, 0);
                 }
-                act->setMatrix(i_this->mpKenModel->getBaseTRMtx());
+                boko->setMatrix(i_this->mpKenModel->getBaseTRMtx());
                 if (i_this->m3A4[0] == 0) {
                     fopAcM_delete(i_this);
-                    act->m2BC = 1;
-                    fopAcM_cancelCarryNow(act);
+                    boko->onFloorFlg();
+                    fopAcM_cancelCarryNow(boko);
                 }
             }
             break;
@@ -1165,13 +1156,13 @@ void end(fganon_class* i_this) {
     i_this->m3AE = 3;
     fopAcM_OffStatus(i_this, 0);
     i_this->attention_info.flags = 0;
-    s32 mFrame = i_this->mpMorf->mFrameCtrl.getFrame();
+    s32 mFrame = i_this->mpMorf->getFrame();
     switch(i_this->mMode) {
         case 0: {
             i_this->mMode = 1;
             anm_init(i_this, FGANON_BCK_LAST_DAMAGE1, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
             i_this->mB54 = 50;
-            dComIfGs_onEventBit(0x3f20); // PG_DEFEATED? It appears further down in `energy_ball_move`
+            dComIfGs_onEventBit(dSv_event_flag_c::UNK_3F20); // PG_DEFEATED? It appears further down in `energy_ball_move`
             break;
         case 1: {
             if (mFrame == 104) {
@@ -1263,17 +1254,17 @@ void last_end(fganon_class* i_this) {
         case 4: {
             if (i_this->m3A4[1] <= 4) {
                 if (i_this->m3A4[1] == 4) {
-                    i_this->mBokoID = fopAcM_create(PROC_BOKO, 5, &i_this->current.pos, i_this->current.roomNo);
+                    i_this->mBokoID = fopAcM_create(PROC_BOKO, daBoko_c::Type_PGANON_SWORD_e, &i_this->current.pos, i_this->current.roomNo);
                 }
-                daBoko_c* mBoko = (daBoko_c*)fopAcM_SearchByID(i_this->mBokoID);
-                if (mBoko != NULL) {
+                daBoko_c* boko = (daBoko_c*)fopAcM_SearchByID(i_this->mBokoID);
+                if (boko != NULL) {
                     i_this->m2D0 = 2;
-                    if (!fopAcM_checkCarryNow(mBoko)) {
-                        fopAcM_setCarryNow(mBoko, 0);
+                    if (!fopAcM_checkCarryNow(boko)) {
+                        fopAcM_setCarryNow(boko, 0);
                     }
-                    mBoko->setMatrix(i_this->mpKenModel->getBaseTRMtx());
+                    boko->setMatrix(i_this->mpKenModel->getBaseTRMtx());
                     if (i_this->m3A4[1] == 1) {
-                        fopAcM_cancelCarryNow(mBoko);
+                        fopAcM_cancelCarryNow(boko);
                         i_this->mMode = 5;
                         i_this->mB54++;
                         i_this->mB56 = 0;
@@ -1389,7 +1380,7 @@ void damage_check(fganon_class* i_this) {
             if (atInfo.mpActor && (fopAcM_GetName(atInfo.mpActor) == PROC_FGMAHOU)) {
                 i_this->m670++;
 
-                anm_init(i_this, 6, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
+                anm_init(i_this, FGANON_BCK_DAMAGE1, 2.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
 
                 i_this->m3A4[0] = 60;
 
@@ -1867,14 +1858,13 @@ void demo_camera(fganon_class* i_this) {
         }
         case 54: {
             cLib_addCalc2(&i_this->mB68.y, (i_this->eyePos.y - 30.0f) + REG0_F(11), 0.1f, 20.0f);
-            if (i_this->mB56 == 100) {
-                i_this->mB54 = 55;
-                player->changeDemoMode(daPy_demo_c::DEMO_LAROUND_e);
-                i_this->mB56 = 0;
-            }
-            else {
+            if (i_this->mB56 != 100) {
                 break;
             }
+            i_this->mB54 = 55;
+            player->changeDemoMode(daPy_demo_c::DEMO_LAROUND_e);
+            i_this->mB56 = 0;
+            // Fall-through
         }
         case 55: {
             if (i_this->mB56 == 20) {
@@ -2193,7 +2183,7 @@ void energy_ball_move(fganon_class* i_this) {
                 }
                 mDoAud_changeSubBgmStatus(lVar11);
                 i_this->m688++;
-                dComIfGs_onEventBit(0x3f20);
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_3F20);
             } else if (bVar5) {
                 local_5c = player->eyePos - i_this->m3E0;
                 local_5c.y -= REG0_F(18) + 50.0f;
@@ -2595,7 +2585,7 @@ static BOOL useHeapInit(fopAc_ac_c* i_act) {
         return FALSE;
 
     ptrkAnm = (J3DAnmTevRegKey *)dComIfG_getObjectRes("Fganon", FGANON_BRK_DERU_MAIN1);
-    iVar4 = i_this->mpBrkAnm1->init(i_this->mpMorf->mpModel->getModelData(), ptrkAnm, TRUE, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, FALSE, 0);
+    iVar4 = i_this->mpBrkAnm1->init(i_this->mpMorf->getModel()->getModelData(), ptrkAnm, TRUE, J3DFrameCtrl::EMode_NONE, 1.0f, 0, -1, FALSE, 0);
     if (iVar4 == 0)
         return FALSE;
 
@@ -2663,11 +2653,11 @@ static dCcD_SrcCyl cc_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, -150.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, -150.0f, 0.0f},
         /* Radius */ 100.0f,
         /* Height */ 100.0f,
-    },
+    }},
 };
 
 static dCcD_SrcSph wepon_sph_src = {
@@ -2693,10 +2683,10 @@ static dCcD_SrcSph wepon_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 200.0f,
-    },
+    }},
 };
 
 static dCcD_SrcSph ball_tg_sph_src = {
@@ -2722,10 +2712,10 @@ static dCcD_SrcSph ball_tg_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 60.0f,
-    },
+    }},
 };
 
 static dCcD_SrcSph ball_at_sph_src = {
@@ -2751,10 +2741,10 @@ static dCcD_SrcSph ball_at_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 30.0f,
-    },
+    }},
 };
 
 /* 00009844-00009C70       .text daFganon_Create__FP10fopAc_ac_c */
@@ -2769,8 +2759,8 @@ static cPhs_State daFganon_Create(fopAc_ac_c* i_act) {
     }
     
     if ((i_this->mSwitchNo != 0xFF) && (dComIfGs_isSwitch(i_this->mSwitchNo, dComIfGp_roomControl_getStayNo()) != 0)) {
-        if (((fopAcM_GetParam(i_this) & 0xF) == 2) && !(dComIfGs_isEventBit(0x3A08))) { // Probably a flag to do with beating FF1 so PG spawns?
-            fopAcM_create(PROC_BOKO, 5, &i_this->current.pos, i_this->current.roomNo);
+        if (((fopAcM_GetParam(i_this) & 0xF) == 2) && !(dComIfGs_isEventBit(dSv_event_flag_c::UNK_3A08))) { // Probably a flag to do with beating FF1 so PG spawns?
+            fopAcM_create(PROC_BOKO, daBoko_c::Type_PGANON_SWORD_e, &i_this->current.pos, i_this->current.roomNo);
         }
         return cPhs_ERROR_e;
     }

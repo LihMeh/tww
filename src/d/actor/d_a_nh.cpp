@@ -3,6 +3,7 @@
  * Item - Forest Firefly / 森のほたる (Mori no Hotaru)
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/actor/d_a_nh.h"
 #include "f_op/f_op_actor_mng.h"
 #include "d/d_com_inf_game.h"
@@ -50,11 +51,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 10.0f,
         /* Height */ 20.0f,
-    },
+    }},
 };
 
 /* 800F95B8-800F9654       .text __ct__10daNh_HIO_cFv */
@@ -321,7 +322,7 @@ BOOL daNh_c::checkEscapeEnd() {
             setAction(&daNh_c::waitAction, NULL);
             return TRUE;
         }
-        if (homeDelta.abs2XZ() > l_HIO.prm.mMaxHomeDist*l_HIO.prm.mMaxHomeDist) {
+        if (homeDelta.abs2XZ() > SQUARE(l_HIO.prm.mMaxHomeDist)) {
             setAction(&daNh_c::returnAction, NULL);
             return TRUE;
         }
@@ -366,7 +367,7 @@ BOOL daNh_c::returnAction(void*) {
         } else {
             s16 targetAngle = cLib_targetAngleY(&current.pos, &home.pos);
             cXyz homeDelta = home.pos - current.pos;
-            if (homeDelta.abs2XZ() < l_HIO.prm.mMaxHomeDist*l_HIO.prm.mMaxHomeDist) {
+            if (homeDelta.abs2XZ() < SQUARE(l_HIO.prm.mMaxHomeDist)) {
                 s16 angle = targetAngle - fopAcM_searchPlayerAngleY(this);
                 if (abs(angle) < 0x1000) {
                     if (angle < 0) {

@@ -3,6 +3,7 @@
 // Translation Unit: d_throwstone.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_throwstone.h"
 #include "d/res/res_aisi.h"
 #include "f_op/f_op_actor.h"
@@ -92,7 +93,7 @@ static BOOL daThrowstoneExecute(void* ptr) {
 }
 
 bool daThrowstone_c::_draw() {
-    if (!dComIfGs_isEventBit(0x0310))
+    if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_0310))
         return TRUE;
 
     g_env_light.settingTevStruct(TEV_TYPE_ACTOR, &current.pos, &tevStr);

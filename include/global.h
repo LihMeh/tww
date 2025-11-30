@@ -4,6 +4,7 @@
 #include "dolphin/types.h"
 
 #define ARRAY_SIZE(o) (sizeof(o) / sizeof(o[0]))
+#define ARRAY_SSIZE(o) ((s32)(sizeof(o) / sizeof(o[0])))
 
 // Align X to the previous N bytes (N must be power of two)
 #define ALIGN_PREV(X, N) ((X) & ~((N)-1))
@@ -22,6 +23,8 @@
 #ifndef offsetof
 #define offsetof(type, member) ((size_t) & (((type*)0)->member))
 #endif
+
+#define SQUARE(x) ((x) * (x))
 
 #ifdef __MWERKS__
 #define GLUE(a, b) a##b

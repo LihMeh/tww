@@ -337,7 +337,6 @@ public:
     daPy_footData_c();
 
 public:
-    // TODO: is this right?
     /* 0x000 */ u8 field_0x000;
     /* 0x001 */ u8 field_0x001;
     /* 0x002 */ s16 field_0x002;
@@ -1818,7 +1817,7 @@ public:
     void getIceParticleBtk() {}
     void getIceWaterParticleBtk() {}
     void getShadowID() const {}
-    void npcStartRestartRoom() {}
+    void npcStartRestartRoom() { startRestartRoom(5, 0xC9, -1.0f, 0); }
     void setDaiokutaEnd() {}
     void setWhirlId(fpc_ProcID id) { mWhirlId = id; }
     void decrementBombCnt() {
@@ -1865,7 +1864,7 @@ public:
     BOOL allTrigger() const { return mItemTrigger & (BTN_A | BTN_B | BTN_X | BTN_Y | BTN_Z); }
     void otherWeaponTrigger() const {}
     
-    BOOL checkPlayerDemoMode() const { return mDemo.getDemoType()  != 0; }
+    BOOL checkPlayerDemoMode() const { return mDemo.getDemoType() != 0; }
     void checkSpecialDemoMode() const {}
     
     f32 getAnmSpeedStickRate(f32 param_0, f32 param_1) {
@@ -1900,9 +1899,9 @@ public:
     virtual BOOL setThrowDamage(cXyz*, s16, f32, f32, int);
     virtual void changeTextureAnime(u16, u16, int);
     
+    virtual f32 getGroundY() { return mAcch.GetGroundH(); }
     virtual MtxP getLeftHandMatrix() { return mpCLModel->getAnmMtx(0x08); } // cl_LhandA joint
     virtual MtxP getRightHandMatrix() { return mpCLModel->getAnmMtx(0x0C); } // cl_RhandA joint
-    virtual f32 getGroundY() { return mAcch.GetGroundH(); }
     virtual s32 getTactMusic() const;
     virtual int getTactTimerCancel() const;
     virtual BOOL checkPlayerGuard() const;
@@ -1927,7 +1926,6 @@ public:
     virtual BOOL checkTactWait() const { return mCurProc == daPyProc_TACT_WAIT_e; }
     virtual void setTactZev(fpc_ProcID, int, char*);
     virtual void onDekuSpReturnFlg(u8 i_point);
-    virtual BOOL checkComboCutTurn() const { return mCurProc == daPyProc_CUT_TURN_e && mProcVar0.m3570 != 0; }
     virtual f32 getBaseAnimeFrameRate() { return mFrameCtrlUnder[UNDER_MOVE0_e].getRate(); }
     virtual f32 getBaseAnimeFrame() { return mFrameCtrlUnder[UNDER_MOVE0_e].getFrame(); }
     virtual fpc_ProcID getItemID() const { return mActorKeepEquip.getID(); }
@@ -1943,6 +1941,7 @@ public:
     virtual MtxP getModelJointMtx(u16 idx) { return mpCLModel->getAnmMtx(idx); }
     virtual f32 getOldSpeedY() { return mOldSpeed.y; }
     virtual BOOL setHookshotCarryOffset(fpc_ProcID, const cXyz*);
+    virtual BOOL checkComboCutTurn() const { return mCurProc == daPyProc_CUT_TURN_e && mProcVar0.m3570 != 0; }
     virtual void cancelChangeTextureAnime() { resetDemoTextureAnime(); }
 
 public:

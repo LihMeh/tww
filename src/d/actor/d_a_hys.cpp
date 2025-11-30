@@ -3,14 +3,13 @@
  * Object - Eye switch
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_hys.h"
 #include "d/res/res_hys.h"
 #include "d/d_com_inf_game.h"
 #include "m_Do/m_Do_mtx.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 const char* daHys_c::m_arcname[2] = {"Hys", "Hys"};
 
@@ -46,10 +45,10 @@ static dCcD_SrcSph l_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 30.0f,
-    },
+    }},
 };
 
 /* 00000078-000000B8       .text Delete__7daHys_cFv */
@@ -222,9 +221,6 @@ static BOOL daHys_Delete(void* i_this) {
 static BOOL daHys_Draw(void* i_this) {
     return ((daHys_c*)i_this)->MoveBGDraw();
 }
-
-// Fakematch to fix weak func order/.text section splitting of dBgS_MoveBgActor::Draw().
-#pragma nosyminline off
 
 /* 00000C08-00000C28       .text daHys_Execute__FPv */
 static BOOL daHys_Execute(void* i_this) {

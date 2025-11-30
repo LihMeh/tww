@@ -3,6 +3,7 @@
  * Enemy - Darknut / Mini-Boss - Darknut (Tower of the Gods)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_tn.h"
 #include "m_Do/m_Do_ext.h"
 #include "d/d_procname.h"
@@ -330,11 +331,11 @@ static cPhs_State daTn_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 90.0f,
             /* Height */ 125.0f,
-        },
+        }},
     };
     static dCcD_SrcCyl tg_cyl_src = {
         // dCcD_SrcGObjInf
@@ -359,11 +360,11 @@ static cPhs_State daTn_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 45.0f,
             /* Height */ 137.5f,
-        },
+        }},
     };
     static dCcD_SrcSph head_sph_src = {
         // dCcD_SrcGObjInf
@@ -388,10 +389,10 @@ static cPhs_State daTn_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 55.0f,
-        },
+        }},
     };
     static dCcD_SrcSph wepon_sph_src = {
         // dCcD_SrcGObjInf
@@ -416,10 +417,10 @@ static cPhs_State daTn_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 100.0f,
-        },
+        }},
     };
     static dCcD_SrcSph wepon2_sph_src = {
         // dCcD_SrcGObjInf
@@ -444,10 +445,10 @@ static cPhs_State daTn_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 62.5f,
-        },
+        }},
     };
     static dCcD_SrcSph defence_sph_src = {
         // dCcD_SrcGObjInf
@@ -472,10 +473,10 @@ static cPhs_State daTn_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 62.5f,
-        },
+        }},
     };
 }
 

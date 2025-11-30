@@ -3,6 +3,7 @@
  * Object - Bombable walls
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_wall.h"
 #include "d/res/res_hbw1.h"
 #include "d/res/res_htw1.h"
@@ -13,8 +14,6 @@
 #include "d/d_priority.h"
 #include "f_op/f_op_actor_mng.h"
 #include "m_Do/m_Do_mtx.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 const s16 daWall_c::m_heapsize[3] = {
     0x1160,
@@ -77,16 +76,16 @@ static dCcD_SrcTri l_tri_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGTriS
-    {
-        /* a */ 0.0f, 0.0f, 0.0f,
-        /* b */ 0.0f, 0.0f, 0.0f,
-        /* c */ 0.0f, 0.0f, 0.0f,
-    },
+    {{
+        /* a */ {0.0f, 0.0f, 0.0f},
+        /* b */ {0.0f, 0.0f, 0.0f},
+        /* c */ {0.0f, 0.0f, 0.0f},
+    }},
 };
 
 /* 00000078-00000100       .text _delete__8daWall_cFv */
 bool daWall_c::_delete() {
-    mSmokeCb.end();
+    mSmokeCb.remove();
     if (heap != NULL && mState == false)
         dComIfG_Bgsp()->Release(mpBgW);
 

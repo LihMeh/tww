@@ -3,6 +3,7 @@
  * Enemy - Peahat/Seahat
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_ph.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -194,11 +195,11 @@ static cPhs_State daPH_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
             /* Height */ 0.0f,
-        },
+        }},
     };
     static dCcD_SrcCyl tg_hit_puropera_co_cyl = {
         // dCcD_SrcGObjInf
@@ -223,11 +224,11 @@ static cPhs_State daPH_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
             /* Height */ 0.0f,
-        },
+        }},
     };
     static dCcD_SrcSph body_co_sph_src = {
         // dCcD_SrcGObjInf
@@ -252,10 +253,10 @@ static cPhs_State daPH_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
-        },
+        }},
     };
 }
 

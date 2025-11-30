@@ -3,6 +3,7 @@
  * Item - Fairy / 回復妖精 (Recovery fairy)
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/actor/d_a_npc_fa1.h"
 #include "SSystem/SComponent/c_lib.h"
 #include "d/d_com_inf_game.h"
@@ -12,8 +13,88 @@
 #include "d/d_snap.h"
 #include "f_op/f_op_actor_mng.h"
 
-#include "weak_data_2100_2080.h" // IWYU pragma: keep
+class daNpc_Fa1_HIO3_c {
+public:
+    struct hio_prm_c {
+        // Note: Offsets are relative to daNpc_Fa1_HIO3_c instead of hio_prm_c for convenience.
+        /* 0x08 */ f32 m08;
+        /* 0x0C */ f32 m0C;
+        /* 0x10 */ f32 m10;
+        /* 0x14 */ f32 m14;
+        /* 0x18 */ s16 m18;
+    };
 
+    daNpc_Fa1_HIO3_c();
+    virtual ~daNpc_Fa1_HIO3_c() {}
+
+public:
+    /* 0x04 */ s8 mNo;
+    /* 0x08 */ hio_prm_c prm;
+};
+
+class daNpc_Fa1_HIO2_c {
+public:
+    struct hio_prm_c {
+        // Note: Offsets are relative to daNpc_Fa1_HIO2_c instead of hio_prm_c for convenience.
+        /* 0x08 */ f32 m08;
+        /* 0x0C */ f32 m0C;
+        /* 0x10 */ f32 m10;
+        /* 0x14 */ f32 m14;
+        /* 0x18 */ f32 m18;
+        /* 0x1C */ f32 m1C;
+        /* 0x20 */ s16 m20;
+        /* 0x22 */ s16 m22;
+        /* 0x24 */ s16 m24;
+    };
+
+    daNpc_Fa1_HIO2_c();
+    virtual ~daNpc_Fa1_HIO2_c() {}
+
+public:
+    /* 0x04 */ s8 mNo;
+    /* 0x08 */ hio_prm_c prm;
+};
+
+class daNpc_Fa1_HIO_c : public JORReflexible {
+public:
+    struct hio_prm_c {
+        // Note: Offsets are relative to daNpc_Fa1_HIO_c instead of hio_prm_c for convenience.
+        /* 0x08 */ f32 m08;
+        /* 0x0C */ f32 m0C;
+        /* 0x10 */ f32 m10;
+        /* 0x14 */ f32 m14;
+        /* 0x18 */ f32 m18;
+        /* 0x1C */ f32 m1C;
+        /* 0x20 */ f32 m20;
+        /* 0x24 */ f32 m24;
+        /* 0x28 */ f32 m28;
+        /* 0x2C */ f32 m2C;
+        /* 0x30 */ f32 m30;
+        /* 0x34 */ f32 m34;
+        /* 0x38 */ f32 m38;
+        /* 0x3C */ s16 m3C;
+        /* 0x3E */ s16 m3E;
+        /* 0x40 */ s16 m40;
+        /* 0x42 */ s16 m42;
+        /* 0x44 */ s16 m44;
+        /* 0x46 */ s16 m46;
+        /* 0x48 */ s16 m48;
+        /* 0x4A */ s16 m4A;
+        /* 0x4C */ s16 m4C;
+        /* 0x4E */ s16 m4E;
+    };
+
+    daNpc_Fa1_HIO_c();
+    virtual ~daNpc_Fa1_HIO_c() {}
+
+    void genMessage(JORMContext* ctx) {}
+
+public:
+    /* 0x04 */ s8 mNo;
+    /* 0x08 */ hio_prm_c prm;
+    /* 0x50 */ daNpc_Fa1_HIO2_c m50;
+    /* 0x78 */ daNpc_Fa1_HIO3_c m78;
+};
 
 /* 800FAFC0-800FB004       .text __ct__16daNpc_Fa1_HIO3_cFv */
 daNpc_Fa1_HIO3_c::daNpc_Fa1_HIO3_c() {
@@ -102,11 +183,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 10.0f,
         /* Height */ 20.0f,
-    },
+    }},
 };
 
 daNpc_Fa1_c::MoveFunc_t moveProc[] = {
@@ -191,7 +272,7 @@ int daNpc_Fa1_c::createInit() {
         if (isTypeTimer()) {
             setStatus(1);
             fopAcM_OffStatus(this, fopAcStts_NOCULLEXEC_e);
-            current.angle.y += (s16)(cLib_getRndValue((u16)0, (u16)0xFF) * 0x100);
+            current.angle.y += (s16)(cLib_getRndValue<u16>(0, 0xFF) * 0x100);
         } else {
             setTypeNormal();
         }
@@ -220,12 +301,13 @@ int daNpc_Fa1_c::createInit() {
 
 /* 800FB514-800FB5D8       .text _draw__11daNpc_Fa1_cFv */
 BOOL daNpc_Fa1_c::_draw() {
-    J3DModel* pJVar1 = mpDoExt_McaMorf->getModel();
+    J3DModel* pJVar1 = mpMorf->getModel();
     g_env_light.settingTevStruct(TEV_TYPE_ACTOR, &current.pos, &tevStr);
     g_env_light.setLightTevColorType(pJVar1, &tevStr);
-    mpDoExt_McaMorf->entryDL();
-    if (mGroundY != -G_CM3D_F_INF) {
-        dComIfGd_setSimpleShadow(&current.pos, mGroundY, 10.0f, &m774, 0, 1.0f,
+    mpMorf->entryDL();
+    f32 ground_y = mGroundY;
+    if (ground_y != -G_CM3D_F_INF) {
+        dComIfGd_setSimpleShadow(&current.pos, ground_y, 10.0f, &m774, 0, 1.0f,
                                  dDlst_shadowControl_c::getSimpleTex());
     }
     dSnap_RegistFig(DSNAP_TYPE_FA, this, 1.0f, 1.0f, 1.0f);
@@ -237,7 +319,7 @@ BOOL daNpc_Fa1_c::_execute() {
     cLib_calcTimer(&mTimer);
     (this->*moveProc[getMode()])();
     shape_angle.y = current.angle.y;
-    mpDoExt_McaMorf->play(NULL, 0, 0);
+    mpMorf->play(NULL, 0, 0);
     setMtx();
     if (isTypeBaba()) {
         setPointLightParam();
@@ -314,7 +396,7 @@ void daNpc_Fa1_c::init_normal_move() {
     speedF = l_HIO.prm.m08;
     gravity = 0.1f;
     maxFallSpeed = -1.0f;
-    mTimer = cLib_getRndValue((u16)l_HIO.prm.m44, (u16)60);
+    mTimer = cLib_getRndValue<u16>(l_HIO.prm.m44, 60);
     if (isTypeArea()) {
         init_areaMove();
     } else {
@@ -341,7 +423,7 @@ void daNpc_Fa1_c::normal_move() {
 /* 800FBA68-800FBAB0       .text init_straight__11daNpc_Fa1_cFv */
 void daNpc_Fa1_c::init_straight() {
     setSubMode(NormalSubMode_STRAIGHT_e);
-    mMoveTimer = cLib_getRndValue((u8)60, (u8)60);
+    mMoveTimer = cLib_getRndValue<u8>(60, 60);
     gravity = 0.1f;
 }
 
@@ -366,7 +448,7 @@ void daNpc_Fa1_c::straight() {
 /* 800FBBC8-800FBC10       .text init_turn__11daNpc_Fa1_cFv */
 void daNpc_Fa1_c::init_turn() {
     setSubMode(NormalSubMode_TURN_e);
-    mMoveTimer = cLib_getRndValue((u8)60, (u8)60);
+    mMoveTimer = cLib_getRndValue<u8>(60, 60);
     gravity = 0.1f;
 }
 
@@ -444,12 +526,12 @@ void daNpc_Fa1_c::init_get_player_move() {
 
 /* 800FC03C-800FC178       .text get_player_move__11daNpc_Fa1_cFv */
 void daNpc_Fa1_c::get_player_move() {
-    f32 fVar1 = mpDoExt_McaMorf->mFrameCtrl.getRate();
+    f32 fVar1 = mpMorf->getPlaySpeed();
     fVar1 += 0.05f;
     if (fVar1 > 1.5f) {
         fVar1 = 1.5f;
     }
-    mpDoExt_McaMorf->mFrameCtrl.setRate(fVar1);
+    mpMorf->setPlaySpeed(fVar1);
     s16 sVar4 = m78A;
     current.angle.y = current.angle.y - sVar4;
     sVar4 += l_HIO.prm.m40;
@@ -539,12 +621,12 @@ void daNpc_Fa1_c::init_bottle_appear_move() {
 
 /* 800FC3C8-800FC5A8       .text bottle_appear_move__11daNpc_Fa1_cFv */
 void daNpc_Fa1_c::bottle_appear_move() {
-    f32 fVar1 = mpDoExt_McaMorf->mFrameCtrl.getRate();
+    f32 fVar1 = mpMorf->getPlaySpeed();
     fVar1 += 0.05f;
     if (fVar1 > 1.5f) {
         fVar1 = 1.5f;
     }
-    mpDoExt_McaMorf->mFrameCtrl.setRate(fVar1);
+    mpMorf->setPlaySpeed(fVar1);
     current.angle.y = current.angle.y - m78A;
     m78A += m78E;
     if (m78A > m78C) {
@@ -824,7 +906,7 @@ void daNpc_Fa1_c::findPlayer() {
 
 /* 800FD050-800FD0F0       .text _delete__11daNpc_Fa1_cFv */
 BOOL daNpc_Fa1_c::_delete() {
-    mSparklePtclCallback.end();
+    mSparklePtclCallback.remove();
     if (isTypeBaba()) {
         dKy_efplight_cut(&mPointLight);
     }
@@ -850,12 +932,12 @@ cPhs_State daNpc_Fa1_c::_create() {
 
     fopAcM_SetupActor(this, daNpc_Fa1_c);
     if (fopAcM_entrySolidHeap(this, CheckCreateHeap, a_heap_size_tbl)) {
-        fopAcM_SetMtx(this, mpDoExt_McaMorf->mpModel->getBaseTRMtx());
+        fopAcM_SetMtx(this, mpMorf->getModel()->getBaseTRMtx());
     } else {
         return cPhs_ERROR_e;
     }
     if (l_HIO.mNo < 0) {
-        l_HIO.mNo = mDoHIO_createChild("回復妖精", &l_HIO);  // Recovery Fairy
+        l_HIO.mNo = mDoHIO_createChild("回復妖精", &l_HIO); // Recovery Fairy
         l_hio_counter = 1;
     } else {
         l_hio_counter++;
@@ -869,17 +951,17 @@ cPhs_State daNpc_Fa1_c::_create() {
 /* 800FD4E8-800FD61C       .text CreateHeap__11daNpc_Fa1_cFv */
 int daNpc_Fa1_c::CreateHeap() {
     J3DModelData* pModelData = (J3DModelData*)dComIfG_getObjectRes("Always", ALWAYS_BDL_FA);
-    mpDoExt_McaMorf =
+    mpMorf =
         new mDoExt_McaMorf(pModelData,
             &mMcaMorfCallback1, NULL,
             (J3DAnmTransformKey*)dComIfG_getObjectRes("Always", ALWAYS_BCK_FA),
             J3DFrameCtrl::EMode_LOOP, 1.0f, 0, -1, 0, NULL,
             0x00000000,
             0x11020203);
-    if (mpDoExt_McaMorf == NULL) {
+    if (mpMorf == NULL) {
         return false;
-    } else if (mpDoExt_McaMorf->getModel() == NULL) {
-        mpDoExt_McaMorf = NULL;
+    } else if (mpMorf->getModel() == NULL) {
+        mpMorf = NULL;
         return false;
     } else {
         mMcaMorfCallback1.setNeckJoint(pModelData->getJointName()->getIndex("neck"));
@@ -890,12 +972,12 @@ int daNpc_Fa1_c::CreateHeap() {
 
 /* 800FD61C-800FD6DC       .text setMtx__11daNpc_Fa1_cFv */
 void daNpc_Fa1_c::setMtx() {
-    J3DModel* pJVar5 = mpDoExt_McaMorf->getModel();
+    J3DModel* pJVar5 = mpMorf->getModel();
     mDoMtx_stack_c::transS(current.pos.x, current.pos.y, current.pos.z);
     mDoMtx_stack_c::YrotM(shape_angle.y);
     pJVar5->setBaseTRMtx(mDoMtx_stack_c::get());
-    mpDoExt_McaMorf->calc();
-    MtxP pMVar4 = mpDoExt_McaMorf->getModel()->getAnmMtx(mMcaMorfCallback1.getNeckJoint());
+    mpMorf->calc();
+    MtxP pMVar4 = mpMorf->getModel()->getAnmMtx(mMcaMorfCallback1.getNeckJoint());
     attention_info.position.set(pMVar4[0][3], pMVar4[1][3], pMVar4[2][3]);
     eyePos = attention_info.position;
 }

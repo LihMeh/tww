@@ -3,6 +3,7 @@
  * Object - Pushable Box
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_movebox.h"
 #include "d/res/res_ecube.h"
 #include "d/res/res_hbox2.h"
@@ -23,9 +24,6 @@
 #include "d/actor/d_a_obj_mmrr.h"
 #include "d/actor/d_a_obj_mkie.h"
 #include "d/actor/d_a_player.h"
-
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 namespace daObjMovebox {
     dBgS_ObjGndChk Bgc_c::M_gnd_work[23];
@@ -129,7 +127,7 @@ namespace daObjMovebox {
             cXyz pos;
             mDoMtx_stack_c::multVec(&offset, &pos);
             M_gnd_work[i].SetPos(&pos);
-            M_gnd_work[i].SetActorPid(movebox->base.mBsPcId);
+            M_gnd_work[i].SetActorPid(movebox->base.base.mBsPcId);
             mGroundY[i] = dComIfG_Bgsp()->GroundCross(&M_gnd_work[i]);
             if (mGroundY[i] > maxGroundY) {
                 fopAc_ac_c* groundActor = dComIfG_Bgsp()->GetActorPointer(M_gnd_work[i]);
@@ -186,12 +184,12 @@ namespace daObjMovebox {
             startPos += movebox->current.pos;
             endPos = startPos + temp_20;
             M_wall_work[i].Set(&startPos, &endPos, const_cast<Act_c*>(movebox));
-            M_wall_work[i].SetActorPid(movebox->base.mBsPcId);
+            M_wall_work[i].SetActorPid(movebox->base.base.mBsPcId);
             if (dComIfG_Bgsp()->LineCross(&M_wall_work[i])) {
                 mWallPos[i] = M_wall_work[i].GetCross();
-                f32 dist = startPos.abs2(mWallPos[i]);
-                if (dist < mNearestWallDist) {
-                    mNearestWallDist = dist;
+                f32 dist_sq = startPos.abs2(mWallPos[i]);
+                if (dist_sq < mNearestWallDist) {
+                    mNearestWallDist = dist_sq;
                     mWallIdx = i;
                 }
             } else {
@@ -275,7 +273,7 @@ namespace daObjMovebox {
         startPos += movebox->current.pos;
         endPos = startPos + direction;
         
-        touch_work.SetActorPid(movebox->base.mBsPcId);
+        touch_work.SetActorPid(movebox->base.base.mBsPcId);
         touch_work.Set(&startPos, &endPos, const_cast<Act_c*>(movebox));
         return dComIfG_Bgsp()->LineCross(&touch_work);
     }
@@ -331,11 +329,11 @@ namespace daObjMovebox {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 75.0f,
             /* Height */ 150.0f,
-        },
+        }},
     };
     
     const Attr_c Act_c::M_attr[] = {
@@ -1089,18 +1087,18 @@ namespace daObjMovebox {
             }
             if (mType == TYPE_METAL_BOX_WITH_SPRING) {
                 daObjJump::Act_c* jump = (daObjJump::Act_c*)childActor;
-                if (jump->current.pos.abs2(current.pos) > 0.0001f) {
+                if (jump->current.pos.abs2(current.pos) > SQUARE(0.01f)) {
                     jump->setup(&current.pos);
                 }
             } else if (mType == TYPE_MIRROR) {
                 daObjMmrr::Act_c* mmrr = (daObjMmrr::Act_c*)childActor;
-                if (mmrr->current.pos.abs2(current.pos) > 0.0001f) {
+                if (mmrr->current.pos.abs2(current.pos) > SQUARE(0.01f)) {
                     mmrr->setup(&current.pos);
                 }
             } else if (mType == TYPE_BLACK_BOX_WITH_MKIE) {
                 daObjMkie::Act_c* mkie = (daObjMkie::Act_c*)childActor;
                 cXyz targetPos(current.pos.x, current.pos.y + 150.0f, current.pos.z);
-                if (mkie->current.pos.abs2(targetPos) > 0.0001f) {
+                if (mkie->current.pos.abs2(targetPos) > SQUARE(0.01f)) {
                     mkie->setup(&targetPos);
                 }
             } else {
@@ -1182,7 +1180,7 @@ namespace daObjMovebox {
             s32 pntIdx;
             for (pntIdx = 0; pntIdx < numPnts; pntIdx++) {
                 cXyz pntPos = dPath_GetPnt(mpPath, pntIdx)->m_position;
-                if (current.pos.abs2(pntPos) < 9.0f) {
+                if (current.pos.abs2(pntPos) < SQUARE(3.0f)) {
                     break;
                 }
             }
@@ -1536,14 +1534,14 @@ namespace daObjMovebox {
     /* 00002A14-00002A74       .text eff_smoke_slip_end__Q212daObjMovebox5Act_cFv */
     void Act_c::eff_smoke_slip_end() {
         for (int i = 0; i < (int)ARRAY_SIZE(mSmokeCbs); i++) {
-            mSmokeCbs[i].end();
+            mSmokeCbs[i].remove();
         }
     }
     
     /* 00002A74-00002AD4       .text eff_smoke_slip_remove__Q212daObjMovebox5Act_cFv */
     void Act_c::eff_smoke_slip_remove() {
         for (int i = 0; i < (int)ARRAY_SIZE(mSmokeCbs); i++) {
-            mSmokeCbs[i].end();
+            mSmokeCbs[i].remove();
         }
     }
     
@@ -1734,7 +1732,7 @@ namespace daObjMovebox {
         cXyz centerPos(current.pos.x, current.pos.y + 100.0f, current.pos.z);
         dBgS_ObjGndChk gndChk;
         gndChk.SetPos(&centerPos);
-        gndChk.SetActorPid(base.mBsPcId);
+        gndChk.SetActorPid(base.base.mBsPcId);
         dComIfG_Bgsp()->GroundCross(&gndChk);
         s32 bgIndex = gndChk.GetBgIndex();
         s32 mtrlSndId = 0;
@@ -1894,10 +1892,6 @@ namespace daObjMovebox {
         cPhs_State Mthd_Create(void* i_this) {
             return static_cast<Act_c*>(i_this)->Mthd_Create();
         }
-
-// Fakematch to fix weak func order/.text section splitting of daObjMovebox::EffSmokeCB's ctor and dtor.
-// Also fixes weak func order/.text section splitting of dBgS_MoveBgActor::Draw().
-#pragma nosyminline off
         
         /* 000044E0-00004544       .text Mthd_Delete__Q212daObjMovebox29@unnamed@d_a_obj_movebox_cpp@FPv */
         BOOL Mthd_Delete(void* i_this) {

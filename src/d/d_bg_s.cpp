@@ -9,7 +9,6 @@
 #include "d/d_com_inf_game.h"
 #include "f_op/f_op_actor_mng.h"
 
-#define CHECK_FLOAT_CLASS(line, x) JUT_ASSERT(line, !(fpclassify(x) == 1));
 #define CHECK_FLOAT_RANGE(line, x) JUT_ASSERT(line, -1.0e32f < x && x < 1.0e32f);
 #define CHECK_VEC3_RANGE(line, v) JUT_ASSERT(line, -1.0e32f < v.x && v.x < 1.0e32f && -1.0e32f < v.y && v.y < 1.0e32f && -1.0e32f < v.z && v.z < 1.0e32f)
 #define CHECK_PVEC3_RANGE(line, v) JUT_ASSERT(line, -1.0e32f < v->x && v->x < 1.0e32f && -1.0e32f < v->y && v->y < 1.0e32f && -1.0e32f < v->z && v->z < 1.0e32f)
@@ -555,9 +554,9 @@ void dBgS_CrrPos::CrrPos(dBgS& i_bgs) {
     CHECK_PVEC3_RANGE(2280, pm_pos);
     
     if (!(mFlag & 4)) {
-        f32 dist2 = GetOldPos()->abs2(*pm_pos);
+        f32 dist_sq = GetOldPos()->abs2(*pm_pos);
         bool inWall = false;
-        if (dist2 > (0.65f*0.65f * GetWallR()*GetWallR())) {
+        if (dist_sq > (SQUARE(0.65f) * GetWallR()*GetWallR())) {
             inWall = true;
             
             cBgS_LinChk linChk;

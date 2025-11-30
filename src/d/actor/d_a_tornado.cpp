@@ -3,6 +3,7 @@
  * Ballad Of Gales Tornado
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_tornado.h"
 #include "d/res/res_trnd.h"
 #include "f_op/f_op_actor_mng.h"
@@ -12,8 +13,6 @@
 #include "d/d_com_inf_game.h"
 #include "d/actor/d_a_ship.h"
 #include "d/d_kankyo_wether.h"
-
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
 
 static char l_arcName[] = "Trnd";
 
@@ -70,7 +69,7 @@ BOOL daTornado_c::draw() {
     mBtk.entry(mpModel->getModelData(), mBtkFrame);
     mBrk.entry(mpModel->getModelData(), mBrkFrame);
 
-    if (dComIfGs_isTmpBit(0x404)) {
+    if (dComIfGs_isTmpBit(dSv_event_tmp_flag_c::UNK_0404)) {
         dComIfGd_setListMaskOff();
         mDoExt_modelUpdateDL(mpModel);
         dComIfGd_setList();
@@ -156,7 +155,7 @@ BOOL daTornado_c::execute() {
         if (dComIfGp_checkPlayerStatus0(0, daPyStts0_SHIP_RIDE_e) && dComIfGp_getShipActor() != NULL) {
             daShip_c* ship = dComIfGp_getShipActor();
             cXyz diff = ship->current.pos - current.pos;
-            if (diff.abs2XZ() < 10000.0f*10000.0f) {
+            if (diff.abs2XZ() < SQUARE(10000.0f)) {
                 ship->onTornadoFlg(fopAcM_GetID(this));
                 speedF = 0.0f;
             }
@@ -166,7 +165,7 @@ BOOL daTornado_c::execute() {
             fopAcM_posMoveF(this, NULL);
             cXyz diff = current.pos - home.pos;
             diff.y = 0;
-            if (diff.abs2XZ() > 7500.0f*7500.0f) {
+            if (diff.abs2XZ() > SQUARE(7500.0f)) {
                 diff.normalize();
                 current.pos = home.pos + diff * 7500.0f;
             }
@@ -181,7 +180,7 @@ BOOL daTornado_c::execute() {
 
         fopAcM_seStartCurrent(this, JA_SE_OBJ_TORNADE_SUS, 100);
 
-        if (dComIfGs_isEventBit(0x2710)) {
+        if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_2710)) {
             mPtclCb.remove();
             daShip_c* ship = dComIfGp_getShipActor();
             if (ship != NULL) {
@@ -316,7 +315,7 @@ cPhs_State daTornado_c::create() {
             }
         } else {
             fopAcM_SetParam(this, 0);
-            if (dComIfGs_isEventBit(0x2710)) {
+            if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_2710)) {
                 return cPhs_ERROR_e;
             }
             dKyw_tornado_Notice(&current.pos);

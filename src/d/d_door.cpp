@@ -3,18 +3,14 @@
 // Translation Unit: d_door.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_door.h"
 #include "d/d_com_inf_game.h"
 #include "d/d_vibration.h"
 #include "d/res/res_key.h"
 #include "d/res/res_hkyo.h"
 #include "d/actor/d_a_player.h"
-
-// Fakematch to fix weak function ordering of cSAngle::~cSAngle() and cSGlobe::~cSGlobe().
-#pragma sym off
 #include "SSystem/SComponent/c_angle.h"
-#pragma sym on
-#pragma nosyminline off
 
 /* 8006B39C-8006B3A8       .text getSwbit__12dDoor_info_cFv */
 u8 dDoor_info_c::getSwbit() {
@@ -421,7 +417,7 @@ void dDoor_smoke_c::smokeProc(dDoor_info_c* door) {
 
 /* 8006C41C-8006C448       .text smokeEnd__13dDoor_smoke_cFv */
 void dDoor_smoke_c::smokeEnd() {
-    mSmokeCb.end();
+    mSmokeCb.remove();
 }
 
 /* 8006C448-8006C478       .text keyResLoad__12dDoor_key2_cFv */
@@ -784,27 +780,27 @@ void dDoor_hkyo_c::proc(dDoor_info_c* door) {
 
     switch (m11) {
     case 1:
-        if (dComIfGs_isTmpBit(0x108))
+        if (dComIfGs_isTmpBit(dSv_event_tmp_flag_c::UNK_0108))
             setAnm(1);
-        else if (dComIfGs_isTmpBit(0x110))
+        else if (dComIfGs_isTmpBit(dSv_event_tmp_flag_c::UNK_0110))
             setAnm(2);
         else
             setAnm(0);
         break;
     case 4:
-        if (dComIfGs_isEventBit(0x1710))
+        if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_1710))
             setAnm(0);
         else
             setAnm(3);
         break;
     case 3:
-        if (!dComIfGs_isTact(2) || dComIfGs_isEventBit(0x1704))
+        if (!dComIfGs_isTact(2) || dComIfGs_isEventBit(dSv_event_flag_c::UNK_1704))
             setAnm(0);
         else
             setAnm(3);
         break;
     case 2:
-        if (!dComIfGs_isEventBit(0x1704) || dComIfGs_isEventBit(0x1b01))
+        if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_1704) || dComIfGs_isEventBit(dSv_event_flag_c::UNK_1B01))
             setAnm(0);
         else
             setAnm(3);
@@ -827,7 +823,7 @@ BOOL dDoor_hkyo_c::chkFirst() {
 
     switch (mAnmIdx) {
     case 1:
-        if (!dComIfGs_isEventBit(0x2602))
+        if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_2602))
             return TRUE;
         break;
     }
@@ -838,8 +834,8 @@ BOOL dDoor_hkyo_c::chkFirst() {
 /* 8006D784-8006D7E8       .text onFirst__12dDoor_hkyo_cFv */
 void dDoor_hkyo_c::onFirst() {
     switch (mAnmIdx) {
-    case 1: dComIfGs_onEventBit(0x2602); break;
-    case 2: dComIfGs_onEventBit(0x2601); break;
+    case 1: dComIfGs_onEventBit(dSv_event_flag_c::UNK_2602); break;
+    case 2: dComIfGs_onEventBit(dSv_event_flag_c::UNK_2601); break;
     }
 }
 

@@ -3,6 +3,7 @@
  * Mini-Boss - Mothula / Enemy - Mothula Larva
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_gm.h"
 #include "m_Do/m_Do_ext.h"
 #include "d/d_procname.h"
@@ -155,10 +156,10 @@ static cPhs_State daGM_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
-        },
+        }},
     };
     static dCcD_SrcCyl body_co_cyl_src = {
         // dCcD_SrcGObjInf
@@ -183,11 +184,11 @@ static cPhs_State daGM_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
             /* Height */ 0.0f,
-        },
+        }},
     };
     static dCcD_SrcCyl wing_co_cyl_src = {
         // dCcD_SrcGObjInf
@@ -212,11 +213,11 @@ static cPhs_State daGM_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
             /* Height */ 0.0f,
-        },
+        }},
     };
     static dCcD_SrcCyl wind_co_cyl_src = {
         // dCcD_SrcGObjInf
@@ -241,11 +242,11 @@ static cPhs_State daGM_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
             /* Height */ 0.0f,
-        },
+        }},
     };
 }
 

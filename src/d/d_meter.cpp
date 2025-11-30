@@ -3,6 +3,7 @@
 // Translation Unit: d_meter.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_meter.h"
 #include "JSystem/J2DGraph/J2DOrthoGraph.h"
 #include "JSystem/J2DGraph/J2DScreen.h"
@@ -14,8 +15,6 @@
 #include "d/d_procname.h"
 #include "d/d_timer.h"
 #include "stdio.h"
-
-#include "weak_bss_3569.h" // IWYU pragma: keep
 
 dMeter_info_c dMeter_Info;
 fopMsgM_pane_class item_parts;
@@ -340,14 +339,14 @@ dMeter_menuHIO_c::dMeter_menuHIO_c() {
 
 /* 801EF57C-801EF75C       .text __ct__16dMeter_msg_HIO_cFv */
 dMeter_msg_HIO_c::dMeter_msg_HIO_c() {
-    field_0x5 = 0x1e;
-    field_0x6 = 0x1e;
-    field_0x7 = 0x1e;
-    field_0x8 = 0xd7;
-    field_0x9 = 0x1e;
-    field_0xa = 0x1e;
-    field_0xb = 0x4b;
-    field_0xc = 0;
+    field_0x5.r = 0x1e;
+    field_0x5.g = 0x1e;
+    field_0x5.b = 0x1e;
+    field_0x5.a = 0xd7;
+    field_0x9.r = 0x1e;
+    field_0x9.g = 0x1e;
+    field_0x9.b = 0x4b;
+    field_0x9.a = 0;
     field_0x5a = 0;
     field_0x5c = 0;
     field_0x5e = 0x1e;

@@ -3,6 +3,7 @@
  * Enemy - Bubble
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_bl.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -179,10 +180,10 @@ static cPhs_State daBL_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
-        },
+        }},
     };
 }
 

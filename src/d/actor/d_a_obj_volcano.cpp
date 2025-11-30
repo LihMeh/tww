@@ -3,6 +3,7 @@
  * Object - Fire Mountain Exterior - Lava
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_volcano.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -31,11 +32,11 @@ static dCcD_SrcCyl cyl_check_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 300.0f,
         /* Height */ 3000.0f,
-    },
+    }},
 };
 
 

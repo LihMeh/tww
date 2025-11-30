@@ -10,6 +10,7 @@
  * based on the original names of the functions it contains.
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/actor/d_a_boko.h"
 #include "d/actor/d_a_obj_barrel.h"
 #include "d/actor/d_a_player_main.h"
@@ -236,7 +237,7 @@ BOOL daPy_lk_c::checkNextActionGrab() {
         fopAcM_orderZHintEvent(this, dComIfGp_att_getZHint());
         return true;
     }
-#if VERSION > VERSION_DEMO
+#if VERSION > VERSION_JPN
     if (checkSetItemTrigger(dItem_MAGIC_ARMOR_e, 1) ||
         (checkNoResetFlg1(daPyFlg1_EQUIP_DRAGON_SHIELD) && checkSetItemTrigger(dItem_MAGIC_ARMOR_e, 0)))
     {
@@ -336,7 +337,7 @@ BOOL daPy_lk_c::procGrabReady_init() {
     }
     if (fopAcM_GetName(mpAttnActorA) == PROC_BOKO) {
         daBoko_c* boko = static_cast<daBoko_c*>(mpAttnActorA);
-        boko->mCurrentAction = 3;
+        boko->setNowMode(daBoko_c::Mode_PLAYER_CARRY_e);
     }
     shape_angle.y = fopAcM_searchActorAngleY(this, mpAttnActorA);
     current.angle.y = shape_angle.y;
@@ -478,7 +479,7 @@ BOOL daPy_lk_c::procGrabMiss_init() {
     );
     mProcVar0.m3570 = 0;
     m34D0 = daPy_HIO_grab_c0::m.field_0x6;
-    dComIfGs_onEventBit(0x4020);
+    dComIfGs_onEventBit(dSv_event_flag_c::UNK_4020);
     return true;
 }
 
@@ -854,7 +855,9 @@ BOOL daPy_lk_c::procGrabRebound() {
     fopAc_ac_c* grab_actor = mActorKeepGrab.getActor();
 
     if (grab_actor == NULL) {
+#if VERSION > VERSION_DEMO
         resetActAnimeUpper(UPPER_MOVE2_e, -1.0f);
+#endif
         return checkNextMode(0);
     }
 

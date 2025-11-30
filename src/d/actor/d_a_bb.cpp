@@ -3,6 +3,7 @@
  * Enemy - Kargaroc
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_bb.h"
 #include "m_Do/m_Do_ext.h"
 #include "d/d_procname.h"
@@ -72,7 +73,7 @@ public:
     }
     virtual ~bbHIO_c() {}
 
-    void genMessage(JORMContext* ctx);
+    void genMessage(JORMContext* ctx) {}
 
 public:
     /* 0x04 */ u8 unk_04;
@@ -115,7 +116,6 @@ public:
     /* 0x7C */ f32 unk_7C;
 }; // size = 0x80
 
-#include "weak_data_1811.h" // IWYU pragma: keep
 static s8 callback_check_index[] = {0xFF, 0xFF, 0xFF, 0x64, 0xFF, 0xFF, 0xFF, 0xFF, 0x64, 0xFF, 0xFF, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x64, 0x64, 0x64, 0xFF, 0xFF, 0xFF, 0xFF, 0x64, 0x64};
 static f32 tial_scale[] = {
     0.25f, 0.275f, 0.2875f, 0.3f, 0.325f, 0.375f, 0.4625f, 0.575f, 0.8f, 
@@ -343,9 +343,25 @@ void bb_eye_tex_anm(bb_class* i_this) {
 void anm_init(bb_class* i_this, int animFileIdx, float morf, unsigned char loopMode, float speed, int soundFileIdx) {
     if (i_this->unk_2DF < 3) {
         if (soundFileIdx >= 0) {
-            i_this->mpMorf->setAnm((J3DAnmTransform*)(dComIfG_getObjectRes("Bb", animFileIdx)), loopMode, morf, speed, 0.0f, -1.0f, dComIfG_getObjectRes("Bb", soundFileIdx));
+            i_this->mpMorf->setAnm(
+                (J3DAnmTransform*)(dComIfG_getObjectRes("Bb", animFileIdx)),
+                loopMode,
+                morf,
+                speed,
+                0.0f,
+                -1.0f,
+                dComIfG_getObjectRes("Bb", soundFileIdx)
+            );
         } else {
-            i_this->mpMorf->setAnm((J3DAnmTransform*)(dComIfG_getObjectRes("Bb", animFileIdx)), loopMode, morf, speed, 0.0f, -1.0f, NULL);
+            i_this->mpMorf->setAnm(
+                (J3DAnmTransform*)(dComIfG_getObjectRes("Bb", animFileIdx)),
+                loopMode,
+                morf,
+                speed,
+                0.0f,
+                -1.0f,
+                NULL
+            );
         }
     }
 }
@@ -612,13 +628,13 @@ static BOOL daBb_Draw(bb_class* i_this) {
     i_this->mpMorf->entryDL();
 
     J3DModelData* modelData = model->getModelData();
-    modelData->getMaterialTable().removeTexNoAnimator(i_this->mBtpAnm.getBtpAnm());
+    i_this->mBtpAnm.remove(modelData);
     daBb_shadowDraw(i_this);
     tail_draw(i_this);
 #if VERSION == VERSION_DEMO
-    dSnap_RegistFig(DSNAP_TYPE_UNKB0, &i_this->actor, 1.0f, 1.0f, 1.0f);
+    dSnap_RegistFig(DSNAP_TYPE_BB, &i_this->actor, 1.0f, 1.0f, 1.0f);
 #else
-    dSnap_RegistFig(DSNAP_TYPE_UNKB0, &i_this->actor, i_this->actor.eyePos, i_this->actor.shape_angle.y, 1.0f, 1.0f, 1.0f);
+    dSnap_RegistFig(DSNAP_TYPE_BB, &i_this->actor, i_this->actor.eyePos, i_this->actor.shape_angle.y, 1.0f, 1.0f, 1.0f);
 #endif
     return TRUE;
 }
@@ -718,14 +734,14 @@ void bb_path_move(bb_class* i_this) {
             frame = i_this->mpMorf->getFrame();
             if (a_this->current.pos.y > i_this->unk_2F4.y && frame == (REG0_S(0) + 9)) {
                 i_this->unk_2F0 = 1;
-                anm_init(i_this, 0x19, REG0_F(0) + 12.0f, 2, 1.0f, 9);
+                anm_init(i_this, BB_BCK_FLY02, REG0_F(0) + 12.0f, 2, 1.0f, 9);
             }
             break;
 
         case 1:
             if (a_this->current.pos.y <= i_this->unk_2F4.y) {
                 i_this->unk_2F0 = 0;
-                anm_init(i_this, 0x18, 5.0f, 2, l_bbHIO.unk_24, 8);
+                anm_init(i_this, BB_BCK_FLY01, 5.0f, 2, l_bbHIO.unk_24, 8);
             }
             break;
 
@@ -744,7 +760,7 @@ void bb_path_move(bb_class* i_this) {
                     i_this->unk_35E = i_this->ppd->m_num - 2;
                 }
 
-                if (i_this->ppd->m_nextID + 0 != 0xFFFF) {
+                if ((s32)i_this->ppd->m_nextID != 0xFFFF) {
                     i_this->ppd = dPath_GetRoomPath(i_this->ppd->m_nextID, fopAcM_GetRoomNo(a_this));
                     JUT_ASSERT(DEMO_SELECT(1476, 1479), i_this->ppd != NULL);
                 }
@@ -907,7 +923,7 @@ void bb_path_move(bb_class* i_this) {
 
         case 25:
             r29 = 1;
-            anm_init(i_this, 0x18, 5.0f, 2, l_bbHIO.unk_24, 8);
+            anm_init(i_this, BB_BCK_FLY01, 5.0f, 2, l_bbHIO.unk_24, 8);
             i_this->unk_2F1 = -1;
             i_this->unk_310 = REG0_F(4) * 10.0f + 5000.0f;
             i_this->unk_300 = 25.0f;
@@ -943,7 +959,7 @@ void bb_auto_move(bb_class* i_this) {
             if ((i_this->unk_318[0] == 0) && (frame == REG0_S(0) + 9)) {
                 i_this->unk_2F0 = 1;
                 i_this->unk_318[0] = cM_rndF(200.0) + 50.0f;
-                anm_init(i_this, 0x19, REG0_F(0) + 12.0f, 2, 1.0f, 9);
+                anm_init(i_this, BB_BCK_FLY02, REG0_F(0) + 12.0f, 2, 1.0f, 9);
             }
             break;
 
@@ -951,7 +967,7 @@ void bb_auto_move(bb_class* i_this) {
             if ((i_this->unk_318[0] == 0) && (i_this->actor.current.pos.y < i_this->unk_2F4.y)) {
                 i_this->unk_2F0 = 0;
                 i_this->unk_318[0] = cM_rndF(60.0) + 20.0f;
-                anm_init(i_this, 0x18, 5.0f, 2, l_bbHIO.unk_24, 8);
+                anm_init(i_this, BB_BCK_FLY01, 5.0f, 2, l_bbHIO.unk_24, 8);
             }
             break;
 
@@ -963,7 +979,7 @@ void bb_auto_move(bb_class* i_this) {
             if (frame == 0x22) {
                 i_this->unk_2F0 = 0;
                 i_this->unk_318[0] = cM_rndF(60.0f) + 20.0f;
-                anm_init(i_this, 0x18, 0.0f, 2, l_bbHIO.unk_24, 8);
+                anm_init(i_this, BB_BCK_FLY01, 0.0f, 2, l_bbHIO.unk_24, 8);
             }
             break;
     }
@@ -1027,11 +1043,11 @@ void bb_auto_move(bb_class* i_this) {
                 if (i_this->unk_2F1 == 10) {
                     if (sqrt < l_bbHIO.unk_50) {
                         i_this->unk_2F1 = 11;
-                        anm_init(i_this, 0x1A, 10.0f, 0, 1.0f, 10);
+                        anm_init(i_this, BB_BCK_FLY03, 10.0f, 0, 1.0f, 10);
                     }
                 } else if (sqrt < REG0_F(9) * 10.0f + 300.0f) {
                     i_this->unk_2F1 = 20;
-                    anm_init(i_this, 0x1F, 5.0f, 2, l_bbHIO.unk_44, 15);
+                    anm_init(i_this, BB_BCK_LAND01, 5.0f, 2, l_bbHIO.unk_44, 15);
                     i_this->unk_2F0 = 10;
                     i_this->actor.speed.y = 0.0f;
                     i_this->unk_354 = 0;
@@ -1064,7 +1080,7 @@ void bb_auto_move(bb_class* i_this) {
                 i_this->unk_2F1 = 25;
             } else if (i_this->mAcch.ChkGroundHit()) {
                 i_this->actor.speed.y = -0.5f;
-                anm_init(i_this, 0x20, 5.0f, 0, l_bbHIO.unk_48, 0x10);
+                anm_init(i_this, BB_BCK_LAND02, 5.0f, 0, l_bbHIO.unk_48, 0x10);
                 i_this->unk_2F1 = 22;
                 i_this->unk_318[2] = 50;
             }
@@ -1094,7 +1110,7 @@ void bb_auto_move(bb_class* i_this) {
                     i_this->unk_2F4.z = ac->current.pos.z;
                     i_this->unk_310 = 1000.0f;
                     i_this->unk_308 = 1.0f;
-                    anm_init(i_this, 0x22, 5.0f, 2, 1.0f, 0x12);
+                    anm_init(i_this, BB_BCK_WALK, 5.0f, 2, 1.0f, 0x12);
                 } else {
                     i_this->unk_2F1 = 0x19;
                 }
@@ -1114,7 +1130,7 @@ void bb_auto_move(bb_class* i_this) {
                 i_this->unk_2F1 = 21;
                 i_this->unk_318[2] = cM_rndF(50.0f) + 50.0f;
 
-                anm_init(i_this, 0x17, 5.0f, 0, 1.0f, 7);
+                anm_init(i_this, BB_BCK_EAT, 5.0f, 0, 1.0f, 7);
 
                 i_this->unk_2F1 = 24;
             }
@@ -1138,14 +1154,14 @@ void bb_auto_move(bb_class* i_this) {
             if (i_this->mpMorf->isStop()) {
                 i_this->unk_2F1 = 21;
                 i_this->unk_318[2] = cM_rndF(50.0f);
-                anm_init(i_this, 0x21, 5.0f, 2, 1.0f, 0x11);
+                anm_init(i_this, BB_BCK_WAIT, 5.0f, 2, 1.0f, 0x11);
             }
             break;
         }
         case 25:
             r29 = 1;
             i_this->unk_2F1 = 0;
-            anm_init(i_this, 0x18, 5.0f, 2, l_bbHIO.unk_24, 8);
+            anm_init(i_this, BB_BCK_FLY01, 5.0f, 2, l_bbHIO.unk_24, 8);
             i_this->unk_310 = REG0_F(4) * 10.0f + 2000.0f;
             i_this->unk_300 = 25.0f;
             i_this->unk_304 = 1.0f;
@@ -1189,7 +1205,7 @@ void bb_auto_move(bb_class* i_this) {
                     }
                     i_this->unk_2F0 = 0;
                     i_this->unk_318[0] = cM_rndF(60.0f) + 20.0f;
-                    anm_init(i_this, 0x18, 3.0f, 2, l_bbHIO.unk_24, 8);
+                    anm_init(i_this, BB_BCK_FLY01, 3.0f, 2, l_bbHIO.unk_24, 8);
                     if (i_this->unk_2DA != 0xFF) {
                         i_this->unk_35D = i_this->unk_2DA + 1;
                         path_check(i_this);
@@ -1249,14 +1265,14 @@ void bb_kamome_attack(bb_class* i_this) {
             s32 frame = i_this->mpMorf->getFrame();
             if ((i_this->actor.current.pos.y > i_this->unk_2F4.y) && (frame == REG0_S(0) + 9)) {
                 i_this->unk_2F0 = 1;
-                anm_init(i_this, 0x19, REG0_F(0) + 12.0f, 2, 1.0f, 9);
+                anm_init(i_this, BB_BCK_FLY02, REG0_F(0) + 12.0f, 2, 1.0f, 9);
             }
             break;
         }
         case 1: {
             if (i_this->actor.current.pos.y <= i_this->unk_2F4.y) {
                 i_this->unk_2F0 = 0;
-                anm_init(i_this, 0x18, 5.0f, 2, l_bbHIO.unk_24, 8);
+                anm_init(i_this, BB_BCK_FLY01, 5.0f, 2, l_bbHIO.unk_24, 8);
             }
             break;
         }
@@ -1267,7 +1283,7 @@ void bb_kamome_attack(bb_class* i_this) {
 
     switch (i_this->unk_2F1) {
         case 0:
-            anm_init(i_this, 0x19, 10.0f, 2, 1.0f, 9);
+            anm_init(i_this, BB_BCK_FLY02, 10.0f, 2, 1.0f, 9);
             i_this->unk_2F1 = 1;
 
         case 1: {
@@ -1323,8 +1339,8 @@ void bb_kamome_attack(bb_class* i_this) {
 
 /* 000044EC-00005534       .text bb_atack_move__FP8bb_class */
 void bb_atack_move(bb_class* i_this) {
-    fopAc_ac_c* a_this = static_cast<fopAc_ac_c*>(&i_this->actor);
-    daPy_py_c* player = daPy_getPlayerActorClass();
+    fopAc_ac_c* a_this = &i_this->actor;
+    daPy_py_c* player = (daPy_py_c*)dComIfGp_getPlayer(0);
     s8 r29 = 0;
     s8 r28 = 0;
     f32 x;
@@ -1337,7 +1353,7 @@ void bb_atack_move(bb_class* i_this) {
         i_this->unk_C7C = 0;
         i_this->unk_318[5] = (cM_rndF(30.0f) + 20.0f) * l_bbHIO.unk_20;
 
-        anm_init(i_this, 0x1B, 10.0f, 2, l_bbHIO.unk_28, 11);
+        anm_init(i_this, BB_BCK_FLYB01, 10.0f, 2, l_bbHIO.unk_28, 11);
 
         i_this->unk_308 = 0.0f;
         i_this->unk_30C = 0.0f;
@@ -1347,10 +1363,11 @@ void bb_atack_move(bb_class* i_this) {
     }
 
 #if VERSION == VERSION_DEMO
-    if (&player->base == fpcM_Search(pl_name_check, i_this) || l_bbHIO.unk_10 != 0) {
+    if (&player->base.base == fpcM_Search(pl_name_check, i_this) || l_bbHIO.unk_10 != 0)
 #else
-    if (&player->base == fpcM_Search(pl_name_check, i_this)) {
+    if (&player->base.base == fpcM_Search(pl_name_check, i_this))
 #endif
+    {
         bb_kamome_attack(i_this);
         return;
     }
@@ -1361,7 +1378,7 @@ void bb_atack_move(bb_class* i_this) {
             i_this->unk_308 = 0.0f;
             i_this->unk_300 = 30.0f;
             i_this->unk_304 = 1.0f;
-            anm_init(i_this, 0x19, 10.0f, 2, 1.0f, 9);
+            anm_init(i_this, BB_BCK_FLY02, 10.0f, 2, 1.0f, 9);
 
         case 1:
         case 2:
@@ -1379,7 +1396,7 @@ void bb_atack_move(bb_class* i_this) {
 
                 if (std::sqrtf(x * x + y * y + z * z) < l_bbHIO.unk_50) {
                     i_this->unk_2F1 = 2;
-                    anm_init(i_this, 0x1A, 10.0f, 0, 1.0f, 10);
+                    anm_init(i_this, BB_BCK_FLY03, 10.0f, 0, 1.0f, 10);
                     kuti_open(i_this, 0x15, JA_SE_CV_BB_FIND);
                 }
             } else {
@@ -1408,7 +1425,7 @@ void bb_atack_move(bb_class* i_this) {
                 i_this->unk_308 = 0.0f;
                 i_this->unk_30C = 0.0f;
 
-                anm_init(i_this, 0x1B, 5.0f, 2, l_bbHIO.unk_28, 11);
+                anm_init(i_this, BB_BCK_FLYB01, 5.0f, 2, l_bbHIO.unk_28, 11);
                 kuti_open(i_this, 0x30, JA_SE_CV_BB_NORMAL);
             }
             break;
@@ -1454,7 +1471,7 @@ void bb_atack_move(bb_class* i_this) {
                 if (i_this->unk_33C > ((REG0_F(5) * 10.0f + 200.0f)) && i_this->unk_33C < (REG0_F(6) * 10.0f + 350.0f)) {
                     i_this->unk_2F1 = 5;
                     i_this->unk_318[0] = l_bbHIO.unk_32;
-                    anm_init(i_this, 0x1B, 2.0f, 2, l_bbHIO.unk_34, 0xB);
+                    anm_init(i_this, BB_BCK_FLYB01, 2.0f, 2, l_bbHIO.unk_34, 0xB);
                     tex_anm_set(i_this, 0);
                 }
             }
@@ -1476,7 +1493,7 @@ void bb_atack_move(bb_class* i_this) {
 
             if (i_this->unk_318[0] == 0) {
                 i_this->unk_2F1 = 6;
-                anm_init(i_this, 0x15, 2.0f, 0, l_bbHIO.unk_2C, 6);
+                anm_init(i_this, BB_BCK_ATACK01, 2.0f, 0, l_bbHIO.unk_2C, 6);
                 
                 i_this->unk_2F4.x = player->current.pos.x;
                 i_this->unk_2F4.y = player->current.pos.y + 100.0f;
@@ -1507,7 +1524,7 @@ void bb_atack_move(bb_class* i_this) {
             if (i_this->mpMorf->isStop()) {
                 i_this->unk_2F1 = 4;
 
-                anm_init(i_this, 0x1B, 3.0f, 2, l_bbHIO.unk_28, 11);
+                anm_init(i_this, BB_BCK_FLYB01, 3.0f, 2, l_bbHIO.unk_28, 11);
 
                 i_this->unk_318[5] = l_bbHIO.unk_20 * (cM_rndF(30.0f) + 20.0f);
                 i_this->unk_308 = 0.0f;
@@ -1524,12 +1541,12 @@ void bb_atack_move(bb_class* i_this) {
                     cXyz scale;
                     scale.x = scale.y = scale.z = 4.0f;
                     
-                    dComIfGp_particle_set(dPa_name::ID_COMMON_PURPLE_HIT, &i_this->actor.eyePos, NULL, &scale);
+                    dComIfGp_particle_set(dPa_name::ID_COMMON_PURPLE_HIT, &a_this->eyePos, NULL, &scale);
 
                     i_this->unk_2F1 = 10;
                     i_this->unk_318[0] = l_bbHIO.unk_30;
 
-                    anm_init(i_this, 0x1E, 0.0f, 0, l_bbHIO.unk_38, 14);
+                    anm_init(i_this, BB_BCK_GUSYA01, 0.0f, 0, l_bbHIO.unk_38, 14);
                     i_this->unk_300 = REG0_F(7);
                     i_this->unk_304 = 1.0f;
                     a_this->speedF = -20.0f;
@@ -1551,7 +1568,7 @@ void bb_atack_move(bb_class* i_this) {
 
             if (i_this->mpMorf->isStop() && (i_this->unk_2F1 == 10)) {
                 i_this->unk_2F1 = 11;
-                anm_init(i_this, 0x1D, 0.0f, 2, l_bbHIO.unk_3C, 13);
+                anm_init(i_this, BB_BCK_FURA01, 0.0f, 2, l_bbHIO.unk_3C, 13);
             }
 
             if ((i_this->unk_2F1 == 11) && ((i_this->unk_318[0] & 7) == 5)) {
@@ -1562,7 +1579,7 @@ void bb_atack_move(bb_class* i_this) {
                 i_this->unk_2F1 = 4;
                 i_this->unk_318[5] = l_bbHIO.unk_20 * (cM_rndF(30.0f) + 20.0f);
                 
-                anm_init(i_this, 0x1B, 10.0f, 2, l_bbHIO.unk_28, 11);
+                anm_init(i_this, BB_BCK_FLYB01, 10.0f, 2, l_bbHIO.unk_28, 11);
                 
                 i_this->unk_308 = 0.0f;
                 i_this->unk_30C = 0.0f;
@@ -1588,14 +1605,14 @@ void bb_atack_move(bb_class* i_this) {
 
             if ((i_this->unk_2DD == 4) || (i_this->unk_2DD == 7)) {
                 i_this->unk_2F1 = 10;
-                anm_init(i_this, 0x18, 5.0f, 2, l_bbHIO.unk_24, 8);
+                anm_init(i_this, BB_BCK_FLY01, 5.0f, 2, l_bbHIO.unk_24, 8);
             } else {
                 i_this->unk_2F1 = 0;
                 i_this->unk_318[0] = 0;
                 i_this->unk_318[1] = 0;
                 i_this->unk_2F0 = 1;
 
-                anm_init(i_this, 0x19, REG0_F(0) + 12.0f, 2, 1.0f, 9);
+                anm_init(i_this, BB_BCK_FLY02, REG0_F(0) + 12.0f, 2, 1.0f, 9);
 
                 a_this->speedF = 0.0;
                 i_this->unk_2F4.y = player->current.pos.y + 500.0f;
@@ -1651,7 +1668,7 @@ void bb_wait_move(bb_class* i_this) {
             i_this->unk_2F1 = 0;
 
         case 0:
-            anm_init(i_this, 0x21, 1.0f, 2, 1.0f, 0x11);
+            anm_init(i_this, BB_BCK_WAIT, 1.0f, 2, 1.0f, 0x11);
             i_this->unk_2F1 = 1;
             i_this->unk_318[0] = 100;
 
@@ -1678,7 +1695,7 @@ void bb_wait_move(bb_class* i_this) {
                 break;
             }
             i_this->unk_2F1 = 3;
-            anm_init(i_this, 0x18, 5.0f , 2, l_bbHIO.unk_24 * 1.5f, 8);
+            anm_init(i_this, BB_BCK_FLY01, 5.0f , 2, l_bbHIO.unk_24 * 1.5f, 8);
             i_this->unk_318[0] = REG0_S(0) + 70;
 
         case 3:
@@ -1737,11 +1754,11 @@ void bb_wait_move(bb_class* i_this) {
             } else if (i_this->unk_2F1 == 11) {
                 if (sqrt < l_bbHIO.unk_50) {
                     i_this->unk_2F1 = 12;
-                    anm_init(i_this, 0x1A, 10.0f, 0, 1.0f, 10);
+                    anm_init(i_this, BB_BCK_FLY03, 10.0f, 0, 1.0f, 10);
                 }
             } else if (i_this->unk_2F1 == 12 && sqrt < REG0_F(9) * 10.0f + 300.0f) {
                 i_this->unk_2F1 = 20;
-                anm_init(i_this, 0x1F, 5.0f, 2, l_bbHIO.unk_44, 15);
+                anm_init(i_this, BB_BCK_LAND01, 5.0f, 2, l_bbHIO.unk_44, 15);
                 i_this->unk_2F0 = 10;
                 i_this->actor.speed.y = 0.0f;
                 i_this->unk_354 = 0;
@@ -1770,7 +1787,7 @@ void bb_wait_move(bb_class* i_this) {
                 i_this->actor.current.pos.y = i_this->actor.home.pos.y;
                 i_this->actor.speed.y = -0.5;
                 if (old_354 > l_bbHIO.unk_40) {
-                    anm_init(i_this, 0x20, 5.0f, 0, l_bbHIO.unk_48, 0x10);
+                    anm_init(i_this, BB_BCK_LAND02, 5.0f, 0, l_bbHIO.unk_48, 0x10);
                     i_this->unk_2F1 = -1;
                 }
             }
@@ -1812,7 +1829,7 @@ void bb_su_wait_move(bb_class* i_this) {
             i_this->unk_2F1 = 0;
 
         case 0:
-            anm_init(i_this, 0x21, 1.0f, 2, 1.0f, 0x11);
+            anm_init(i_this, BB_BCK_WAIT, 1.0f, 2, 1.0f, 0x11);
             i_this->unk_2F1 = 1;
             i_this->unk_318[0] = 100;
 
@@ -1839,7 +1856,7 @@ void bb_su_wait_move(bb_class* i_this) {
                 break;
             }
             i_this->unk_2F1 = 3;
-            anm_init(i_this, 0x18, 5.0f , 2, l_bbHIO.unk_24 * 1.5f, 8);
+            anm_init(i_this, BB_BCK_FLY01, 5.0f , 2, l_bbHIO.unk_24 * 1.5f, 8);
             i_this->unk_318[0] = REG0_S(0) + 70;
 
         case 3:
@@ -1898,11 +1915,11 @@ void bb_su_wait_move(bb_class* i_this) {
             } else if (i_this->unk_2F1 == 11) {
                 if (sqrt < l_bbHIO.unk_50) {
                     i_this->unk_2F1 = 12;
-                    anm_init(i_this, 0x1A, 10.0f, 0, 1.0f, 10);
+                    anm_init(i_this, BB_BCK_FLY03, 10.0f, 0, 1.0f, 10);
                 }
             } else if (i_this->unk_2F1 == 12 && sqrt < REG0_F(9) * 10.0f + 300.0f) {
                 i_this->unk_2F1 = 20;
-                anm_init(i_this, 0x1F, 5.0f, 2, l_bbHIO.unk_44, 15);
+                anm_init(i_this, BB_BCK_LAND01, 5.0f, 2, l_bbHIO.unk_44, 15);
                 i_this->unk_2F0 = 10;
                 i_this->actor.speed.y = 0.0f;
                 i_this->unk_354 = 0;
@@ -1932,7 +1949,7 @@ void bb_su_wait_move(bb_class* i_this) {
                 i_this->actor.current.pos.y = i_this->actor.home.pos.y;
                 i_this->actor.speed.y = -0.5;
                 if (old_354 > l_bbHIO.unk_40) {
-                    anm_init(i_this, 0x20, 5.0f, 0, l_bbHIO.unk_48, 0x10);
+                    anm_init(i_this, BB_BCK_LAND02, 5.0f, 0, l_bbHIO.unk_48, 0x10);
                     i_this->unk_2F1 = -1;
                 }
             }
@@ -1966,7 +1983,7 @@ void bb_key_move(bb_class* i_this) {
 
             if (!CPad_CHECK_HOLD_B(0) && frame == REG0_S(0) + 9) {
                 i_this->unk_2F0 = 1;
-                anm_init(i_this, 25, REG0_F(0) + 12.0f, 2, 1.0f, 9);
+                anm_init(i_this, BB_BCK_FLY02, REG0_F(0) + 12.0f, 2, 1.0f, 9);
             }
             break;
         }
@@ -1981,7 +1998,7 @@ void bb_key_move(bb_class* i_this) {
 
             if (CPad_CHECK_HOLD_B(0)) {
                 i_this->unk_2F0 = 0;
-                anm_init(i_this, 24, 5.0f, 2, l_bbHIO.unk_24, 8);
+                anm_init(i_this, BB_BCK_FLY01, 5.0f, 2, l_bbHIO.unk_24, 8);
                 fopAcM_monsSeStart(&i_this->actor, JA_SE_CV_BB_NORMAL, 0);
             }
             break;
@@ -2068,7 +2085,7 @@ void damage_check(bb_class* i_this) {
                 i_this->mEnemyIce.mFreezeDuration = REG0_S(3) + 300;
                 i_this->unk_2DD = 3;
                 i_this->unk_2F1 = 0;
-                anm_init(i_this, 0x16, 0.0f, 0, 1.0f, -1);
+                anm_init(i_this, BB_BCK_DAMAGEP, 0.0f, 0, 1.0f, -1);
             } else {
                 i_this->mEnemyIce.mLightShrinkTimer = 1;
             }
@@ -2135,7 +2152,7 @@ void damage_check(bb_class* i_this) {
         dComIfGp_particle_setToon(dPa_name::ID_COMMON_0438, &a_this->current.pos, &a_this->current.angle, NULL, 0xFF, NULL, 
             fopAcM_GetRoomNo(a_this), &a_this->tevStr.mColorK0, &a_this->tevStr.mColorK0);
         
-        i_this->mParticleCallBack.end();
+        i_this->mParticleCallBack.remove();
 
         emitter = dComIfGp_particle_setToon(dPa_name::ID_COMMON_0439, &a_this->current.pos, &a_this->current.angle, NULL, 0xFF, &i_this->mParticleCallBack, 
             fopAcM_GetRoomNo(a_this));
@@ -2178,7 +2195,7 @@ void damage_check(bb_class* i_this) {
         }
 
         i_this->unk_C7C = 1;
-        anm_init(i_this, 0x16, 0.0f, 0, 1.0f, -1);
+        anm_init(i_this, BB_BCK_DAMAGEP, 0.0f, 0, 1.0f, -1);
     }
 }
 
@@ -2217,7 +2234,7 @@ static BOOL daBb_Execute(bb_class* i_this) {
     f32 yDiff = (player->current.pos.y + 100.0f) - i_this->actor.current.pos.y;
     f32 zDiff = player->current.pos.z - i_this->actor.current.pos.z;
 
-    i_this->unk_33C = std::sqrtf(xDiff * xDiff + zDiff * zDiff);
+    i_this->unk_33C = std::sqrtf(SQUARE(xDiff) + SQUARE(zDiff));
     i_this->unk_336 = cM_atan2s(xDiff, zDiff);
     i_this->unk_338 = -cM_atan2s(yDiff, i_this->unk_33C);
 
@@ -2318,7 +2335,7 @@ static BOOL daBb_Execute(bb_class* i_this) {
     if (i_this->unk_2DF != 0) {
         switch (i_this->unk_2DF) {
             case 1:
-                anm_init(i_this, 0x1C, 1.0f, 2, l_bbHIO.unk_4C, 0xC);
+                anm_init(i_this, BB_BCK_FLYC, 1.0f, 2, l_bbHIO.unk_4C, 0xC);
                 i_this->unk_2DF = 2;
                 break;
             
@@ -2357,7 +2374,7 @@ static BOOL daBb_Execute(bb_class* i_this) {
 
                         if (i_this->unk_2E0 != 0) {
                             i_this->unk_2DF = 0;
-                            anm_init(i_this, 0x19, 12.0f, 2, 1.0f, 9);
+                            anm_init(i_this, BB_BCK_FLY02, 12.0f, 2, 1.0f, 9);
                             dr->mAction = 31;
                             ac->speedF = 40.0f;
                         }
@@ -2497,7 +2514,7 @@ static BOOL daBb_Delete(bb_class* i_this) {
 #if VERSION == VERSION_DEMO
     l_bbHIO.removeHIO();
 #endif
-    i_this->mParticleCallBack.end();
+    i_this->mParticleCallBack.remove();
     enemy_fire_remove(&i_this->mEnemyFire);
 #if VERSION > VERSION_DEMO
     if (i_this->actor.heap != NULL) {
@@ -2571,10 +2588,10 @@ static cPhs_State daBb_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 62.5f,
-        },
+        }},
     };
     static dCcD_SrcSph head_tg_sph_src = {
         // dCcD_SrcGObjInf
@@ -2607,10 +2624,10 @@ static cPhs_State daBb_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 62.5f,
-        },
+        }},
     };
     static dCcD_SrcSph body_tg_sph_src = {
         // dCcD_SrcGObjInf
@@ -2643,10 +2660,10 @@ static cPhs_State daBb_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 62.5f,
-        },
+        }},
     };
     static dCcD_SrcSph body_co_sph_src = {
         // dCcD_SrcGObjInf
@@ -2671,10 +2688,10 @@ static cPhs_State daBb_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 87.5f,
-        },
+        }},
     };
 
     bb_class* i_this = (bb_class*)a_this;
@@ -2696,7 +2713,7 @@ static cPhs_State daBb_Create(fopAc_ac_c* a_this) {
             i_this->unk_2DC = 0;
         }
 
-        if (dComIfGs_isEventBit(0x1101) && i_this->unk_2DC != 0 && dComIfGs_isSwitch(i_this->unk_2DC, fopAcM_GetRoomNo(a_this))) {
+        if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_1101) && i_this->unk_2DC != 0 && dComIfGs_isSwitch(i_this->unk_2DC, fopAcM_GetRoomNo(a_this))) {
             return cPhs_ERROR_e;
         }
 
@@ -2714,7 +2731,7 @@ static cPhs_State daBb_Create(fopAc_ac_c* a_this) {
 
         for (u16 i = 0; i < model->getModelData()->getJointNum(); i++) {
             if (callback_check_index[i] >= 0) {
-                model->getModelData()->getJointTree().getJointNodePointer(i)->setCallBack(nodeCallBack);
+                model->getModelData()->getJointNodePointer(i)->setCallBack(nodeCallBack);
             }
         }
 

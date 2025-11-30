@@ -3,18 +3,14 @@
  * Object - Wind Temple - Face stone Hookshot target
  */
 
-#pragma sym off
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_homen.h"
-#pragma sym on
 #include "d/actor/d_a_player.h"
 #include "d/d_com_inf_game.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "d/res/res_homen.h"
 #include "f_op/f_op_actor_mng.h"
-
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 namespace daObjHomen {
 
@@ -112,10 +108,10 @@ const dCcD_SrcSph Act_c::M_sph_srcS = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 35.0f,
-    },
+    }},
 };
 
 const dCcD_SrcSph Act_c::M_sph_srcL = {
@@ -141,10 +137,10 @@ const dCcD_SrcSph Act_c::M_sph_srcL = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 50.0f,
-    },
+    }},
 };
 
 const dCcD_SrcCps Act_c::M_cps_srcL = {
@@ -170,11 +166,11 @@ const dCcD_SrcCps Act_c::M_cps_srcL = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCpsS
-    {
-        /* Start  */ 0.0f, 0.0f, 0.0f,
-        /* End    */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Start  */ {0.0f, 0.0f, 0.0f},
+        /* End    */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 135.0f,
-    },
+    }},
 };
 
 const dCcD_SrcCps Act_c::M_cps_srcS = {
@@ -200,11 +196,11 @@ const dCcD_SrcCps Act_c::M_cps_srcS = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCpsS
-    {
-        /* Start  */ 0.0f, 0.0f, 0.0f,
-        /* End    */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Start  */ {0.0f, 0.0f, 0.0f},
+        /* End    */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 45.0f,
-    },
+    }},
 };
 
 /* 000000EC-00000110       .text solidHeapCB__Q210daObjHomen5Act_cFP10fopAc_ac_c */
@@ -568,7 +564,7 @@ BOOL Act_c::process_wait_falldown_init() {
     }
     
     if (mType == 0) {
-        dComIfGs_onEventBit(0x3410);
+        dComIfGs_onEventBit(dSv_event_flag_c::UNK_3410);
     }
     
     return TRUE;
@@ -748,7 +744,7 @@ void Act_c::set_co_collision() {
             fopAc_ac_c* hookshot = mSph.GetTgHitAc();
             mHookshotID = fopAcM_GetID(hookshot);
             if (mType == 0) {
-                dComIfGs_onEventBit(0x3880);
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_3880);
             }
         }
         mSph.ClrTgHit();

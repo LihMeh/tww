@@ -3,6 +3,7 @@
  * Object - Torches
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_ep.h"
 #include "d/res/res_ep.h"
 #include "d/d_procname.h"
@@ -15,7 +16,6 @@
 #include "d/d_s_play.h"
 #include "d/d_bg_s_lin_chk.h"
 #include "m_Do/m_Do_lib.h"
-
 
 void daEp_ToFore(ep_class* i_this) {
 }
@@ -108,7 +108,7 @@ BOOL ep_switch_event_move(ep_class* i_this) {
     if (dComIfGp_evmng_getIsAddvance(i_this->m7E0)) {
         static char* actions[] = { "WAIT", "FIRE" };
 
-        ret = dComIfGp_evmng_getMyActIdx(i_this->m7E0, actions, 2, FALSE, 0);
+        ret = dComIfGp_evmng_getMyActIdx(i_this->m7E0, actions, ARRAY_SIZE(actions), FALSE, 0);
         switch (ret) {
             case 1:
                 mDoAud_seStart(JA_SE_OBJ_TORCH_IGNITION, &i_this->mPosTop);
@@ -601,10 +601,10 @@ static cPhs_State daEp_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 40.0f,
-        },
+        }},
     };
     static dCcD_SrcCyl co_cyl_src = {
         // dCcD_SrcGObjInf
@@ -629,11 +629,11 @@ static cPhs_State daEp_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 35.0f,
             /* Height */ 120.0f,
-        },
+        }},
     };
 
     ep_class* i_this = (ep_class*)a_this;

@@ -3,6 +3,7 @@
  * Enemy - Stalfos
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_st.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -224,10 +225,10 @@ static cPhs_State daSt_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 40.0f,
-        },
+        }},
     };
     static dCcD_SrcSph body_sph_src = {
         // dCcD_SrcGObjInf
@@ -252,10 +253,10 @@ static cPhs_State daSt_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 40.0f,
-        },
+        }},
     };
     static dCcD_SrcSph wepon_sph_src = {
         // dCcD_SrcGObjInf
@@ -280,10 +281,10 @@ static cPhs_State daSt_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 60.0f,
-        },
+        }},
     };
 }
 

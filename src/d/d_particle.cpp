@@ -3,6 +3,7 @@
 // Translation Unit: d_particle.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_particle.h"
 #include "JSystem/J3DGraphAnimator/J3DMaterialAttach.h"
 #include "JSystem/JParticle/JPAEmitter.h"
@@ -22,9 +23,6 @@
 #include "m_Do/m_Do_graphic.h"
 #include "m_Do/m_Do_lib.h"
 #include "stdio.h"
-
-#include "weak_bss_3569.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 /* 8007A4D8-8007A514       .text __ct__18dPa_modelEmitter_cFv */
 dPa_modelEmitter_c::dPa_modelEmitter_c() {
@@ -481,8 +479,7 @@ void dPa_simpleEcallBack::executeAfter(JPABaseEmitter* param_1) {
         dPa_simpleData_c* simpleData = mSimpleData;
         param_1->playCreateParticle();
         while (mCount != 0) {
-            Vec local_38 = simpleData->mPos;
-            if (mDoLib_clipper::mClipper.clip(j3dSys.getViewMtx(), local_38, 200.0f) == 0) {
+            if (mDoLib_clipper::clip(j3dSys.getViewMtx(), simpleData->mPos, 200.0f) == 0) {
                 param_1->setGlobalTranslation(simpleData->mPos.x, simpleData->mPos.y, simpleData->mPos.z);
                 param_1->setGlobalPrmColor(simpleData->mPrmColor.r, simpleData->mPrmColor.g, simpleData->mPrmColor.b);
                 param_1->setGlobalAlpha(simpleData->mPrmColor.a);

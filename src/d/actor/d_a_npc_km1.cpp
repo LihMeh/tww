@@ -3,6 +3,7 @@
  * NPC - Mila (rich)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_npc_km1.h"
 #include "d/d_com_inf_game.h"
 #include "d/d_snap.h"
@@ -11,7 +12,36 @@
 #include "d/d_priority.h"
 #include "d/res/res_km.h"
 
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
+class daNpc_Km1_HIO_c : public JORReflexible{
+public:
+    struct hio_prm_c {
+        s16 field_0;
+        s16 field_2;
+        s16 field_4;
+        s16 field_6;
+        s16 field_8;
+        s16 field_A;
+        s16 field_C;
+        s16 field_E;
+        s16 field_10;
+        s16 field_12;
+        f32 mAttentionArrowYOffset;
+        f32 field_18;
+    };  // Size: 0x1C
+
+    daNpc_Km1_HIO_c();
+    virtual ~daNpc_Km1_HIO_c() {};
+
+    void genMessage(JORMContext* ctx) {}
+
+public:
+    /* 0x04 */ s8 mNo;
+    /* 0x05 */ s8 field_0x5;
+    /* 0x06 */ s8 field_0x6;
+    /* 0x07 */ s8 field_0x7;
+    /* 0x08 */ int field_0x8;
+    /* 0x0C */ hio_prm_c mPrmTbl;
+};
 
 static daNpc_Km1_HIO_c l_HIO;
 
@@ -473,7 +503,7 @@ void daNpc_Km1_c::privateCut() {
 
 /* 00001144-00001164       .text endEvent__11daNpc_Km1_cFv */
 void daNpc_Km1_c::endEvent() {
-    dComIfGp_event_onEventFlag(8);
+    dComIfGp_event_reset();
     field_0x7CB = 0xFF;
 
 }
@@ -705,7 +735,7 @@ cPhs_State daNpc_Km1_c::_create() {
 #endif
 
     if(fopAcM_entrySolidHeap(this,CheckCreateHeap,a_heap_size_tbl[field_0x7D3])){
-        fopAcM_SetMtx(this,mpMorf->mpModel->getBaseTRMtx());
+        fopAcM_SetMtx(this,mpMorf->getModel()->getBaseTRMtx());
         fopAcM_setCullSizeBox(this,-60.0f,-20.0f,-80.0f,60.0f,160.0f,60.0f);
     }else{
         return cPhs_ERROR_e;
@@ -744,7 +774,7 @@ BOOL daNpc_Km1_c::CreateHeap() {
                 if (field_0x6D4 != 0) {
                     for (u16 i = 0; i < a_mdl_data->getJointNum(); i += 1) {
                         if ((i == m_head_jnt_num) || (i == m_backbone_jnt_num)) {
-                            mpMorf->mpModel->getModelData()->getJointNodePointer(i)->setCallBack(nodeCallBack_Km);
+                            mpMorf->getModel()->getModelData()->getJointNodePointer(i)->setCallBack(nodeCallBack_Km);
                         }
                     }
                     mpMorf->getModel()->setUserArea((u32)this);

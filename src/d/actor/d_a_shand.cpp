@@ -3,6 +3,7 @@
  * Object - Forbidden Woods - Ceiling tentacle / 汎用触手 (general purpose tentacle)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_shand.h"
 #include "d/res/res_shand.h"
 #include "d/d_bg_s_gnd_chk.h"
@@ -438,11 +439,11 @@ static cPhs_State daShand_Create(fopAc_ac_c* i_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
             /* Height */ 200.0f,
-        },
+        }},
     };
 
     static dCcD_SrcSph bm_sph_src = {
@@ -468,10 +469,10 @@ static cPhs_State daShand_Create(fopAc_ac_c* i_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 80.0f,
-        },
+        }},
     };
 
     shand_class* s_this = static_cast<shand_class*>(i_this);

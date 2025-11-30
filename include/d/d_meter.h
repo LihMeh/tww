@@ -294,14 +294,8 @@ public:
     void genMessage(JORMContext* ctx);
 
     /* 0x04 */ u8 field_0x4[0x05 - 0x04];
-    /* 0x05 */ u8 field_0x5;
-    /* 0x06 */ u8 field_0x6;
-    /* 0x07 */ u8 field_0x7;
-    /* 0x08 */ u8 field_0x8;
-    /* 0x09 */ u8 field_0x9;
-    /* 0x0A */ u8 field_0xa;
-    /* 0x0B */ u8 field_0xb;
-    /* 0x0C */ u8 field_0xc;
+    /* 0x05 */ GXColor field_0x5;
+    /* 0x09 */ GXColor field_0x9;
     /* 0x0D */ u8 field_0xd;
     /* 0x0E */ u8 field_0xe;
     /* 0x0F */ u8 field_0xf;
@@ -596,6 +590,7 @@ extern dMeter_msg_HIO_c g_msgHIO;
 extern dMeter_message_HIO_c g_messageHIO;
 
 void dMeter_mtrShow();
+void dMeter_mtrHide();
 void dMenu_setPushMenuButton(u8);
 
 #endif /* D_METER_H */

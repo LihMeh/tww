@@ -3,6 +3,7 @@
  * NPC - Fishman (blue fish)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_npc_so.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -418,10 +419,10 @@ const dCcD_SrcSph daNpc_So_c::m_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 60.0f,
-    },
+    }},
 };
 
 

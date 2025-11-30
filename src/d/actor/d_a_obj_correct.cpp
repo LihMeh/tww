@@ -3,6 +3,8 @@
 // Translation Unit: d_a_obj_correct.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
+
 // This include needs to be before d_a_obj_correct.h for ordering of the
 // daObj::PrmAbstract symbols.
 #include "d/actor/d_a_obj_movebox.h"
@@ -13,8 +15,6 @@
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "f_op/f_op_actor_mng.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 namespace daObjCorrect {
 namespace {
@@ -104,10 +104,10 @@ void* daObjCorrect::Act_c::chk_try_actor2(daObjTry::Act_c* actor, daObjTry::Type
     JUT_ASSERT(346, i_sw_r_sq <= i_depression_r_sq);
 
     if (type == actor->prm_get_type()) {
-        f32 dist = actor->current.pos.abs2(current.pos);
-        if (dist < i_depression_r_sq) {
+        f32 dist_sq = actor->current.pos.abs2(current.pos);
+        if (dist_sq < i_depression_r_sq) {
             bool should_return;
-            if (dist < i_sw_r_sq) {
+            if (dist_sq < i_sw_r_sq) {
                 should_return = prm_get_swSave() == actor->prm_get_swSave();
             } else {
                 should_return = false;

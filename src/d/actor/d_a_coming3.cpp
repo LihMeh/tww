@@ -3,6 +3,7 @@
 // Translation Unit: d_a_coming3.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_coming3.h"
 #include "d/actor/d_a_player.h"
 #include "d/actor/d_a_sea.h"
@@ -12,9 +13,6 @@
 #include "d/res/res_always.h"
 #include "d/d_bg_s_gnd_chk.h"
 #include "d/d_bg_s_wtr_chk.h"
-
-#include "weak_bss_936_to_1036.h"  // IWYU pragma: keep
-#include "weak_data_1811.h"  // IWYU pragma: keep
 
 namespace daComing3 {
     namespace {
@@ -50,11 +48,11 @@ namespace daComing3 {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 30.0f,
             /* Height */ 60.0f,
-        },
+        }},
     };
 }
 
@@ -255,7 +253,7 @@ void daComing3::Act_c::coming_game_main() {
                 unk_404 = 3;
                 eff_break_tsubo();
             } else if ((unk_478 <= get_limit_dist()) && (barrel != NULL)) {
-                barrel->unk_474 = 1;
+                barrel->m474 = 1;
                 unk_404 = 2;
             }
             break;
@@ -286,8 +284,8 @@ void daComing3::Act_c::coming_wait_main() {
 
     fopAcM_SearchByID(unk_400, &ac1);
     daObjBarrel2::Act_c* barrel = (daObjBarrel2::Act_c*)ac1;
-    if (barrel != NULL && !fopAcM_SearchByID(barrel->unk_458, &ac2)) {
-        barrel->unk_474 = 1;
+    if (barrel != NULL && !fopAcM_SearchByID(barrel->m458, &ac2)) {
+        barrel->m474 = 1;
         fopAcM_delete(this);
     }
 }

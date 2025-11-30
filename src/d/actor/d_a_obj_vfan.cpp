@@ -3,6 +3,7 @@
  * Object - Ganon's Tower - Phantom Ganon door
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_vfan.h"
 #include "d/res/res_vfan.h"
 #include "d/d_com_inf_game.h"
@@ -40,11 +41,11 @@ static dCcD_SrcCyl cyl_check_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 100.0f,
         /* Height */ 300.0f,
-    }
+    }}
 };
 
 /* 00000078-00000134       .text CreateHeap__Q29daObjVfan5Act_cFv */
@@ -190,7 +191,7 @@ BOOL daObjVfan::Act_c::Execute(Mtx** mtx) {
 
         if (dComIfGp_evmng_endCheck(m_evid)) {
             fopAcM_onSwitch(this, prm_get_swSave());
-            dComIfGs_onEventBit(0x3a08);
+            dComIfGs_onEventBit(dSv_event_flag_c::UNK_3A08);
             dComIfGp_event_reset();
             fopAcM_delete(this);
         }

@@ -3,6 +3,7 @@
  * Object - Tower of the Gods exterior
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_tower.h"
 #include "d/res/res_x_tower.h"
 #include "d/d_com_inf_game.h"
@@ -64,7 +65,7 @@ cPhs_State daObjTower_c::_create() {
     field_0x2d0 = 0;
 
     cPhs_State phase_state;
-    if (!dComIfGs_isEventBit(0x1e40)) {
+    if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_1E40)) {
         phase_state = cPhs_STOP_e;
     } else {
         phase_state = dComIfG_resLoad(&mPhs, "X_tower");

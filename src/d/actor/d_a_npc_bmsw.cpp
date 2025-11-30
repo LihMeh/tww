@@ -3,6 +3,7 @@
  * NPC - Koboli (Rito mail sorter)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_npc_bmsw.h"
 #include "d/res/res_bmsw.h"
 #include "d/d_shop.h"
@@ -16,9 +17,33 @@
 #include "m_Do/m_Do_controller_pad.h"
 #include "m_Do/m_Do_hostIO.h"
 
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
+class daNpc_Bmsw_HIO_c : public JORReflexible {
+public:
+    daNpc_Bmsw_HIO_c();
+    virtual ~daNpc_Bmsw_HIO_c() {}
 
+    void genMessage(JORMContext* ctx) {}
+
+public:
+    /* 0x04 */ s8 mNo;
+    /* 0x05 */ u8 field_0x05[0x08 - 0x05];
+    /* 0x08 */ dNpc_HIO_c mNpc;
+    /* 0x30 */ s16 field_0x30;
+    /* 0x32 */ s16 field_0x32;
+    /* 0x34 */ s16 field_0x34;
+    /* 0x36 */ s16 r_1;
+    /* 0x38 */ s16 g_1;
+    /* 0x3A */ s16 b_1;
+    /* 0x3C */ s16 r_2;
+    /* 0x3E */ s16 g_2;
+    /* 0x40 */ s16 b_2;
+    /* 0x42 */ u8 field_0x42[0x44 - 0x42];
+    /* 0x44 */ f32 field_0x44;
+    /* 0x48 */ f32 field_0x48;
+    /* 0x4C */ f32 field_0x4C;
+    /* 0x50 */ f32 field_0x50;
+    /* 0x54 */ f32 field_0x54;
+};  // Size: 0x58
 
 daNpc_Bmsw_HIO_c l_HIO;
 
@@ -46,11 +71,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 30.0f,
         /* Height */ 80.0f,
-    },
+    }},
 };
 
 /* 000000EC-000001E4       .text __ct__16daNpc_Bmsw_HIO_cFv */
@@ -163,7 +188,7 @@ static BOOL nodeCallBackArm(J3DNode* node, int calcTiming) {
 
 /* 00000550-000006F4       .text daNpc_Bmsw_getGameEndMsg__Fs */
 static u32 daNpc_Bmsw_getGameEndMsg(short rupees) {
-    u8 reg_val = dComIfGs_getEventReg(0xC203);
+    u8 reg_val = dComIfGs_getEventReg(dSv_event_flag_c::UNK_C203);
     u32 msgNo;
     switch (reg_val) {
         case 0:
@@ -201,15 +226,15 @@ static u32 daNpc_Bmsw_getGameEndMsg(short rupees) {
             break;
         case 3:
         default:
-            if (dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+            if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
                 if (rupees == 0) {
                     msgNo = 0x1A69;
                 } else if (rupees == 1) {
                     msgNo = 0x1A6A;
-                } else if (rupees <= dComIfGs_getEventReg(0x8AFF)) {
+                } else if (rupees <= dComIfGs_getEventReg(dSv_event_flag_c::UNK_8AFF)) {
                     msgNo = 0x1A6B;
                 } else {
-                    dComIfGs_setEventReg(0x8AFF, rupees);
+                    dComIfGs_setEventReg(dSv_event_flag_c::UNK_8AFF, rupees);
                     msgNo = 0x1A6D;
                 }
             } else {
@@ -375,7 +400,7 @@ u16 daNpc_Bmsw_c::next_msgStatus(unsigned long* currMsgNo) {
             break;
         case 0x1A2E:
             if (mpCurrMsg->mSelectNum == 0) {
-                dComIfGs_onEventBit(dSv_evtBit_c::UNK_1A01);
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_1A01);
                 *currMsgNo = 0x1A31;
             } else if (mpCurrMsg->mSelectNum == 1) {
                 if (dComIfGs_isStageBossEnemy(dSv_save_c::STAGE_DRC)) {
@@ -393,7 +418,7 @@ u16 daNpc_Bmsw_c::next_msgStatus(unsigned long* currMsgNo) {
             }
             break;
         case 0x1A34:
-            if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_1A01)) {
+            if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_1A01)) {
                 *currMsgNo = 0x1A32;
             } else {
                 *currMsgNo = 0x1A42;
@@ -401,25 +426,25 @@ u16 daNpc_Bmsw_c::next_msgStatus(unsigned long* currMsgNo) {
             break;
         case 0x1A38:
             (*currMsgNo)++;
-            dComIfGs_setEventReg(0xC203, 1);
+            dComIfGs_setEventReg(dSv_event_flag_c::UNK_C203, 1);
             break;
         case 0x1A3D:
             if (mpCurrMsg->mSelectNum == 0) {
-                dComIfGs_onEventBit(dSv_evtBit_c::UNK_1A01);
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_1A01);
                 *currMsgNo = 0x1A31;
             } else {
                 *currMsgNo = 0x1A3E;
             }
             break;
         case 0x1A4D:
-            dComIfGs_setEventReg(0xC203, 2);
+            dComIfGs_setEventReg(dSv_event_flag_c::UNK_C203, 2);
             // fallthrough
         case 0x1A51:
         case 0x1A53:
             *currMsgNo = 0x1A4E;
             break;
         case 0x1A58:
-            dComIfGs_setEventReg(0xC203, 3);
+            dComIfGs_setEventReg(dSv_event_flag_c::UNK_C203, 3);
             (*currMsgNo)++;
             break;
         case 0x1A5E:
@@ -493,22 +518,22 @@ u32 daNpc_Bmsw_c::getMsg() {
     if (field_0x9C0 != fpcM_ERROR_PROCESS_ID_e) {
         field_0x9C0 = fpcM_ERROR_PROCESS_ID_e;
     } else {
-        if (dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
-            if (!dComIfGs_isTmpBit(800)) {
-                dComIfGs_onTmpBit(800);
+        if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
+            if (!dComIfGs_isTmpBit(dSv_event_tmp_flag_c::UNK_0320)) {
+                dComIfGs_onTmpBit(dSv_event_tmp_flag_c::UNK_0320);
                 msg = 0x1A63;
             } else {
                 msg = 0x1A66;
             }
         } else {
-            if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_1A02)) {
-                dComIfGs_onEventBit(dSv_evtBit_c::UNK_1A02);
+            if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_1A02)) {
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_1A02);
                 msg = 0x1A2D;
             } else {
-                if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_1A01)) {
+                if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_1A01)) {
                     msg = 0x1A3D;
                 } else {
-                    u8 reg = dComIfGs_getEventReg(0xC203);
+                    u8 reg = dComIfGs_getEventReg(dSv_event_flag_c::UNK_C203);
                     switch (reg) {
                         case 0:
                             msg = 0x1A3F;
@@ -581,7 +606,7 @@ BOOL daNpc_Bmsw_c::CreateInit() {
     mpMorfHand->calc();
 
     dKy_tevstr_init(&field_0x6E0, home.roomNo, 0xFF);
-    if (dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+    if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
         field_0x9E0 = fopAcM_createChild(
             "Btsw",
             fopAcM_GetID(this),
@@ -647,7 +672,7 @@ void daNpc_Bmsw_c::lookBack() {
                 vec = current.pos;
                 vec.y = eyePos.y;
             } else {
-                if (dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701) && field_0x9E0 != fpcM_ERROR_PROCESS_ID_e) {
+                if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701) && field_0x9E0 != fpcM_ERROR_PROCESS_ID_e) {
                     fopAc_ac_c* ac = fopAcM_SearchByID(field_0x9E0);
                     if (ac != NULL) {
                         vec2 = ac->eyePos;
@@ -680,7 +705,7 @@ void daNpc_Bmsw_c::wait01() {
             field_0x9D7 = 2;
         }
 
-        if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+        if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
             if (mpMorf->checkFrame(mpMorf->getEndFrame() - 1.0f)) {
                 if (--field_0x9D6 <= 0) {
                     if (field_0x9D5 == 5) {
@@ -720,7 +745,7 @@ void daNpc_Bmsw_c::talk01() {
         field_0x9DA = 1;
         dComIfGp_event_reset();
 
-        if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+        if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
             setAnm(0);
         } else {
             setAnm(1);
@@ -739,7 +764,7 @@ BOOL daNpc_Bmsw_c::wait_action(void*) {
     if (mActionStatus == ACTION_STARTING) {
         field_0x9DA = 1;
         field_0x9D6 = 1;
-        if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+        if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
             setAnm(FALSE);
         } else {
             setAnm(TRUE);
@@ -784,7 +809,7 @@ BOOL daNpc_Bmsw_c::checkNextMailThrowOK() {
 
 /* 00001C70-00001DA4       .text setGameGetRupee__12daNpc_Bmsw_cFs */
 void daNpc_Bmsw_c::setGameGetRupee(short rupees) {
-    u8 reg_val = dComIfGs_getEventReg(0xC203);
+    u8 reg_val = dComIfGs_getEventReg(dSv_event_flag_c::UNK_C203);
     switch (reg_val) {
         case 0:
             if (rupees < 10) {
@@ -814,7 +839,7 @@ void daNpc_Bmsw_c::setGameGetRupee(short rupees) {
             break;
         case 3:
         default:
-            if (dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+            if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
                 field_0x960 = rupees;
             } else {
                 field_0x960 = rupees * 3;
@@ -863,7 +888,7 @@ BOOL daNpc_Bmsw_c::shiwake_game_action(void*) {
         field_0x9B1 = 0;
 
         if (!eventInfo.checkCommandDemoAccrpt()) {
-            if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+            if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
                 field_0x9D8 = dComIfGp_evmng_getEventIdx("SHIWAKEGAME");
             } else {
                 field_0x9D8 = dComIfGp_evmng_getEventIdx("SHIWAKEGAME2");
@@ -972,7 +997,7 @@ BOOL daNpc_Bmsw_c::shiwake_game_action(void*) {
                 dComIfGp_evmng_cutEnd(staff_id);
 
                 if (dComIfGp_evmng_endCheck(field_0x9D8)) {
-                    dComIfGp_event_onEventFlag(8);
+                    dComIfGp_event_reset();
                     s16 rupees = dComIfGp_getMiniGameRupee();
                     fpc_ProcID msg = daNpc_Bmsw_getGameEndMsg(rupees);
                     field_0x9C0 = msg;
@@ -1108,8 +1133,8 @@ static BOOL CallbackCreateHeap(fopAc_ac_c* i_this) {
 cPhs_State daNpc_Bmsw_c::_create() {
     fopAcM_SetupActor(this, daNpc_Bmsw_c);
 
-    u8 reg_val = dComIfGs_getEventReg(0xC203);
-    if (reg_val >= 3 && !dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+    u8 reg_val = dComIfGs_getEventReg(dSv_event_flag_c::UNK_C203);
+    if (reg_val >= 3 && !dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
         fopAcM_create(
             "Btsw",
             fopAcM_GetParam(this),

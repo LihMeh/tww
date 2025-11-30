@@ -77,6 +77,7 @@ enum dCcG_CoRPrm_e {
 enum dCcG_hitSe {
     /* 0x01 */ dCcG_SE_UNK1 = 1,
     /* 0x02 */ dCcG_SE_UNK2 = 2,
+    /* 0x03 */ dCcG_SE_UNK3 = 3,
     /* 0x04 */ dCcG_SE_UNK4 = 4,
     /* 0x05 */ dCcG_SE_UNK5 = 5,
     /* 0x06 */ dCcG_SE_UNK6 = 6,
@@ -189,6 +190,7 @@ public:
     u8 GetRoomId() { return mRoomId; }
     void SetRoomId(int id) { mRoomId = id; }
     fpc_ProcID GetAtOldApid() { return mAtOldApid; }
+    fpc_ProcID GetTgApid() { return mTgApid; }
     fpc_ProcID GetTgOldApid() { return mTgOldApid; }
     bool ChkNoActor() { return mFlag & 1; }
     bool ChkNoneActorPerfTblId() { return mActorPerfTblId == 0xFFFF; }
@@ -440,6 +442,8 @@ public:
     bool ChkTgShieldFrontRange() { return mGObjTg.ChkSPrm(dCcG_TgSPrm_ShieldFrontRange_e); }
     void OnTgShieldFrontRange() { mGObjTg.OnSPrm(dCcG_TgSPrm_ShieldFrontRange_e); }
     void OffTgShieldFrontRange() { mGObjTg.OffSPrm(dCcG_TgSPrm_ShieldFrontRange_e); }
+    void OnAtStopNoConHit() { mGObjAt.OnSPrm(dCcG_AtSPrm_StopNoConHit_e); }
+    void OffAtStopNoConHit() { mGObjAt.OffSPrm(dCcG_AtSPrm_StopNoConHit_e); }
     s16* GetTgShieldFrontRangeYAngle() { return mGObjTg.GetShieldFrontRangeYAngle(); }
     bool ChkCoAtLasso() { return mGObjCo.ChkSPrm(dCcG_CoSPrm_AtLasso_e); }
     bool ChkCoTgLasso() { return mGObjCo.ChkSPrm(dCcG_CoSPrm_TgLasso_e); }

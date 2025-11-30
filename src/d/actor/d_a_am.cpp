@@ -3,6 +3,7 @@
  * Enemy - Armos Knight
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_am.h"
 #include "d/res/res_am.h"
 #include "f_op/f_op_actor_mng.h"
@@ -25,8 +26,6 @@
 #include "d/d_cc_uty.h"
 #include "d/actor/d_a_bomb.h"
 #include "d/actor/d_a_bomb2.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 enum Action {
     ACTION_DOUSA       = 0,
@@ -746,7 +745,7 @@ static void action_modoru_move(am_class* i_this) {
             i_this->mTargetAngleY = cM_atan2s(xDistToSpawn, zDistToSpawn);
         }
 
-        f32 xzDist = std::sqrtf(xDistToSpawn*xDistToSpawn + zDistToSpawn*zDistToSpawn);
+        f32 xzDist = std::sqrtf(SQUARE(xDistToSpawn) + SQUARE(zDistToSpawn));
         if (xzDist < 20.0f) {
             i_this->mTargetAngleY = i_this->mSpawnRotY;
             actor->speedF = 0.0f;
@@ -1147,7 +1146,7 @@ static BOOL useHeapInit(fopAc_ac_c* i_this) {
     };
     static __jnt_hit_data_c search_data[] = {
         {
-            /* mShapeType  */ 2, // Cylinder
+            /* mShapeType  */ JntHitType_CYL2_e,
             /* mJointIndex */ 0x05, // hitomi (pupil) joint
             /* mRadius     */ 5.0f,
             /* mpOffsets   */ cyl2_eye_offset,
@@ -1258,10 +1257,10 @@ static cPhs_State daAM_Create(fopAc_ac_c* i_this) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGSphS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 15.0f,
-            },
+            }},
         };
         a_this->mEyeSph.Set(eye_co_sph_src);
         a_this->mEyeSph.SetStts(&a_this->mStts);
@@ -1289,10 +1288,10 @@ static cPhs_State daAM_Create(fopAc_ac_c* i_this) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGSphS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 15.0f,
-            },
+            }},
         };
         a_this->mMouthSph.Set(mouth_co_sph_src);
         a_this->mMouthSph.SetStts(&a_this->mStts);
@@ -1320,11 +1319,11 @@ static cPhs_State daAM_Create(fopAc_ac_c* i_this) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGCylS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 15.0f,
                 /* Height */ 0.0f,
-            },
+            }},
         };
         a_this->mBodyCyl.Set(body_co_cyl_src);
         a_this->mBodyCyl.SetStts(&a_this->mStts);
@@ -1352,11 +1351,11 @@ static cPhs_State daAM_Create(fopAc_ac_c* i_this) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGCylS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 15.0f,
                 /* Height */ 0.0f,
-            },
+            }},
         };
         a_this->mNeedleCyl.Set(sword_co_cyl_src);
         a_this->mNeedleCyl.SetStts(&a_this->mStts);

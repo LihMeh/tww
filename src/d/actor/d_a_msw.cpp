@@ -3,6 +3,7 @@
 // Translation Unit: d_a_msw.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_msw.h"
 #include "d/res/res_msw.h"
 #include "d/d_bg_s_movebg_actor.h"
@@ -272,11 +273,11 @@ static cPhs_State daMsw_Create(fopAc_ac_c* i_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 10.0f,
             /* Height */ 1000.0f,
-        },
+        }},
     };
 
     fopAcM_SetupActor(i_this, msw_class);

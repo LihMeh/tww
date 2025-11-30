@@ -3,6 +3,7 @@
  * NPC - Zunari
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_npc_rsh1.h"
 #include "m_Do/m_Do_ext.h"
 #include "d/d_procname.h"
@@ -32,11 +33,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 60.0f,
         /* Height */ 80.0f,
-    },
+    }},
 };
 
 

@@ -3,6 +3,7 @@
  * Object - Tower of the Gods - Entrance waterfall
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_hha.h"
 #include "d/actor/d_a_tag_waterlevel.h"
 #include "d/d_bg_s_func.h"
@@ -40,11 +41,11 @@ const dCcD_SrcCyl daObjHha_c::M_cyl_data =
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 570.0f,
         /* Height */ 100.0f,
-    },
+    }},
 };
 
 #if VERSION > VERSION_DEMO
@@ -71,10 +72,10 @@ const dCcD_SrcSph daObjHha_c::M_sph_data = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 220.0f,
-    },
+    }},
 };
 #endif
 
@@ -145,18 +146,8 @@ void daObjHhaPart_c::init_mtx(cXyz currentPos, csXyz shapeAngle, cXyz scale) {
 void daObjHhaPart_c::exe_normal(daObjHha_c* parent) {
     init_mtx(parent->current.pos, parent->shape_angle, parent->scale);
 
-    bool doMove;
-    if(mpBgw != NULL){
-        if(0 <= mpBgw->GetId() && mpBgw->GetId() < 0x100){
-            doMove = true;
-        }
-        else {
-            doMove = false;
-        }
-
-        if(doMove){
-            mpBgw->Move();
-        }
+    if (mpBgw != NULL && mpBgw->ChkUsed()) {
+        mpBgw->Move();
     }
 
 }
@@ -382,21 +373,11 @@ bool daObjHha_c::_delete() {
 #endif
         for(i = 0; i < 2; i++){
             cBgW* bgw = mPartA[i].mpBgw;
-            if(bgw != NULL){
-                bool toErase;
-                if(bgw->GetId() >= 0 && bgw->GetId() < 0x100){
-                    toErase = true;
-                }
-                else {
-                    toErase = false;
-                }
-
-                if(toErase){
-                    dComIfG_Bgsp()->Release(bgw);
+            if(bgw != NULL && bgw->ChkUsed()) {
+                dComIfG_Bgsp()->Release(bgw);
 #if VERSION > VERSION_DEMO
-                    mPartA[i].mpBgw = NULL;
+                mPartA[i].mpBgw = NULL;
 #endif
-                }
             }
         }
 #if VERSION > VERSION_DEMO

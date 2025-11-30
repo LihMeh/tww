@@ -3,6 +3,7 @@
  * Item - Arrow
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/actor/d_a_arrow.h"
 #include "m_Do/m_Do_mtx.h"
 #include "d/d_com_inf_game.h"
@@ -15,8 +16,6 @@
 #include "d/d_jnt_hit.h"
 #include "d/d_s_play.h"
 #include "d/res/res_link.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 s16 daArrow_c::m_count;
 
@@ -45,11 +44,11 @@ const dCcD_SrcCps daArrow_c::m_at_cps_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCpsS
-    {
-        /* Start  */ 0.0f, 0.0f, 0.0f,
-        /* End    */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Start  */ {0.0f, 0.0f, 0.0f},
+        /* End    */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 5.0f,
-    },
+    }},
 };
 
 const dCcD_SrcSph daArrow_c::m_co_sph_src = {
@@ -75,10 +74,10 @@ const dCcD_SrcSph daArrow_c::m_co_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 25.0f,
-    },
+    }},
 };
 
 /* 800D455C-800D457C       .text createHeap_CB__FP10fopAc_ac_c */
@@ -178,11 +177,12 @@ void daArrow_c::setBlur() {
     if (!blurEmitter) {
         return;
     }
-    s32 alpha = blurEmitter->getGlobalAlpha();
-    if (alpha - 50 <= 0) {
+    int alpha = blurEmitter->getGlobalAlpha();
+    alpha -= 50;
+    if (alpha <= 0) {
         mBlurFollowCb.remove();
     } else {
-        blurEmitter->setGlobalAlpha(alpha - 50);
+        blurEmitter->setGlobalAlpha(alpha);
     }
     
     mDoMtx_stack_c::transS(current.pos);
@@ -298,7 +298,7 @@ void daArrow_c::arrowShooting() {
     mAtCps.CalcAtVec();
     
     dComIfG_Ccsp()->Set(&mAtCps);
-    dComIfG_Ccsp_SetMass(&mAtCps, 1);
+    dComIfG_Ccsp()->SetMass(&mAtCps, 1);
     
     clrAtHitNormal();
     setAtHitPosBuff(&end);
@@ -384,7 +384,10 @@ bool daArrow_c::check_water_in() {
         if (mArrowType == TYPE_FIRE) {
             mInWaterTimer = 1;
             dComIfGp_particle_setP1(dPa_name::ID_COMMON_035A, &waterHitPos);
-            if (!field_0x6e4) {
+#if VERSION > VERSION_DEMO
+            if (!field_0x6e4)
+#endif
+            {
                 dKy_arrowcol_chg_on(&current.pos, 0);
             }
         } else if (mArrowType == TYPE_ICE) {
@@ -393,13 +396,19 @@ bool daArrow_c::check_water_in() {
                 PROC_ARROW_ICEEFF, fopAcM_GetID(this), mArrowType,
                 &waterHitPos, current.roomNo, &current.angle
             );
-            if (!field_0x6e4) {
+#if VERSION > VERSION_DEMO
+            if (!field_0x6e4)
+#endif
+            {
                 dKy_arrowcol_chg_on(&current.pos, 1);
             }
         } else if (mArrowType == TYPE_LIGHT) {
             dComIfGp_particle_setP1(dPa_name::ID_COMMON_02A1, &waterHitPos);
             fopAcM_seStartCurrent(this, JA_SE_OBJ_LIGHT_ARW_EFF, 0);
-            if (!field_0x6e4) {
+#if VERSION > VERSION_DEMO
+            if (!field_0x6e4)
+#endif
+            {
                 dKy_arrowcol_chg_on(&current.pos, 2);
             }
             mInWaterTimer = 1;
@@ -452,7 +461,7 @@ daArrow_c* daArrow_c::changeArrowType() {
     
     if (mArrowType != origArrowType) {
         m_keep_type = mArrowType;
-        daArrow_c* newNockedArrow = (daArrow_c*)fopAcM_fastCreate(PROC_ARROW, 0, &current.pos, current.roomNo);
+        daArrow_c* newNockedArrow = (daArrow_c*)fopAcM_fastCreate(PROC_ARROW, 0, &current.pos, fopAcM_GetRoomNo(this));
         if (!newNockedArrow) {
             mArrowType = origArrowType;
             m_keep_type = origArrowType;
@@ -523,12 +532,10 @@ void daArrow_c::setKeepMatrix() {
         mDoMtx_stack_c::transS(0.7f, -0.07f, -0.2f);
         mDoMtx_stack_c::XYZrotM(0x238E, 0x2CDF, 0x29BE);
         mDoMtx_stack_c::revConcat(zelda->getRightHandMatrix());
-        mpModel->setBaseTRMtx(mDoMtx_stack_c::get());
-        
         MtxP mtx = mDoMtx_stack_c::get();
+        mpModel->setBaseTRMtx(mtx);
         current.pos.set(mtx[0][3], mtx[1][3], mtx[2][3]);
-        
-        mDoMtx_MtxToRot(mDoMtx_stack_c::get(), &shape_angle);
+        mDoMtx_MtxToRot(mtx, &shape_angle);
         current.angle.y = shape_angle.y;
         current.angle.x = -shape_angle.x;
     } else {
@@ -540,12 +547,10 @@ void daArrow_c::setKeepMatrix() {
         // Z rotation must be an int literal to pass a signed short as normal.
         mDoMtx_stack_c::XYZrotM((248.5f*65536)/360, 0x238E, -0x6333);
         mDoMtx_stack_c::revConcat(player->getLeftHandMatrix());
-        mpModel->setBaseTRMtx(mDoMtx_stack_c::get());
-        
         MtxP mtx = mDoMtx_stack_c::get();
+        mpModel->setBaseTRMtx(mtx);
         current.pos.set(mtx[0][3], mtx[1][3], mtx[2][3]);
-        
-        mDoMtx_MtxToRot(mDoMtx_stack_c::get(), &shape_angle);
+        mDoMtx_MtxToRot(mtx, &shape_angle);
         current.angle.y = shape_angle.y;
         current.angle.x = -shape_angle.x;
     }
@@ -656,7 +661,10 @@ BOOL daArrow_c::procMove() {
                             field_0x6a8 = hitPos;
                             current.pos = hitPos - (speed * 0.25f);
                             
-                            if (!field_0x6e4) {
+                            #if VERSION > VERSION_DEMO
+                            if (!field_0x6e4)
+                            #endif
+                            {
                                 dKy_arrowcol_chg_on(&current.pos, 2);
                             }
                             
@@ -665,7 +673,7 @@ BOOL daArrow_c::procMove() {
                             fopAcM_SetParam(this, 2);
                             field_0x604 = 0x28;
                             
-                            dComIfG_Bgsp()->GetTriPla(mLinChk);
+                            dComIfG_Bgsp()->GetTriPla(mLinChk.GetBgIndex(), mLinChk.GetPolyIndex());
                             
                             csXyz temp10;
                             temp10.x = cM_atan2s(speed.y, speed.absXZ());
@@ -692,7 +700,7 @@ BOOL daArrow_c::procMove() {
                         field_0x6e6 = temp11;
                         field_0x618 = temp12;
                         hitType = 2; // Hit a joint
-                    } else if (mHitJointIndex == -3) {
+                    } else if (mHitJointIndex == JntHitIdx_DELETE_e) {
                         fopAcM_delete(this);
                         return TRUE;
                     }
@@ -737,9 +745,8 @@ BOOL daArrow_c::procMove() {
             setStopActorMatrix();
         }
     } else if (dComIfG_Bgsp()->LineCross(&mLinChk)) {
-        cXyz* linEnd = mLinChk.GetLinP()->GetEndP();
-        field_0x6a8 = *linEnd;
-        current.pos = *linEnd - (speed * 0.25f);
+        field_0x6a8 = *mLinChk.GetCrossP();
+        current.pos = *mLinChk.GetCrossP() - (speed * 0.25f);
         
         if (!check_water_in()) {
             s32 temp8;
@@ -757,7 +764,12 @@ BOOL daArrow_c::procMove() {
                 temp8 = -1;
             }
             
-            if (temp8 >= 0 && !field_0x6e4) {
+            if (
+                temp8 >= 0
+#if VERSION > VERSION_DEMO
+                && !field_0x6e4
+#endif
+            ) {
                 dKy_arrowcol_chg_on(&current.pos, temp8);
             }
             
@@ -860,7 +872,7 @@ BOOL daArrow_c::procMove() {
         mAtCps.CalcAtVec();
         
         dComIfG_Ccsp()->Set(&mAtCps);
-        dComIfG_Ccsp_SetMass(&mAtCps, 1);
+        dComIfG_Ccsp()->SetMass(&mAtCps, 1);
     }
     
     return TRUE;
@@ -916,8 +928,7 @@ BOOL daArrow_c::procStop_BG() {
     
     if (field_0x604 > 0) {
         field_0x604--;
-        f32 temp4 = (field_0x604*(1/40.0f)) * 1024.0f * (field_0x604*(1/40.0f)) * cM_ssin(field_0x604*0x52FB);
-        shape_angle.x = field_0x6e6.x + temp4;
+        shape_angle.x = field_0x6e6.x + cM_ssin(field_0x604*0x52FB) * ((field_0x604*(1/40.0f)) * 1024.0f * (field_0x604*(1/40.0f)));
         shape_angle.y = field_0x6e6.y;
         temp2 = TRUE;
     } else if (field_0x600) {
@@ -972,10 +983,12 @@ BOOL daArrow_c::procStop_BG() {
             return TRUE;
         }
     }
-    
+
+#if VERSION > VERSION_DEMO
     if (mbSetByZelda) {
         field_0x600 = true;
     }
+#endif
     
     return TRUE;
 }
@@ -1073,13 +1086,16 @@ BOOL daArrow_c::createInit() {
     field_0x6e4 = false;
     mbHasLightEff = false;
     mbLinkReflect = false;
+#if VERSION > VERSION_DEMO
     field_0x604 = 0;
+#endif
     
     return TRUE;
 }
 
 /* 800D74FC-800D7820       .text _execute__9daArrow_cFv */
 BOOL daArrow_c::_execute() {
+#if VERSION > VERSION_DEMO
     if (mbSetByZelda) {
         if (!mbLinkReflect) {
             if (daPy_getPlayerLinkActorClass()->checkPlayerGuard()) {
@@ -1135,6 +1151,7 @@ BOOL daArrow_c::_execute() {
             return TRUE;
         }
     }
+#endif
     
     if (field_0x602 == m_count) {
         field_0x600 = true;

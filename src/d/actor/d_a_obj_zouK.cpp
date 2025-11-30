@@ -3,6 +3,7 @@
  * Object - Hyrule Castle - Knight statues (Master Sword chamber)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_zouK.h"
 #include "d/res/res_vzouk.h"
 #include "f_op/f_op_actor_mng.h"
@@ -49,11 +50,11 @@ namespace daObjZouk {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 100.0f,
             /* Height */ 200.0f,
-        },
+        }},
     };
 }
 

@@ -3,6 +3,7 @@
 // Translation Unit: d_kankyo.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_kankyo.h"
 #include "d/d_bg_s_gnd_chk.h"
 #include "d/d_com_inf_game.h"
@@ -22,8 +23,6 @@
 #include "m_Do/m_Do_mtx.h"
 #include "m_Do/m_Do_printf.h"
 #include "math.h"
-
-#include "weak_data_2100_2080.h" // IWYU pragma: keep
 
 #include "d/d_kankyo_dayproc.inc"
 
@@ -84,9 +83,6 @@ dKy_setLight__Status lightStatusBase = {
 u16 lightMaskData[] = {
     GX_LIGHT0, GX_LIGHT1, GX_LIGHT2, GX_LIGHT3, GX_LIGHT4, GX_LIGHT5, GX_LIGHT6, GX_LIGHT7,
 };
-
-// Fakematch? Fixes weak function order.
-#pragma sym off
 
 /**
  * Returns true if toon lighting and shadow should be reversed.
@@ -3168,7 +3164,7 @@ void dKy_arrowcol_chg_move() {
 
 /* 80196764-801967C4       .text dKy_checkEventNightStop__Fv */
 BOOL dKy_checkEventNightStop() {
-    if (dComIfGs_isEventBit(dSv_evtBit_c::ENDLESS_NIGHT) && !dComIfGs_isSymbol(0)) {
+    if (dComIfGs_isEventBit(dSv_event_flag_c::ENDLESS_NIGHT) && !dComIfGs_isSymbol(0)) {
         return true;
     }
 

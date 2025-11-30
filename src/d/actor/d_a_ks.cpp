@@ -3,11 +3,7 @@
  * Enemy - Morth
  */
 
-// Fakematch? Having sym off before d_a_ks.h but then turning it on before
-// d_a_player_main.h fixes the weak function ordering of
-// `daPy_py_c::getSwordTopPos() const` and `daPy_py_c::getHeadTopPos() const`
-// in this TU.
-#pragma sym off
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_ks.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -15,13 +11,9 @@
 #include "d/d_s_play.h"
 #include "f_op/f_op_camera.h"
 #include "d/d_snap.h"
-#pragma sym on
 #include "d/actor/d_a_player_main.h"
 #include "d/actor/d_a_gm.h"
 #include "d/res/res_ks.h"
-
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 static int KS_ALL_COUNT = 0;
 static int KUTTUKU_ALL_COUNT = 0;
@@ -36,7 +28,7 @@ void draw_SUB(ks_class* i_this) {
     cXyz local_24 = dComIfGp_getCamera(0)->mLookat.mEye - i_this->current.pos;
 
     int iVar3 = cM_atan2s(local_24.x, local_24.z);
-    int iVar4 = (s16)-cM_atan2s(local_24.y, std::sqrtf(local_24.x * local_24.x + local_24.z * local_24.z));
+    int iVar4 = (s16)-cM_atan2s(local_24.y, std::sqrtf(SQUARE(local_24.x) + SQUARE(local_24.z)));
     
     f32 fVar1 = 0.0f;
     if (i_this->m2D0) {
@@ -233,10 +225,10 @@ BOOL shock_damage_check(ks_class* i_this) {
         mSwordTopPos.y -= i_this->current.pos.y;
         mSwordTopPos.z -= i_this->current.pos.z;
         
-        float distXZ = std::sqrtf(mSwordTopPos.x * mSwordTopPos.x + mSwordTopPos.z * mSwordTopPos.z);
+        float distXZ = std::sqrtf(SQUARE(mSwordTopPos.x) + SQUARE(mSwordTopPos.z));
         
         if (distXZ < 200.0f) {
-            if (std::sqrtf(mSwordTopPos.y * mSwordTopPos.y) < 40.0f) {
+            if (std::sqrtf(SQUARE(mSwordTopPos.y)) < 40.0f) {
                 i_this->mAction = 3;
                 i_this->mMode = 32;
 
@@ -883,7 +875,7 @@ void action_omoi(ks_class* i_this) {
                 local_1c.z = REG12_F(16) + 10.0f;
             }
 
-            if (std::sqrtf(mpCurPlayerActor->speed.x * mpCurPlayerActor->speed.x + mpCurPlayerActor->speed.y * mpCurPlayerActor->speed.y + mpCurPlayerActor->speed.z * mpCurPlayerActor->speed.z) < REG12_F(17) + 8.0f) {
+            if (std::sqrtf(SQUARE(mpCurPlayerActor->speed.x) + SQUARE(mpCurPlayerActor->speed.y) + SQUARE(mpCurPlayerActor->speed.z)) < REG12_F(17) + 8.0f) {
                 local_1c.setall(REG12_F(18) + 8.0f);
 
                 f32 x = a_this->current.pos.x - local_10.x;
@@ -1458,10 +1450,10 @@ static dCcD_SrcSph body_co_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 15.0f,
-    },
+    }},
 };
 
 static s8 fire_j[10] = {

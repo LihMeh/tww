@@ -3,13 +3,12 @@
  * Object - Drop-down ladder
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_ladder.h"
 #include "d/res/res_mhsg.h"
 #include "d/d_com_inf_game.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 Mtx daObjLadder::Act_c::M_tmp_mtx;
 
@@ -87,7 +86,7 @@ BOOL daObjLadder::Act_c::Create() {
     mDoMtx_stack_c::pop();
 
     mGndChk.SetPos(&pos);
-    mGndChk.SetActorPid(base.mBsPcId);
+    mGndChk.SetActorPid(base.base.mBsPcId);
     mGndY = dComIfG_Bgsp()->GroundCross(&mGndChk);
     unk346 = 0;
 
@@ -327,9 +326,6 @@ static BOOL Mthd_Execute(void* i_this) {
 static BOOL Mthd_Draw(void* i_this) {
     return static_cast<Act_c*>(i_this)->MoveBGDraw();
 }
-
-// Fakematch to fix weak func order/.text section splitting of dBgS_MoveBgActor::Draw().
-#pragma nosyminline off
 
 /* 000011CC-000011F8       .text Mthd_IsDelete__Q211daObjLadder28@unnamed@d_a_obj_ladder_cpp@FPv */
 static BOOL Mthd_IsDelete(void* i_this) {

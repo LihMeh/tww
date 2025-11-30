@@ -3,6 +3,7 @@
  * NPC - Gohma fight - Valoo (body & tail) + lava pit & ceiling rock
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_dr2.h"
 #include "d/res/res_dr2.h"
 #include "m_Do/m_Do_ext.h"
@@ -22,10 +23,10 @@ public:
     daDr2_HIO_c();
     virtual ~daDr2_HIO_c() {}
 
-    void genMessage(JORMContext* ctx);
+    void genMessage(JORMContext* ctx) {}
 
 public:
-    /* 0x04 */ s8 m04;
+    /* 0x04 */ s8 mNo;
     /* 0x08 */ f32 m08;
 }; // size = 0xC
 
@@ -36,7 +37,7 @@ static f32 hsz[] = { -7.0f, 7.0f, 12.0f, 7.0f, -7.0f, -12.0f };
 
 /* 000000EC-00000110       .text __ct__11daDr2_HIO_cFv */
 daDr2_HIO_c::daDr2_HIO_c()  {
-    m04 = -1;
+    mNo = -1;
     m08 = 1.0f;
 }
 
@@ -124,7 +125,7 @@ void iwa_draw(dr2_class* i_this) {
         mDoExt_modelUpdateDL(i_this->unk_418);
         if (i_this->unk_424 != 0) {
             J3DModelData* modelData = i_this->unk_41C->getModelData();
-            i_this->unk_420->entry(modelData, i_this->unk_420->getFrame());
+            i_this->unk_420->entry(modelData);
             g_env_light.setLightTevColorType(i_this->unk_41C, &i_this->actor.tevStr);
             mDoExt_modelUpdateDL(i_this->unk_41C);
         }
@@ -159,14 +160,14 @@ void yuka_draw(dr2_class* i_this) {
     if (!i_this->unk_43C) {
         g_env_light.setLightTevColorType(i_this->unk_428, &i_this->actor.tevStr);
         modelData = i_this->unk_428->getModelData();
-        i_this->unk_430->entry(modelData, i_this->unk_430->getFrame());
+        i_this->unk_430->entry(modelData);
         mDoExt_modelUpdateDL(i_this->unk_428);
     } else {
         g_env_light.setLightTevColorType(i_this->unk_42C, &i_this->actor.tevStr);
         modelData = i_this->unk_42C->getModelData();
-        i_this->unk_434->entry(modelData, i_this->unk_434->getFrame());
+        i_this->unk_434->entry(modelData);
         modelData = i_this->unk_42C->getModelData();
-        i_this->unk_438->entry(modelData, i_this->unk_438->getFrame());
+        i_this->unk_438->entry(modelData);
         mDoExt_modelUpdateDL(i_this->unk_42C);
     }
 }
@@ -222,6 +223,7 @@ void hahen_move(dr2_class* i_this) {
 
 /* 00000884-0000130C       .text iwa_move__FP9dr2_class */
 void iwa_move(dr2_class* i_this) {
+    /* Nonmatching - retail-only regalloc */
     fopAc_ac_c* a_this = &i_this->actor;
     cXyz sp58;
     cXyz sp4C;
@@ -288,38 +290,38 @@ void iwa_move(dr2_class* i_this) {
             }
             break;
 
-        case 1:
+        case 1: {
             i_this->unk_4A8.y += a_this->speed.y;
             a_this->speed.y -= REG0_F(2) + 10.0f;
 
-            f32 fVar11 = btd->field_0x320.y + REG0_F(3);
+            f32 fVar11 = btd->m02FC[3].y + REG0_F(3);
             if (i_this->unk_4A8.y < fVar11) {
                 i_this->unk_4A8.y = fVar11;
                 i_this->unk_4BA = 2;
                 i_this->unk_400[0] = 0x32;
-                btd->field_0x2F6 = true;
+                btd->m02F6 = true;
                 fopAcM_seStartCurrent(a_this, JA_SE_CM_BTD_ROCK_HIT, 0);
                 dComIfGp_getVibration().StartShock(REG0_S(2) + 5, -0x21, cXyz(0.0f, 1.0f, 0.0f));
             }
             break;
-
+        }
         case 2:
             i_this->unk_40A = 3;
             cLib_addCalc2(&i_this->unk_414, 2000.0f, 0.5f, 100.0f);
 
-            i_this->unk_4A8.y = btd->field_0x320.y + REG0_F(3);
-            i_this->unk_4B4.y = i_this->unk_514->current.angle.y;
+            i_this->unk_4A8.y = btd->m02FC[3].y + REG0_F(3);
+            i_this->unk_4B4.y = i_this->unk_514->actor.current.angle.y;
             
-            if (btd->field_0x320.y < REG0_F(6) + 100.0f) {
-                i_this->unk_4C0 = (REG0_F(6) + 100.0f) - btd->field_0x320.y;
+            if (btd->m02FC[3].y < REG0_F(6) + 100.0f) {
+                i_this->unk_4C0 = (REG0_F(6) + 100.0f) - btd->m02FC[3].y;
                 i_this->unk_4C0 *= REG0_F(7) + 0.3f;
             }
 
-            sp4C = btd->field_0x320 - btd->field_0x32C;
+            sp4C = btd->m02FC[3] - btd->m02FC[4];
             sp4C.y += REG0_F(5) + -330.0f + i_this->unk_4C0;
             cLib_addCalcAngleS2(&i_this->unk_4B4.x, -cM_atan2s(sp4C.y, std::sqrtf(sp4C.x * sp4C.x + sp4C.z * sp4C.z)), 1, 0x200);
 
-            if (!btd->field_0x2F6) {
+            if (!btd->m02F6) {
                 i_this->unk_4BA = 3;
 #if VERSION == VERSION_DEMO
                 i_this->unk_4D4_demo = 
@@ -330,7 +332,7 @@ void iwa_move(dr2_class* i_this) {
             break;
 
         case 3:
-            i_this->unk_4A8.y = btd->field_0x360 + 100.0f + REG0_F(9);
+            i_this->unk_4A8.y = btd->m02FC[8].y + 100.0f + REG0_F(9);
             cLib_addCalcAngleS2(&i_this->unk_4B4.x, 0, 1, 0x100);
             cLib_addCalcAngleS2(&i_this->unk_4B4.y, 0, 1, 0x100);
 
@@ -364,7 +366,7 @@ void iwa_move(dr2_class* i_this) {
             }
             break;
 
-        case 10:
+        case 10: {
             i_this->unk_4BA++;
 
             iwa_hahen_s* fragment = &i_this->mRockFragments[0];
@@ -381,7 +383,7 @@ void iwa_move(dr2_class* i_this) {
                     MtxPosition(&sp58, &fragment->unk_14);
                 }
             }
-
+        }
         case 11:
             i_this->unk_40A = 0;
             break;
@@ -428,9 +430,7 @@ void iwa_move(dr2_class* i_this) {
             while (link != list->getEnd()) {
                 JGeometry::TVec3<f32> tvec;
                 link->getObject()->getGlobalPosition(tvec);
-                sp40.x = tvec.x;
-                sp40.y = tvec.y;
-                sp40.z = tvec.z;
+                sp40 = tvec;
                 dComIfGp_particle_setSimple(dPa_name::ID_SCENE_8062, &sp40, 0xB9);
                 link = link->getNext();
             }
@@ -453,8 +453,6 @@ void move(dr2_class* i_this) {
     fopAc_ac_c* a_this = &i_this->actor;
     daPy_py_c* player = (daPy_py_c*)dComIfGp_getPlayer(0);
     fopAc_ac_c* foundActor = fopAcM_SearchByID(i_this->unk_3FC);
-    s16 atan;
-    f32 atanF;
 
     if (i_this->unk_40A == 3) {
         for (s32 i = 2; i < 12; i++) {
@@ -637,7 +635,7 @@ static BOOL daDr2_IsDelete(dr2_class*) {
 /* 00001B98-00001C58       .text daDr2_Delete__FP9dr2_class */
 static BOOL daDr2_Delete(dr2_class* i_this) {
     dComIfG_resDeleteDemo(&i_this->mPhase, "Dr2");
-    mDoHIO_deleteChild(l_HIO.m04);
+    mDoHIO_deleteChild(l_HIO.mNo);
     i_this->unk_4D8.remove();
     i_this->unk_4EC.remove();
 #if VERSION > VERSION_DEMO
@@ -654,7 +652,7 @@ static BOOL useHeapInit(fopAc_ac_c* a_this) {
 
     i_this->mpMorf1 = new mDoExt_McaMorf((J3DModelData*)dComIfG_getObjectRes("Dr2", DR2_BMD_DR_SIPPO), NULL, NULL, NULL, J3DFrameCtrl::EMode_LOOP, 1.0f, 0, -1, 0, NULL, 0, 0x11020203);
     
-    if ((i_this->mpMorf1 == NULL) || (i_this->mpMorf1->mpModel == NULL)) {
+    if ((i_this->mpMorf1 == NULL) || (i_this->mpMorf1->getModel() == NULL)) {
         return FALSE;
     }
 
@@ -706,7 +704,7 @@ static BOOL useHeapInit(fopAc_ac_c* a_this) {
                             NULL, NULL, (J3DAnmTransformKey*)dComIfG_getObjectRes("Dr2", DR2_BCK_DR_BOSS_DEMO1), 
                             J3DFrameCtrl::EMode_LOOP, 1.0f, 0, -1, 0, NULL, 0, 0x11020203);
 
-    if (i_this->mpMorf2 == NULL || i_this->mpMorf2->mpModel == NULL) {
+    if (i_this->mpMorf2 == NULL || i_this->mpMorf2->getModel() == NULL) {
         return FALSE;
     }
 
@@ -798,7 +796,7 @@ static cPhs_State daDr2_Create(fopAc_ac_c* a_this) {
             return cPhs_ERROR_e;
         }
 
-        l_HIO.m04 = mDoHIO_createChild("ドラゴンシッポ", &l_HIO);
+        l_HIO.mNo = mDoHIO_createChild("ドラゴンシッポ", &l_HIO);
         fopAcM_prm_class* params = fopAcM_CreateAppend();
         params->base.parameters = 0x511;
         params->room_no = a_this->current.roomNo;

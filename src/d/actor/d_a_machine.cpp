@@ -3,6 +3,7 @@
  * Enemy - Blade Trap (biting) (Wind Temple - giant fan room)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_machine.h"
 #include "d/actor/d_a_player.h"
 #include "f_op/f_op_actor_mng.h"
@@ -35,10 +36,10 @@ static dCcD_SrcSph l_sph_src_at = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 150.0f,
-    },
+    }},
 };
 
 static dCcD_SrcSph l_sph_src_col = {
@@ -64,10 +65,10 @@ static dCcD_SrcSph l_sph_src_col = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 50.0f,
-    },
+    }},
     
 };
 
@@ -329,7 +330,7 @@ void daMachine_c::attack() {
         field_0xc04.setFrame(0.0f);
         field_0xc04.setPlaySpeed(f31);
         field_0xc78 += 1;
-        // Fall through
+        // fallthrough
     case 2:
         if(field_0xc04.play()) {
             field_0xc78 = NULL;
@@ -378,7 +379,7 @@ void daMachine_c::set_body() {
 void daMachine_c::set_at() {
     f32 f1 = 5.0f;
     f32 f2 = 25.0f;
-    f32 frame = field_0xc04.getFrameCtrl()->getFrame();
+    f32 frame = field_0xc04.getFrame();
     if (f1 < frame && f2 > frame) {
         field_0xc6c.set(field_0xc3c[0][3],
                         field_0xc3c[1][3],

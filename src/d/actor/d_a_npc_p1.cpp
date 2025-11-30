@@ -3,6 +3,7 @@
  * NPC - Gonzo, Senza, & Nudge
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_npc_p1.h"
 #include "m_Do/m_Do_ext.h"
 #include "d/d_procname.h"
@@ -32,11 +33,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 40.0f,
         /* Height */ 160.0f,
-    },
+    }},
 };
 
 

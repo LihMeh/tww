@@ -230,8 +230,8 @@ public:
     fopAc_ac_c* getLook2Target() { return mLook[1].getLookTarget(); }
     fopAc_ac_c* getZHintTarget() { return mHint.getZHintTarget(); }
 
-    int ZHintRequest(fopAc_ac_c* param_1, int param_2) {
-        return mHint.request(param_1, param_2);
+    int ZHintRequest(fopAc_ac_c* i_actor, int priority) {
+        return mHint.request(i_actor, priority);
     }
 
     int GetLockonCount() { return mLockonCount; }
@@ -256,7 +256,7 @@ public:
 
     // TODO:
     void LockEdge() {}
-    void chkEnemySound() {}
+    bool chkEnemySound() { return chkFlag(AttnFlag_00000100); }
     void LookRequest(fopAc_ac_c* reqActor, f32 horizontalDist, f32 upDist, f32 downDist, s16 angle, int param_5) {
         mLook[0].request(reqActor, horizontalDist, upDist, downDist, angle, param_5);
     }

@@ -10,6 +10,7 @@
  * based on the original names of the functions it contains.
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/actor/d_a_player_main.h"
 #include "d/actor/d_a_player_main_data.h"
 #include "d/actor/d_a_player_HIO.h"
@@ -115,8 +116,10 @@ void daPy_swimTailEcallBack_c::draw(JPABaseEmitter*) {
 
 /* 80129348-8012952C       .text draw__18daPy_sightPacket_cFv */
 void daPy_sightPacket_c::draw() {
+#if VERSION > VERSION_JPN
     j3dSys.reinitGX();
     GXSetNumIndStages(0);
+#endif
 
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
@@ -152,7 +155,10 @@ void daPy_sightPacket_c::draw() {
     GXSetCurrentMtx(GX_PNMTX0);
     GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
     GXCallDisplayList(&l_sightDL, sizeof(l_sightDL) - 0x09);
+
+#if VERSION > VERSION_JPN
     J3DShape::resetVcdVatCache();
+#endif
 }
 
 /* 8012952C-801296FC       .text setSight__18daPy_sightPacket_cFv */
@@ -260,8 +266,10 @@ void daPy_swBlur_c::copySwBlur(MtxP mtx, int param_2) {
 
 /* 80129A78-80129DD0       .text draw__13daPy_swBlur_cFv */
 void daPy_swBlur_c::draw() {
+#if VERSION > VERSION_JPN
     j3dSys.reinitGX();
     GXSetNumIndStages(0);
+#endif
 
     static GXTexObj texObj;
     u16 texWidth = 16;
@@ -323,7 +331,10 @@ void daPy_swBlur_c::draw() {
         r28 = r29;
         r29 += r30;
     }
+
+#if VERSION > VERSION_JPN
     J3DShape::resetVcdVatCache();
+#endif
 }
 
 /* 80129DD0-80129E9C       .text execute__24daPy_fanSwingEcallBack_cFP14JPABaseEmitter */
@@ -438,6 +449,7 @@ void daPy_dmEcallBack_c::execute(JPABaseEmitter* emitter) {
 
         pos.x = (mpMtx[0][3] - pos.x) * -0.05f;
         pos.z = (mpMtx[2][3] - pos.z) * -0.05f;
+        f32 f6 = 0.6f;
         f32 sq = pos.x * pos.x + pos.z * pos.z;
 
         if (sq > 1.0f) {
@@ -447,7 +459,7 @@ void daPy_dmEcallBack_c::execute(JPABaseEmitter* emitter) {
             pos.z *= distFrac;
         }
 
-        emitter->setDirection(JGeometry::TVec3<f32>(pos.x, 0.6f, pos.z));
+        emitter->setDirection(JGeometry::TVec3<f32>(pos.x, f6, pos.z));
     } else {
         emitter->setGlobalRTMatrix(mpMtx);
     }
@@ -642,7 +654,7 @@ void daPy_lk_c::setWaterRipple() {
 
         JPABaseEmitter* emitter = m3280.getEmitter();
         if (emitter != NULL && ((emitter->mGlobalParticleScale.x < 0.8f && checkNoResetFlg0(daPyFlg0_UNK80)) || (emitter->mGlobalParticleScale.x > 0.8f && !checkNoResetFlg0(daPyFlg0_UNK80)))) {
-            m3280.end();
+            m3280.remove();
 
             emitter = dComIfGp_particle_setShipTail(dPa_name::ID_COMMON_0033, &current.pos, NULL, NULL, 0xFF, &m3280);
         }
@@ -655,7 +667,7 @@ void daPy_lk_c::setWaterRipple() {
             }
         }
     } else if (m3280.getEmitter() != NULL) {
-        m3280.end();
+        m3280.remove();
     }
 
     if (checkModeFlg(ModeFlg_SWIM)) {

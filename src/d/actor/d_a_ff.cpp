@@ -3,6 +3,7 @@
  * Object - Firefly (not collectable)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_ff.h"
 #include "d/actor/d_a_player.h"
 #include "d/d_bg_s_gnd_chk.h"
@@ -233,7 +234,7 @@ static BOOL daFf_Execute(ff_class* i_this) {
         i_this->mTimers[4] = REG13_F(9) + (cM_rndF(20.0f) + 30.0f);
     }
     i_this->mSph.SetC(i_this->current.pos);
-    g_dComIfG_gameInfo.play.mCcS.Set(&i_this->mSph);
+    dComIfG_Ccsp()->Set(&i_this->mSph);
     return TRUE;
 }
 
@@ -296,7 +297,7 @@ static cPhs_State daFf_Create(fopAc_ac_c* i_this) {
             int uVar1 = fopAcM_GetParam(a_this) & 0xFF;
             if (uVar1 != 0) {
                 fopAcM_SetParam(a_this, fopAcM_GetParam(a_this) & 0xFF00);
-                for (int iVar7 = 0; iVar7 < uVar1; iVar7 = iVar7 + 1) {
+                for (int i = 0; i < uVar1; i++) {
                     fopAcM_prm_class* pfVar4 = fopAcM_CreateAppend();
                     pfVar4->base.position.x = a_this->current.pos.x + cM_rndFX(500.0f);
                     pfVar4->base.position.y = a_this->current.pos.y;
@@ -338,10 +339,10 @@ static cPhs_State daFf_Create(fopAc_ac_c* i_this) {
                     /* SrcGObjCo SPrm    */ 0,
                 },
                 // cM3dGSphS
-                {
-                    /* Center */ 0.0f, 0.0f, 0.0f,
+                {{
+                    /* Center */ {0.0f, 0.0f, 0.0f},
                     /* Radius */ 60.0f,
-                },
+                }},
             };
             a_this->mStts.Init(200, 0, a_this);
             a_this->mSph.Set(cc_sph_src);

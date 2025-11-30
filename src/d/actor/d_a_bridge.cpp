@@ -3,6 +3,7 @@
 // Translation Unit: d_a_bridge.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_bridge.h"
 #include "d/d_bg_w.h"
 #include "d/d_procname.h"
@@ -20,7 +21,6 @@
 #include "d/d_kankyo_wether.h"
 #include "f_op/f_op_camera.h"
 
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
 static cXyz* wind_vec;
 static s16 wy;
 static f32* wp;
@@ -265,7 +265,12 @@ static BOOL daBridge_Draw(bridge_class* i_this) {
                 }
             }
 
+#ifdef __MWERKS__
             pBr->mLineMat1.update(5, (GXColor){150, 150, 150, 255}, &i_this->actor.tevStr);
+#else
+            GXColor color = (GXColor){150, 150, 150, 255};
+            pBr->mLineMat1.update(5, color, &i_this->actor.tevStr);
+#endif
             dComIfGd_set3DlineMat(&pBr->mLineMat1);
             continue;
         }
@@ -370,7 +375,12 @@ static BOOL daBridge_Draw(bridge_class* i_this) {
             tmp = 4.0f;
         }
 
+#ifdef __MWERKS__
         i_this->mLineMat.update(i_this->m030C + 2, tmp, (GXColor){150, 150, 150, 255}, 0, &i_this->actor.tevStr);
+#else
+        GXColor color = (GXColor){150, 150, 150, 255};
+        i_this->mLineMat.update(i_this->m030C + 2, tmp, color, 0, &i_this->actor.tevStr);
+#endif
         dComIfGd_set3DlineMat(&i_this->mLineMat);
     }
 
@@ -775,13 +785,14 @@ void bridge_move(bridge_class* i_this) {
             i_this->m02F2 = 3000;
             i_this->m02F0 = 0x578;
 
+            f32 tmpf2;
             if (*wp > 0.1f) {
-                tmpf = 2.0f;
+                tmpf2 = 2.0f;
             } else {
-                tmpf = 0.0f;
+                tmpf2 = 0.0f;
             }
-            cLib_addCalc2(&i_this->m02E0, tmpf, 0.1f, 0.1f);
-            cLib_addCalc2(&i_this->m02E4, tmpf * 0.3f, 0.1f, 0.05f);
+            cLib_addCalc2(&i_this->m02E0, tmpf2, 0.1f, 0.1f);
+            cLib_addCalc2(&i_this->m02E4, tmpf2 * 0.3f, 0.1f, 0.05f);
             break;
 
         case 4:
@@ -845,7 +856,7 @@ bridge_class* search_aite(bridge_class* i_this) {
 
 /* 00002AB8-00003C68       .text daBridge_Execute__FP12bridge_class */
 static BOOL daBridge_Execute(bridge_class* i_this) {
-    /* Nonmatching */
+    /* Nonmatching - regswap */
     fopAc_ac_c* a_player = static_cast<fopAc_ac_c*>(dComIfGp_getPlayer(0));
     daPy_py_c* player = static_cast<daPy_py_c*>(dComIfGp_getPlayer(0));
     camera_class* pCam = dComIfGp_getCamera(0);
@@ -1101,7 +1112,7 @@ static BOOL daBridge_Execute(bridge_class* i_this) {
         pBr->mpModel->setBaseTRMtx(*calc_mtx);
 
         if (((i_this->mTypeBits & 1) == 0) && ((pBr->m408 & 4) != 0)) {
-            s32 idx;
+            int idx;
             cXyz* segment0 = i_this->mLineMat.getPos(0);
             cXyz* segment1 = i_this->mLineMat.getPos(1);
             cXyz* segment00;
@@ -1162,9 +1173,9 @@ static BOOL daBridge_Execute(bridge_class* i_this) {
 
     cBgD_Vtx_t* vtxTbl = i_this->mpBgW->GetVtxTbl();
     
-    s32 idx;
-    s32 sw;
-    s32 other_i = 0;
+    int idx;
+    int sw;
+    int other_i = 0;
     for (i = 0; i < i_this->mpBgW->GetVtxNum(); i++, pBr++) {
         sw = i & 3;
         idx = i;
@@ -1279,11 +1290,11 @@ void CreateInit(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 5.0f,
             /* Height */ 1000.0f,
-        },
+        }},
     };
 
     bridge_class* i_this = (bridge_class*)a_this;

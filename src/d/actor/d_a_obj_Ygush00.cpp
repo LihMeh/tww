@@ -3,6 +3,7 @@
 // Translation Unit: d_a_obj_Ygush00.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_Ygush00.h"
 #include "d/res/res_ygush00.h"
 #include "f_op/f_op_actor_mng.h"
@@ -15,7 +16,6 @@
 #include "m_Do/m_Do_ext.h"
 #include "m_Do/m_Do_mtx.h"
 
-#include "weak_data_1811.h" // IWYU pragma: keep
 namespace {
     static const char l_arcname[] = "Ygush00";
 };
@@ -28,10 +28,6 @@ daObjYgush00_HIO_c::daObjYgush00_HIO_c() {
     m05 = 0;
     m06 = 0;
     m07 = 0;
-}
-
-void daObjYgush00_HIO_c::genMessage(JORMContext* ctx) {
-    ctx->genCheckBox(NULL, NULL, 0, 0, NULL, 0, 0, 0, 0); // placeholder
 }
 #endif
 
@@ -120,7 +116,7 @@ bool daObjYgush00_c::_delete() {
 
 /* 00000524-0000066C       .text _execute__14daObjYgush00_cFv */
 bool daObjYgush00_c::_execute() {
-    if (mType != 3 || dComIfGs_isEventBit(dSv_evtBit_c::COLORS_IN_HYRULE) == 1) {
+    if (mType != 3 || dComIfGs_isEventBit(dSv_event_flag_c::COLORS_IN_HYRULE) == 1) {
         mBtkAnm.play();
         mBckAnm.play();
     }

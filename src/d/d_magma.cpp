@@ -3,17 +3,13 @@
 // Translation Unit: d_magma.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_magma.h"
 #include "d/d_com_inf_game.h"
 #include "d/d_path.h"
 #include "d/res/res_magma.h"
 #include "m_Do/m_Do_mtx.h"
 #include "m_Do/m_Do_lib.h"
-
-// #pragma sym on
-
-#include "weak_bss_3569.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 Mtx l_kuroOrthoMtx;
 Mtx l_colOrthoMtx;
@@ -89,9 +85,9 @@ void dMagma_ball_c::draw() {
 BOOL dMagma_ball_c::rangeCheck(cXyz& pos, f32* dst) {
     f32 distSq = mPos.abs2XZ(pos);
     f32 rad1 = mScale * 243.6414f;
-    if (distSq < rad1*rad1) {
+    if (distSq < SQUARE(rad1)) {
         f32 rad2 = mScale * 800.0f;
-        f32 dist = std::sqrtf(rad2 * rad2 - distSq);
+        f32 dist = std::sqrtf(SQUARE(rad2) - distSq);
         f32 temp = (mPos.y - (rad2 - 47.999146f));
         temp += dist;
         *dst = temp;

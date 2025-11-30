@@ -3,6 +3,7 @@
 // Translation Unit: d_a_obj_mkiek.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_mkiek.h"
 #include "d/d_com_inf_game.h"
 #include "d/d_a_obj.h"
@@ -36,10 +37,10 @@ static dCcD_SrcSph sph_check_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 150.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 150.0f, 0.0f},
         /* Radius */ 100.0f,
-    },
+    }},
 };
 
 const char daObjMkiek::Act_c::M_arcname[] = "MkieK";
@@ -190,7 +191,7 @@ void daObjMkiek::Act_c::demo() {
         return;
     }
 
-    dComIfGp_event_onEventFlag(8);
+    dComIfGp_event_reset();
     fopAcM_seStartCurrent(this, JA_SE_OBJ_L_WALL_BREAK, 0);
     dComIfGp_getVibration().StartShock(4, -0x21, cXyz(0.0f, 1.0f, 0.0f));
     fopAcM_delete(this);
@@ -229,7 +230,7 @@ BOOL daObjMkiek::Act_c::Draw() {
     if (m458) {
         g_env_light.setLightTevColorType(mpModelV, &tevStr);
         J3DModelData* model_v_data = mpModelV->getModelData();
-        mBrkAnm.entry(model_v_data, mBrkAnm.getFrameCtrl()->getFrame());
+        mBrkAnm.entry(model_v_data);
         dComIfGd_setListBG();
         mDoExt_modelUpdateDL(mpModelV);
         dComIfGd_setList();

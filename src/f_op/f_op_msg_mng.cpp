@@ -3,6 +3,7 @@
 // Translation Unit: f_op_msg_mng.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "f_op/f_op_msg_mng.h"
 #include "JSystem/JKernel/JKRArchive.h"
 #include "JSystem/JUtility/JUTDataHeader.h"
@@ -25,8 +26,6 @@
 #include "SSystem/SComponent/c_malloc.h"
 #include "m_Do/m_Do_controller_pad.h"
 #include <stdio.h>
-
-#include "global.h"
 
 STControl stick;
 
@@ -526,8 +525,8 @@ fpc_ProcID fopMsgM_scopeMessageSet(u32 msgNo) {
             i_msgID = fpcM_ERROR_PROCESS_ID_e;
         }
         else {
-            if(dComIfGp_checkPlayerStatus0(0, daPyStts0_TELESCOPE_LOOK_e) && dComIfGp_getScopeMesgStatus() == 0xB) {
-                dComIfGp_setScopeMesgStatus(0x2);
+            if(dComIfGp_checkPlayerStatus0(0, daPyStts0_TELESCOPE_LOOK_e) && dComIfGp_getScopeMesgStatus() == fopMsgStts_UNKB_e) {
+                dComIfGp_setScopeMesgStatus(fopMsgStts_BOX_OPENING_e);
             }
 
             pMsg->mMsgNo = msgNo;
@@ -598,12 +597,14 @@ char* fopMsgM_messageGet(char* dst, u32 msgNo) {
                 dstPtr++;
             }
             else if ((next_as_int & 0xFFFFFF) == 0) {
+#if VERSION > VERSION_DEMO
                 strcpy(dstBuf, dComIfGs_getPlayerName());
-#if VERSION <= VERSION_JPN
-                if(msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE) {
-#else
-                if(dComIfGs_getPalLanguage() == 1 && (msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE)) {
+                if(
+#if VERSION > VERSION_JPN
+                    dComIfGs_getPalLanguage() == 1 &&
 #endif
+                    (msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE)
+                ) {
                     s32 bufLen = strlen(dstBuf);
                     current = (dstBuf)[bufLen - 1];
                     if(current == 's' || current == 'S' || current == 'z' || current == 'Z' || current == 'x' || current == 'X') {
@@ -613,6 +614,7 @@ char* fopMsgM_messageGet(char* dst, u32 msgNo) {
                         strcat(dstBuf, "s");
                     }
                 }
+#endif
 
                 for (char* bufPtr = dstBuf; *bufPtr != '\0'; bufPtr++) {
                     *dstPtr = *bufPtr;
@@ -659,12 +661,14 @@ void fopMsgM_passwordGet(char* dst, u32 msgNo) {
     while(cursor = (u32*)src + curOffset, current = *cursor, (s8)*cursor != '\0') {
         if(*cursor == 0x1A) {
             if((cursor[1] & 0xFFFFFF) == 0) {
+#if VERSION > VERSION_DEMO
                 strcpy(dstBuf, dComIfGs_getPlayerName());
-#if VERSION <= VERSION_JPN
-                if(msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE) {
-#else
-                if(dComIfGs_getPalLanguage() == 1 && (msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE)) {
+                if(
+#if VERSION > VERSION_JPN
+                    dComIfGs_getPalLanguage() == 1 &&
 #endif
+                    (msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE)
+                ) {
                     s32 bufLen = strlen(dstBuf);
                     current = (dstBuf)[bufLen - 1];
                     if(current == 's' || current == 'S' || current == 'z' || current == 'Z' || current == 'x' || current == 'X') {
@@ -674,6 +678,7 @@ void fopMsgM_passwordGet(char* dst, u32 msgNo) {
                         strcat(dstBuf, "s");
                     }
                 }
+#endif
 
                 for(s32 i = 0; dstBuf[i] != '\0'; i++) {
                     dst[numRead] = dstBuf[i];
@@ -794,12 +799,12 @@ bool fopMsgM_nextMsgFlagCheck() {
 
 /* 8002C5BC-8002C624       .text fopMsgM_getScopeMode__Fv */
 bool fopMsgM_getScopeMode() {
-    if(dComIfGp_checkPlayerStatus0(0, daPyStts0_TELESCOPE_LOOK_e) && dComIfGp_getScopeMesgStatus() == 0xB && !dComIfGp_event_runCheck()) {
-        dComIfGp_setScopeMesgStatus(0xD);
+    if(dComIfGp_checkPlayerStatus0(0, daPyStts0_TELESCOPE_LOOK_e) && dComIfGp_getScopeMesgStatus() == fopMsgStts_UNKB_e && !dComIfGp_event_runCheck()) {
+        dComIfGp_setScopeMesgStatus(fopMsgStts_UNKD_e);
         return true;
     }
-    if(dComIfGp_getScopeMesgStatus() == 0x11) {
-        dComIfGp_setMesgStatus(0xD);
+    if(dComIfGp_getScopeMesgStatus() == fopMsgStts_BOX_CLOSING_e) {
+        dComIfGp_setMesgStatus(fopMsgStts_UNKD_e);
         return true;
     }
 
@@ -808,7 +813,7 @@ bool fopMsgM_getScopeMode() {
 
 /* 8002C624-8002C650       .text fopMsgM_forceSendOn__Fv */
 bool fopMsgM_forceSendOn() {
-    if (dComIfGp_getScopeMesgStatus() == 10) {
+    if (dComIfGp_getScopeMesgStatus() == fopMsgStts_CLOSE_WAIT_e) {
         pushButton = true;
         return true;
     }
@@ -843,8 +848,8 @@ bool fopMsgM_checkMessageSend() {
 
 /* 8002C684-8002C6B0       .text fopMsgM_releaseScopeMode__Fv */
 bool fopMsgM_releaseScopeMode() {
-    if (dComIfGp_getScopeMesgStatus() == 13) {
-        dComIfGp_setScopeMesgStatus(11);
+    if (dComIfGp_getScopeMesgStatus() == fopMsgStts_UNKD_e) {
+        dComIfGp_setScopeMesgStatus(fopMsgStts_UNKB_e);
         return true;
     }
 
@@ -2382,51 +2387,69 @@ void fopMsgM_int_to_char2(char* dst, int num) {
 /* 800351E8-80035408       .text getString__21fopMsgM_msgDataProc_cFPcUl */
 void fopMsgM_msgDataProc_c::getString(char* dst, u32 msgNo) {
     /* Nonmatching */
+    s32 i;
     fopMsgM_msgGet_c msgGet;
     msgGet.mMsgIdx = 0;
     msgGet.mGroupID = 0;
     msgGet.mMsgNo = 0;
     msgGet.mResMsgNo = 0;
+#if VERSION > VERSION_DEMO
     static const char* name = "no name";
+#endif
 
+#if VERSION > VERSION_DEMO
     s32 curOffset = 0;
     s32 numRead = 0;
+#endif
 
     mesg_header* header;
     const char* src;
+#if VERSION > VERSION_DEMO
     if(msgNo == 0) {
         src = name;
     }
-    else {
+    else
+#endif
+    {
         header = msgGet.getMesgHeader(msgNo);
         src = msgGet.getMessage(header);
     }
 
-    char dstBuf[24];
+#if VERSION == VERSION_DEMO
+    s32 curOffset = 0;
+    s32 numRead = 0;
+#endif
+
     const u8* cursor;
     s32 current;
     while(cursor = (u8*)src + curOffset, current = *cursor, (s8)*cursor != '\0') {
         if(*cursor == 0x1A) {
             int codeLen = cursor[1];
             if(cursor[2] == 0 && cursor[3] == 0 && cursor[4] == 0) {
-                strcpy(dstBuf, dComIfGs_getPlayerName());
-#if VERSION <= VERSION_JPN
-                if(msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE) {
+#if VERSION == VERSION_DEMO
+                const char* str = dComIfGs_getPlayerName();
 #else
-                if(dComIfGs_getPalLanguage() == 1 && (msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE)) {
+                char str[24];
+                strcpy(str, dComIfGs_getPlayerName());
+                if(
+#if VERSION > VERSION_JPN
+                    dComIfGs_getPalLanguage() == 1 &&
 #endif
-                    s32 bufLen = strlen(dstBuf);
-                    current = (dstBuf)[bufLen - 1];
+                    (msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE)
+                ) {
+                    s32 bufLen = strlen(str);
+                    current = (str)[bufLen - 1];
                     if(current == 's' || current == 'S' || current == 'z' || current == 'Z' || current == 'x' || current == 'X') {
-                        strcat(dstBuf, "\'");
+                        strcat(str, "\'");
                     }
                     else {
-                        strcat(dstBuf, "s");
+                        strcat(str, "s");
                     }
                 }
+#endif
 
-                for(s32 i = 0; dstBuf[i] != '\0'; i++) {
-                    dst[numRead] = dstBuf[i];
+                for(i = 0; str[i] != '\0'; i++) {
+                    dst[numRead] = str[i];
                     numRead++;
                 }
             }
@@ -2474,11 +2497,12 @@ void fopMsgM_msgDataProc_c::getString(char* dst, char*, char*, char*, u32 msgNo,
             int codeLen = cursor[1];
             if(cursor[2] == 0 && cursor[3] == 0 && cursor[4] == 0) {
                 strcpy(dstBuf, dComIfGs_getPlayerName());
-#if VERSION <= VERSION_JPN
-                if(msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE) {
-#else
-                if(dComIfGs_getPalLanguage() == 1 && (msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE)) {
+                if(
+#if VERSION > VERSION_JPN
+                    dComIfGs_getPalLanguage() == 1 &&
 #endif
+                    (msgNo == 0x33B || msgNo == 0xC8B || msgNo == 0x1D21 || msgNo == 0x31D7 || msgNo == 0x37DD || msgNo == 0x37DE)
+                ) {
                     s32 bufLen = strlen(dstBuf);
                     current = (dstBuf)[bufLen - 1];
                     if(current == 's' || current == 'S' || current == 'z' || current == 'Z' || current == 'x' || current == 'X') {
@@ -2569,7 +2593,7 @@ void fopMsgM_msgDataProc_c::getRubyString(char* param_1, char* param_2, char* pa
 /* 80035D28-80035E40       .text tag_len_kaisen_game__21fopMsgM_msgDataProc_cFPiPfPiPiPi */
 void fopMsgM_msgDataProc_c::tag_len_kaisen_game(int* param_1, f32* param_2, int* param_3, int* param_4, int* param_5) {
     char buf[12];
-    fopMsgM_int_to_char(buf, dComIfGs_getEventReg(0xBEFF), false);
+    fopMsgM_int_to_char(buf, dComIfGs_getEventReg(dSv_event_flag_c::UNK_BEFF), false);
     strcat(buf, "");
 
     char* p1;
@@ -2727,7 +2751,7 @@ void fopMsgM_msgDataProc_c::tag_len_letter_game_max(int* param_1, f32* param_2, 
     /* Nonmatching */
 
     char buf[24];
-    fopMsgM_int_to_char(buf, dComIfGs_getEventReg(0x8AFF), false);
+    fopMsgM_int_to_char(buf, dComIfGs_getEventReg(dSv_event_flag_c::UNK_8AFF), false);
 
     char* p1;
     u8 *p2; 
@@ -2957,7 +2981,7 @@ void fopMsgM_msgDataProc_c::tag_len_point(int* param_1, f32* param_2, int* param
 
     char buf[24];
 
-    int num = dComIfGs_getEventReg(0x86FF);
+    int num = dComIfGs_getEventReg(dSv_event_flag_c::UNK_86FF);
     fopMsgM_int_to_char(buf, num, false);
     if(num != 1) {
         strcat(buf, " points");
@@ -3029,8 +3053,8 @@ void fopMsgM_msgDataProc_c::tag_len_rev_pendant(int* param_1, f32* param_2, int*
 
     char buf[28];
 
-    int num = dComIfGs_getEventReg(0xC0FF);
-    fopMsgM_int_to_char(buf, dComIfGs_getEventReg(0xC0FF), false);
+    int num = dComIfGs_getEventReg(dSv_event_flag_c::UNK_C0FF);
+    fopMsgM_int_to_char(buf, dComIfGs_getEventReg(dSv_event_flag_c::UNK_C0FF), false);
     if(num != 1) {
         strcat(buf, "");
     }
@@ -3612,7 +3636,7 @@ void fopMsgM_msgDataProc_c::tag_kaisen_game() {
     /* Nonmatching */
     char buf[12];
 
-    int num = dComIfGs_getEventReg(0xBEFF);
+    int num = dComIfGs_getEventReg(dSv_event_flag_c::UNK_BEFF);
     fopMsgM_int_to_char(buf, num, false);
 
     char* p1 = buf;
@@ -3644,7 +3668,7 @@ void fopMsgM_msgDataProc_c::tag_kaisen_game() {
         field_0x20 = field_0x108[field_0x130] + field_0x14 + 0.5f;
     }
 
-    dComIfGs_getEventReg(0xBEFF);
+    dComIfGs_getEventReg(dSv_event_flag_c::UNK_BEFF);
 
     char buf2[12];
     strcpy(buf2, "");
@@ -3836,7 +3860,7 @@ void fopMsgM_msgDataProc_c::tag_letter_game_max() {
     /* Nonmatching */
     char buf[24];
 
-    int num = dComIfGs_getEventReg(0x8AFF);
+    int num = dComIfGs_getEventReg(dSv_event_flag_c::UNK_8AFF);
     fopMsgM_int_to_char(buf, num, false);
 
     char* p1 = buf;
@@ -4175,7 +4199,7 @@ void fopMsgM_msgDataProc_c::tag_point() {
     /* Nonmatching */
     char buf[24];
 
-    int num = dComIfGs_getEventReg(0x86FF);
+    int num = dComIfGs_getEventReg(dSv_event_flag_c::UNK_86FF);
     fopMsgM_int_to_char(buf, num, false);
     if(num != 1) {
         strcat(buf, " points");
@@ -4269,7 +4293,7 @@ void fopMsgM_msgDataProc_c::tag_rev_pendant() {
     /* Nonmatching */
     char buf[16];
 
-    int num = dComIfGs_getEventReg(0xC0FF);
+    int num = dComIfGs_getEventReg(dSv_event_flag_c::UNK_C0FF);
     fopMsgM_int_to_char(buf, num, false);
 
     char* p1 = buf;

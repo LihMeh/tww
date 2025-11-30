@@ -3,6 +3,7 @@
  * Enemy - Keese
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_ki.h"
 #include "d/actor/d_a_player.h"
 #include "m_Do/m_Do_ext.h"
@@ -53,9 +54,9 @@ public:
     }
     virtual ~kiHIO_c() {}
 
-    void genMessage(JORMContext*);
+    void genMessage(JORMContext* ctx) {}
 
-    /* 0x04 */ s8 m04;
+    /* 0x04 */ s8 mNo;
     /* 0x05 */ u8 m05;
     /* 0x06 */ u8 m06;
     /* 0x07 */ u8 m07;
@@ -84,16 +85,10 @@ public:
     /* 0x58 */ f32 m58;
 }; // size = 0x5C
 
-#include "weak_bss_3569.h"
-#include "weak_bss_936_to_1036.h"
-
 static bool hio_set;
 static kiHIO_c l_kiHIO;
 static s32 ki_all_count;
 static s32 ki_fight_count;
-
-#include "weak_data_2100_2080.h"
-#include "weak_data_1811.h"
 
 static u16 ki_tex_anm_idx[] = {KI_BTP_AKE1, KI_BTP_TOJI1, KI_BTP_METOJI1, KI_BTP_GURU1};
 static u16 ki_tex_max_frame[] = { 2, 2, 3, 2 };
@@ -202,7 +197,6 @@ BOOL ki_player_bg_check(ki_class* i_this) {
 /* 00000C58-00000F04       .text daKi_Draw__FP8ki_class */
 static BOOL daKi_Draw(ki_class* i_this) {
     fopEn_enemy_c* a_this = (fopEn_enemy_c*)&i_this->actor;
-    cXyz sp08;
 
     if (i_this->m2D4 != 0) {
         return TRUE;
@@ -242,7 +236,7 @@ static BOOL daKi_Draw(ki_class* i_this) {
         dComIfGd_setList();
     } else {
         J3DModelData* pModelData = pModel->getModelData();
-        i_this->m920->entry(pModelData, i_this->m920->getFrame());
+        i_this->m920->entry(pModelData);
         
         dComIfGd_setListMaskOff();
         i_this->mpMorf->entryDL();
@@ -712,7 +706,6 @@ s16 wall_angle_get(ki_class* i_this) {
     cXyz sp2C[2];
     cXyz sp20;
     cXyz sp14;
-    cXyz sp08;
 
     cMtx_YrotS(*calc_mtx, a_this->shape_angle.y);
     sp20.x = 0.0f;
@@ -906,7 +899,7 @@ void ki_path_move(ki_class* i_this) {
                 i_this->m2D6 = 1;
             }
 
-        case -1:
+        case -1: {
             i_this->mBehaviorType = 1;
             dPnt* point = &i_this->ppd->m_points[0];
             point += i_this->m2D6;
@@ -918,7 +911,7 @@ void ki_path_move(ki_class* i_this) {
             i_this->mPosMove.y = point->m_position.y + cM_rndFX(150.0f);
             i_this->mPosMove.z = point->m_position.z + cM_rndFX(150.0f);
             break;
-
+        }
         case 1:
             f32 x = i_this->mPosMove.x - i_this->actor.current.pos.x;
             f32 y = i_this->mPosMove.y - i_this->actor.current.pos.y;
@@ -1006,7 +999,7 @@ static BOOL daKi_Execute(ki_class* i_this) {
     i_this->mDamageSphere.SetR(40.0f);
     i_this->m6AC.SetR(l_kiHIO.m58);
 
-    if (!l_kiHIO.m06 != 0) {
+    if (l_kiHIO.m06 == 0) {
         i_this->m540 = 0;
 
         for (i = 0; i < 4; i++) {
@@ -1193,7 +1186,7 @@ static BOOL daKi_Delete(ki_class* i_this) {
     
     if (i_this->m339 != 0) {
         hio_set = false;
-        mDoHIO_deleteChild(l_kiHIO.m04);
+        mDoHIO_deleteChild(l_kiHIO.mNo);
     }
 
 #if VERSION > VERSION_DEMO
@@ -1312,10 +1305,10 @@ static cPhs_State daKi_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 30.0f,
-        },
+        }},
     };
     static dCcD_SrcSph tg_sph_src = {
         // dCcD_SrcGObjInf
@@ -1340,10 +1333,10 @@ static cPhs_State daKi_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 40.0f,
-        },
+        }},
     };
     static dCcD_SrcSph co_sph_src = {
         // dCcD_SrcGObjInf
@@ -1368,10 +1361,10 @@ static cPhs_State daKi_Create(fopAc_ac_c* a_this) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 80.0f,
-        },
+        }},
     };
 
     ki_class* i_this = (ki_class*)a_this;
@@ -1464,7 +1457,7 @@ static cPhs_State daKi_Create(fopAc_ac_c* a_this) {
         a_this->attention_info.flags = fopAc_Attn_LOCKON_BATTLE_e;
 
         if (!hio_set) {
-            l_kiHIO.m04 = mDoHIO_createChild("キース", &l_kiHIO);
+            l_kiHIO.mNo = mDoHIO_createChild("キース", &l_kiHIO);
             i_this->m339 = 1;
             hio_set = true;
         }

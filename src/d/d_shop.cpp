@@ -3,6 +3,7 @@
 // Translation Unit: d_shop.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_shop.h"
 #include "f_op/f_op_camera_mng.h"
 #include "f_op/f_op_msg.h"
@@ -1028,8 +1029,8 @@ void ShopItems_c::createItem(int numItems, int roomNo) {
             Item_set_pos_data_tbl[mItemSetListGlobalIdx][0].z
         );
         
-        dComIfGs_isEventBit(0x0D04);
-        dComIfGs_isEventBit(0x0D02);
+        dComIfGs_isEventBit(dSv_event_flag_c::UNK_0D04);
+        dComIfGs_isEventBit(dSv_event_flag_c::UNK_0D02);
         
         mItemActorProcessIds[0] = fopAcM_createShopItem(
             &pos, Item_set_data_tbl[mItemSetListGlobalIdx][0]->mpItemData->mItemNo,
@@ -1037,7 +1038,7 @@ void ShopItems_c::createItem(int numItems, int roomNo) {
         );
         pos.x += 75.0f;
         
-        if (dComIfGs_isEventBit(0x0D04)) {
+        if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_0D04)) {
             mItemActorProcessIds[1] = fopAcM_createShopItem(
                 &pos, Item_set_data_tbl[mItemSetListGlobalIdx][1]->mpItemData->mItemNo,
                 &angle, roomNo
@@ -1045,7 +1046,7 @@ void ShopItems_c::createItem(int numItems, int roomNo) {
             pos.x += 75.0f;
         }
         
-        if (dComIfGs_isEventBit(0x0D02)) {
+        if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_0D02)) {
             mItemActorProcessIds[2] = fopAcM_createShopItem(
                 &pos, Item_set_data_tbl[mItemSetListGlobalIdx][2]->mpItemData->mItemNo,
                 &angle, roomNo

@@ -3,6 +3,7 @@
  * Object - Hats (Traveling Merchants)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_hat.h"
 #include "d/actor/d_a_npc_roten.h"
 #include "d/d_a_obj.h"
@@ -39,11 +40,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 70.0f,
         /* Height */ 80.0f,
-    },
+    }},
 };
 
 

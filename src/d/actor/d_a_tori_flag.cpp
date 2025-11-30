@@ -3,6 +3,7 @@
  * Object - Great Sea - Small red flag (Flight Control Platform, Horseshoe Island)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_tori_flag.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -14,8 +15,6 @@
 #include "d/res/res_cloth.h"
 #include "f_op/f_op_actor_mng.h"
 #include "d/d_a_obj.h"
-
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
 
 static dCcD_SrcCyl l_cyl_src = {
     // dCcD_SrcGObjInf
@@ -40,11 +39,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 30.0f,
         /* Height */ 400.0f,
-    },
+    }},
 };
 
 /* 000000EC-00000118       .text __ct__17daTori_Flag_HIO_cFv */

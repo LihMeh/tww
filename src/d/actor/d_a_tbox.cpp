@@ -3,6 +3,7 @@
  * Treasure Chest / 宝箱 (Takarabako)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_tbox.h"
 #include "d/res/res_dalways.h"
 #include "JSystem/JUtility/JUTAssert.h"
@@ -20,7 +21,6 @@
 #include "m_Do/m_Do_hostIO.h"
 #include "m_Do/m_Do_mtx.h"
 
-
 #define FUNC_TYPE_NORMAL 0
 #define FUNC_TYPE_SWITCH 1
 #define FUNC_TYPE_ENEMIES 2
@@ -30,8 +30,6 @@
 #define FUNC_TYPE_TACT 6
 #define FUNC_TYPE_EXTRA_SAVE_INFO 7
 #define FUNC_TYPE_EXTRA_SAVE_INFO_SPAWN 8
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 extern dCcD_SrcCyl dNpc_cyl_src;
 
@@ -464,16 +462,14 @@ void daTbox_c::CreateInit() {
     mOpenAnm.setPlaySpeed(0.0f);
 
     if (checkOpen()) {
-        J3DFrameCtrl* frameCtrl = mOpenAnm.getFrameCtrl();
-        frameCtrl->setFrame(frameCtrl->getEnd());
+        mOpenAnm.setFrame(mOpenAnm.getEndFrame());
 
         setAction(&daTbox_c::actionWait);
 
         if (checkEnv()) {
             mInvisibleScrollVal = 2.0f;
 
-            frameCtrl = mpAppearRegAnm->getFrameCtrl();
-            frameCtrl->setFrame(frameCtrl->getEnd());
+            mpAppearRegAnm->setFrame(mpAppearRegAnm->getEndFrame());
         }
     }
     else {
@@ -492,8 +488,7 @@ void daTbox_c::CreateInit() {
 
                 mInvisibleScrollVal = 2.0f;
 
-                J3DFrameCtrl* frameCtrl = mpAppearRegAnm->getFrameCtrl();
-                frameCtrl->setFrame(frameCtrl->getEnd());
+                mpAppearRegAnm->setFrame(mpAppearRegAnm->getEndFrame());
             }
             else {
                 flagOn(daTboxFlg_UNK_04);
@@ -569,7 +564,7 @@ s32 daTbox_c::boxCheck() {
     fopAc_ac_c* player = dComIfGp_getPlayer(0);
     cXyz playerChestDiff = player->current.pos - home.pos;
 
-    if (playerChestDiff.abs2XZ() < 10000.0f) {
+    if (playerChestDiff.abs2XZ() < SQUARE(100.0f)) {
         if (fopAcM_seenActorAngleY(this, dComIfGp_getPlayer(0)) < 0x2000 && fopAcM_seenActorAngleY(player, this) < 0x2000) {
             return TRUE;
         }
@@ -746,7 +741,7 @@ void daTbox_c::demoProcAppear() {
     }
 
     if (mAppearTimer == 0x04 && mSmokeCB.getEmitter() != NULL) {
-        mSmokeCB.end();
+        mSmokeCB.remove();
     }
 
     if (mAppearTimer != 0x00) {

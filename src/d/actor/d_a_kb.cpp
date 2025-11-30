@@ -3,6 +3,7 @@
  * NPC - Pig
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_kb.h"
 #include "m_Do/m_Do_ext.h"
 #include "d/d_procname.h"
@@ -205,10 +206,10 @@ static cPhs_State daKb_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
-        },
+        }},
     };
 }
 

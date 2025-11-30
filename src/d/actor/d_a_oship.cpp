@@ -3,6 +3,7 @@
  * Enemy - Warship (Great Sea enemy ship)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_oship.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -31,11 +32,11 @@ const dCcD_SrcCyl daOship_c::m_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 75.0f,
         /* Height */ 115.0f,
-    },
+    }},
 };
 
 

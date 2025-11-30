@@ -11,7 +11,6 @@
 #include "d/d_com_inf_game.h"
 #include "d/actor/d_a_sea.h"
 
-#define CHECK_FLOAT_CLASS(line, x) JUT_ASSERT(line, !(fpclassify(x) == 1));
 #define CHECK_FLOAT_RANGE(line, x) JUT_ASSERT(line, -1.0e32f < x && x < 1.0e32f);
 #define CHECK_VEC3_RANGE(line, v) JUT_ASSERT(line, -1.0e32f < v.x && v.x < 1.0e32f && -1.0e32f < v.y && v.y < 1.0e32f && -1.0e32f < v.z && v.z < 1.0e32f)
 #define CHECK_PVEC3_RANGE(line, v) JUT_ASSERT(line, -1.0e32f < v->x && v->x < 1.0e32f && -1.0e32f < v->y && v->y < 1.0e32f && -1.0e32f < v->z && v->z < 1.0e32f)
@@ -148,8 +147,8 @@ void dBgS_Acch::GroundCheck(dBgS& i_bgs) {
         }
     }
 
-    if (field_0xb0 && !(m_flags & GROUND_HIT)) {
-        m_flags |= GROUND_AWAY;
+    if (field_0xb0 && !ChkGroundHit()) {
+        SetGroundAway();
     }
 }
 
@@ -186,7 +185,7 @@ void dBgS_Acch::LineCheck(dBgS& i_bgs) {
         linChk.SetExtChk(*this);
         if (i_bgs.LineCross(&linChk)) {
             *pm_pos = linChk.GetLinP()->GetEnd();
-            m_flags |= LINE_CHECK_HIT;
+            OnLineCheckHit();
 
             if (pm_out_poly_info != NULL)
                 pm_out_poly_info->SetPolyInfo(linChk);
@@ -208,16 +207,16 @@ void dBgS_Acch::LineCheck(dBgS& i_bgs) {
 
 /* 800A3460-800A3F50       .text CrrPos__9dBgS_AcchFR4dBgS */
 void dBgS_Acch::CrrPos(dBgS& i_bgs) {
-    if (m_flags & 0x1) {
+    if (m_flags & UNK_1) {
         return;
     }
 
     JUT_ASSERT(494, pm_pos != NULL);
     JUT_ASSERT(495, pm_old_pos != NULL);
 
-    CHECK_FLOAT_CLASS(535, pm_pos->x);
-    CHECK_FLOAT_CLASS(536, pm_pos->y);
-    CHECK_FLOAT_CLASS(537, pm_pos->z);
+    JUT_ASSERT(535, !isnan(pm_pos->x));
+    JUT_ASSERT(536, !isnan(pm_pos->y));
+    JUT_ASSERT(537, !isnan(pm_pos->z));
     CHECK_PVEC3_RANGE(541, pm_pos);
 
     i_bgs.MoveBgCrrPos(m_gnd, ChkGroundHit(), pm_pos, pm_angle, pm_shape_angle);
@@ -322,9 +321,9 @@ void dBgS_Acch::CrrPos(dBgS& i_bgs) {
     }
 
 #if VERSION > VERSION_DEMO
-    CHECK_FLOAT_CLASS(780, pm_pos->x);
-    CHECK_FLOAT_CLASS(781, pm_pos->y);
-    CHECK_FLOAT_CLASS(782, pm_pos->z);
+    JUT_ASSERT(780, !isnan(pm_pos->x));
+    JUT_ASSERT(781, !isnan(pm_pos->y));
+    JUT_ASSERT(782, !isnan(pm_pos->z));
     CHECK_PVEC3_RANGE(786, pm_pos);
 #endif
 }

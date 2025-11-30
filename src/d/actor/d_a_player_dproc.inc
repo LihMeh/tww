@@ -10,6 +10,7 @@
  * a function from this file.
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "SSystem/SComponent/c_counter.h"
 #include "d/actor/d_a_boko.h"
 #include "d/actor/d_a_demo_item.h"
@@ -526,10 +527,7 @@ BOOL daPy_lk_c::dProcOpenTreasure_init() {
         if (boko != NULL) {
             mDoMtx_stack_c::transS(current.pos);
             mDoMtx_stack_c::YrotM(shape_angle.y + 0x2000);
-            MtxP mtx = mDoMtx_stack_c::get();
-            if (boko->mpModel != NULL) {
-                boko->mpModel->setBaseTRMtx(mtx);
-            }
+            boko->setMatrix(mDoMtx_stack_c::get());
         }
     }
     fopAc_ac_c* partner_p = fopAcM_getEventPartner(this);
@@ -1075,7 +1073,7 @@ BOOL daPy_lk_c::dProcDead() {
                     m3574 = 1;
                 }
             }
-            if ((m3574 != 0) && (g_dComIfG_gameInfo.play.mGameoverStatus == 2)) {
+            if (m3574 != 0 && dComIfGp_getGameoverStatus() == 2) {
                 dComIfGs_setGameStartStage();
                 dComIfGs_gameStart();
             }
@@ -1251,8 +1249,7 @@ BOOL daPy_lk_c::dProcTalismanWait() {
     mpEquipItemModel->setBaseTRMtx(mDoMtx_stack_c::get());
     mSwordAnim.play();
     J3DModelData* modelData = mpEquipItemModel->getModelData();
-    f32 frame = mSwordAnim.getFrameCtrl()->getFrame();
-    mSwordAnim.entry(modelData, frame);
+    mSwordAnim.entry(modelData);
     mDoAud_seStart(JA_SE_OBJ_OMAMORI, pcVar1, 0, mReverb);
     if (mDemo.getParam0() != 0) {
         onModeFlg(ModeFlg_00000080);
@@ -2078,7 +2075,7 @@ BOOL daPy_lk_c::dProcGetDance_init() {
     initShipRideUseItem(iVar2, 0);
     dKy_Itemgetcol_chg_on();
     setTactModel();
-#if VERSION > VERSION_DEMO
+#if VERSION > VERSION_JPN
     m3574 = 0;
 #endif
     return true;

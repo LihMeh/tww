@@ -3,6 +3,7 @@
  * Enemy - Rat
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_nz.h"
 #include "m_Do/m_Do_ext.h"
 #include "d/d_procname.h"
@@ -195,11 +196,11 @@ void daNZ_CreateInit(nz_class*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 50.0f,
             /* Height */ 20.0f,
-        },
+        }},
     };
 }
 

@@ -3,6 +3,7 @@
  * Enemy - Dexivine (Forbidden Woods, Wind Temple)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_sss.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -119,10 +120,10 @@ static cPhs_State daSss_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 20.0f,
-        },
+        }},
     };
     static dCcD_SrcSph bm_sph_src = {
         // dCcD_SrcGObjInf
@@ -147,10 +148,10 @@ static cPhs_State daSss_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 80.0f,
-        },
+        }},
     };
 }
 

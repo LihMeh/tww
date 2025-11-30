@@ -3,6 +3,7 @@
 // Translation Unit: d_a_coming2.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_coming2.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -13,18 +14,17 @@
 #include "d/actor/d_a_ship.h"
 #include "d/actor/d_a_sea.h"
 #include "d/actor/d_a_obj_barrel2.h"
-#include "d/actor/d_a_obj_doguu.h"
 
-#include "weak_bss_936_to_1036.h"  // IWYU pragma: keep
-#include "weak_data_2100_2080.h"  // IWYU pragma: keep
-#include "weak_data_1811.h"  // IWYU pragma: keep
-
-static s32 coming_make_item_no_table[] = {
+s32 daComing2::coming_make_item_no_table[] = {
     dItem_GREEN_RUPEE_e, dItem_GREEN_RUPEE_e, dItem_GREEN_RUPEE_e, dItem_GREEN_RUPEE_e, dItem_GREEN_RUPEE_e, 
     dItem_BLUE_RUPEE_e, dItem_BLUE_RUPEE_e, dItem_BLUE_RUPEE_e, dItem_BLUE_RUPEE_e, dItem_BLUE_RUPEE_e, 
     dItem_YELLOW_RUPEE_e, dItem_YELLOW_RUPEE_e, dItem_YELLOW_RUPEE_e, dItem_YELLOW_RUPEE_e, dItem_YELLOW_RUPEE_e
 };
-static GXColor colorR = {255, 100, 100, 255};
+
+static void dummy() {
+    // This may have been used in some debug drawing function.
+    static GXColor colorR = {255, 100, 100, 255};
+}
 
 namespace daComing2 {
     namespace {
@@ -232,7 +232,7 @@ BOOL daComing2::Act_c::request_barrel_exitN(int idx) {
 
     if (barrelProc != fpcM_ERROR_PROCESS_ID_e) {
         if (fopAcM_SearchByID(barrelProc, (fopAc_ac_c**)&barrel) != NULL && barrel != NULL) {
-            barrel->unk_474 = 1;
+            barrel->m474 = 1;
             return TRUE;
         } else {
             return FALSE;
@@ -281,7 +281,7 @@ BOOL daComing2::Act_c::request_all_flag_exit() {
         daObjBarrel2::Act_c* buoy;
 
         if (buoyProc != fpcM_ERROR_PROCESS_ID_e && fopAcM_SearchByID(buoyProc, (fopAc_ac_c**)&buoy) != NULL && buoy != NULL) {
-             buoy->unk_474 = 1;
+             buoy->m474 = 1;
              mStartBuoy[i].unk_00 = fpcM_ERROR_PROCESS_ID_e;
         }
     }
@@ -362,7 +362,7 @@ BOOL daComing2::Act_c::coming_wait_init() {
 void daComing2::Act_c::coming_wait_main() {
     daPy_py_c* player = daPy_getPlayerActorClass();
     if (player != NULL) {
-        if (dComIfGp_checkPlayerStatus0(0, 0x10000)) {
+        if (dComIfGp_checkPlayerStatus0(0, daPyStts0_SHIP_RIDE_e)) {
             if (unk_2A0 > 35.0f && get_coming_point() >= 2) {
                 if (unk_2A6 > 0) {
                     unk_2A6--;

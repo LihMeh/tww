@@ -161,7 +161,7 @@ enum {
     /* 0x99 */ DSNAP_TYPE_DR,
     /* 0x9A */ DSNAP_TYPE_UNK9A,
     /* 0x9B */ DSNAP_TYPE_UNK9B,
-    /* 0x9C */ DSNAP_TYPE_UNK9C,
+    /* 0x9C */ DSNAP_TYPE_CB1,
     /* 0x9D */ DSNAP_TYPE_UNK9D,
     /* 0x9E */ DSNAP_TYPE_UNK9E,
     /* 0x9F */ DSNAP_TYPE_UNK9F,
@@ -181,7 +181,7 @@ enum {
     /* 0xAD */ DSNAP_TYPE_UNKAD,
     /* 0xAE */ DSNAP_TYPE_UNKAE,
     /* 0xAF */ DSNAP_TYPE_UNKAF,
-    /* 0xB0 */ DSNAP_TYPE_UNKB0,
+    /* 0xB0 */ DSNAP_TYPE_BB,
     /* 0xB1 */ DSNAP_TYPE_UNKB1,
     /* 0xB2 */ DSNAP_TYPE_UNKB2,
     /* 0xB3 */ DSNAP_TYPE_KS,
@@ -204,12 +204,12 @@ enum {
     /* 0xC4 */ DSNAP_TYPE_UNKC4,
     /* 0xC5 */ DSNAP_TYPE_UNKC5,
     /* 0xC6 */ DSNAP_TYPE_UNKC6,
-    /* 0xC7 */ DSNAP_TYPE_UNKC7,
-    /* 0xC8 */ DSNAP_TYPE_UNKC8,
+    /* 0xC7 */ DSNAP_TYPE_BTD,
+    /* 0xC8 */ DSNAP_TYPE_BMD,
     /* 0xC9 */ DSNAP_TYPE_BST,
-    /* 0xCA */ DSNAP_TYPE_UNKCA,
+    /* 0xCA */ DSNAP_TYPE_BDK,
     /* 0xCB */ DSNAP_TYPE_UNKCB,
-    /* 0xCC */ DSNAP_TYPE_UNKCC,
+    /* 0xCC */ DSNAP_TYPE_BWD,
     /* 0xCD */ DSNAP_TYPE_UNKCD,
     /* 0xCE */ DSNAP_TYPE_UNKCE,
     /* 0xCF */ DSNAP_TYPE_UNKCF,
@@ -273,13 +273,14 @@ class dSnap_RegistObjElm {
 public:
     /* 0x00 */ dSnap_Obj m_obj;
     /* 0x34 */ f32 field_0x34;
+    /* 0x38 */ /* vtable */
 
 public:
     dSnap_RegistObjElm() {}
     virtual ~dSnap_RegistObjElm() {}
     void Init();
     void Regist(const dSnap_Obj&);
-};
+};  // Size: 0x3C
 
 class dSnap_packet : public J3DPacket {
 public:

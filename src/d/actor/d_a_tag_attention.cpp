@@ -3,6 +3,7 @@
 // Translation Unit: d_a_tag_attention.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_tag_attention.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -32,10 +33,10 @@ static dCcD_SrcSph sph_check_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 10.0f,
-    },
+    }},
 };
 
 /* 00000078-00000188       .text _create__Q214daTagAttention5Act_cFv */

@@ -3,6 +3,7 @@
  * NPC - Baito
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_npc_btsw.h"
 #include "d/d_letter.h"
 #include "d/d_snap.h"
@@ -15,8 +16,36 @@
 #include "d/d_priority.h"
 #include "d/d_cc_d.h"
 
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
+class daNpc_Btsw_HIO_c : public JORReflexible {
+public:
+    daNpc_Btsw_HIO_c();
+    virtual ~daNpc_Btsw_HIO_c() {}
+
+    void genMessage(JORMContext* ctx) {}
+
+public:
+    /* 0x04 */ s8 mNo;
+    /* 0x05 */ u8 field_0x05[0x08 - 0x05];
+    /* 0x08 */ dNpc_HIO_c mNpc;
+    /* 0x30 */ s16 field_0x30;
+    /* 0x32 */ s16 field_0x32;
+    /* 0x34 */ s16 field_0x34;
+    /* 0x36 */ s16 r_1;
+    /* 0x38 */ s16 g_1;
+    /* 0x3A */ s16 b_1;
+    /* 0x3C */ s16 r_2;
+    /* 0x3E */ s16 g_2;
+    /* 0x40 */ s16 b_2;
+    /* 0x42 */ u8 field_0x42[0x44 - 0x42];
+    /* 0x44 */ f32 field_0x44;
+    /* 0x48 */ f32 field_0x48;
+    /* 0x4C */ f32 field_0x4C;
+    /* 0x50 */ f32 field_0x50;
+    /* 0x54 */ f32 field_0x54;
+    /* 0x58 */ u8 field_0x58;
+    /* 0x59 */ u8 field_0x59[0x5C - 0x59];
+    /* 0x5C */ f32 field_0x5C;
+};  // Size: 0x60
 
 daNpc_Btsw_HIO_c l_HIO;
 
@@ -43,11 +72,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 30.0f,
         /* Height */ 80.0f,
-    },
+    }},
 };
 
 
@@ -303,7 +332,7 @@ u16 daNpc_Btsw_c::next_msgStatus(unsigned long* currMsgNo) {
             break;
         case 0x1A93:
             if (mpCurrMsg->mSelectNum == 0) {
-                dComIfGs_onEventBit(dSv_evtBit_c::UNK_2702);
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_2702);
                 *currMsgNo = 0x1A94;
             } else {
                 *currMsgNo = 0x1AA0;
@@ -311,7 +340,7 @@ u16 daNpc_Btsw_c::next_msgStatus(unsigned long* currMsgNo) {
             break;
         case 0x1AA1:
             if (mpCurrMsg->mSelectNum == 0) {
-                dComIfGs_onEventBit(dSv_evtBit_c::UNK_2702);
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_2702);
                 *currMsgNo = 0x1A94;
             } else {
                 *currMsgNo = 0x1AA2;
@@ -327,17 +356,17 @@ u16 daNpc_Btsw_c::next_msgStatus(unsigned long* currMsgNo) {
         case 0x1AA4:
         case 0x1AA5:
         case 0x1AA6:
-            if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_2701)) {
+            if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_2701)) {
                 *currMsgNo = 0x1AA7;
-            } else if (dLetter_isNoSend(0xAC03)) {
+            } else if (dLetter_isNoSend(dSv_event_flag_c::LETTER_BAITOS_MOM)) {
                 *currMsgNo = 0x1AAB;
             } else if (!dComIfGs_isSymbol(1)) {
                 *currMsgNo = 0x1AB4;
-            } else if (!dLetter_isRead(0xAC03)) {
+            } else if (!dLetter_isRead(dSv_event_flag_c::LETTER_BAITOS_MOM)) {
                 *currMsgNo = 0x1AAD;
-            } else if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_3104)) {
+            } else if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_3104)) {
                 *currMsgNo = 0x1AAC;
-                dComIfGs_onEventBit(dSv_evtBit_c::UNK_3104);
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_3104);
             } else {
                 *currMsgNo = 0x1AB3;
             }
@@ -365,23 +394,23 @@ u32 daNpc_Btsw_c::getMsg() {
         if (dComIfGp_event_chkTalkXY()) {
             msg = 0x1AA3;
         } else {
-            if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_2704)) {
-                dComIfGs_onEventBit(dSv_evtBit_c::UNK_2704);
+            if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_2704)) {
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_2704);
                 if (dComIfGs_getClearCount() == 0) {
                     msg = 0x1A91;
                 } else {
                     msg = 0x1AB5;
                 }
-            } else if (!dComIfGs_isEventBit(dSv_evtBit_c::UNK_2702)) {
+            } else if (!dComIfGs_isEventBit(dSv_event_flag_c::UNK_2702)) {
                 msg = 0x1AA1;
             } else {
-                if (dComIfGs_getEventReg(0xAB03) < 3) {
+                if (dComIfGs_getEventReg(dSv_event_flag_c::UNK_AB03) < 3) {
                     msg = 0x1AA5;
                 } else {
                     msg = 0x1AA4;
                 }
             }
-            dComIfGs_setEventReg(0xAB03, 0);
+            dComIfGs_setEventReg(dSv_event_flag_c::UNK_AB03, 0);
         }
     }
 
@@ -636,7 +665,7 @@ BOOL daNpc_Btsw_c::dummy_event_action(void*) {
         if (dComIfGp_evmng_endCheck(field_0x9C8)) {
             field_0x9C8 = -1;
             field_0x9C7 = 3;
-            dComIfGp_event_onEventFlag(8);
+            dComIfGp_event_reset();
 
             setAction(&daNpc_Btsw_c::wait_action, NULL);
         }
@@ -804,7 +833,7 @@ BOOL daNpc_Btsw_c::shiwake_game_action(void*) {
             } else if (dComIfG_getTimerPtr() == NULL) {
                 s32 staff_id = dComIfGp_evmng_getMyStaffId("Btsw");
                 dComIfGp_evmng_cutEnd(staff_id);
-                dComIfGp_event_onEventFlag(8);
+                dComIfGp_event_reset();
 
                 s16 rupees = dComIfGp_getMiniGameRupee();
                 field_0x9B0 = daNpc_Btsw_getGameEndMsg(rupees);
@@ -838,13 +867,13 @@ BOOL daNpc_Btsw_c::getdemo_action(void*) {
     if (mActionStatus == ACTION_STARTING) {
         mActionStatus++;
     } else if (mActionStatus != ACTION_ENDING && dComIfGp_evmng_endCheck("GETMOTHERLETTER")) {
-        dComIfGp_event_onEventFlag(8);
+        dComIfGp_event_reset();
 
         field_0x9C7 = 1;
         field_0x9B0 = 0x1A9C;
 
-        dComIfGs_onEventBit(dSv_evtBit_c::UNK_2701);
-        dComIfGs_setEventReg(0x8AFF, 25);
+        dComIfGs_onEventBit(dSv_event_flag_c::UNK_2701);
+        dComIfGs_setEventReg(dSv_event_flag_c::UNK_8AFF, 25);
 
         setAction(&daNpc_Btsw_c::wait_action, NULL);
     }

@@ -3,6 +3,7 @@
 // Translation Unit: d_stage.cpp
 //
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/d_stage.h"
 #include "JSystem/JKernel/JKRExpHeap.h"
 #include "JSystem/JUtility/JUTAssert.h"
@@ -21,8 +22,6 @@
 #include "f_op/f_op_scene_mng.h"
 #include "m_Do/m_Do_mtx.h"
 #include "d/actor/d_a_sea.h"
-
-#include "weak_bss_3569.h" // IWYU pragma: keep
 
 /* 80040900-80040938       .text set__18dStage_nextStage_cFPCcScsScSc */
 void dStage_nextStage_c::set(const char* i_stage, s8 i_roomId, s16 i_point, s8 i_layer, s8 i_wipe) {
@@ -322,10 +321,10 @@ void dStage_roomControl_c::checkDrawArea() const {
     static Mtx l_m[2];
     for (int i = 0; i < 2; i++) {
         mDoMtx_stack_c::transS(pos);
-        f32 scale = darkStatus.getBokoScale(i);
+        f32 scale = darkStatus.getNonScale(i);
         mDoMtx_stack_c::scaleM(scale, scale, scale);
         cMtx_copy(mDoMtx_stack_c::get(), l_m[i]);
-        dComIfGd_setSpotModel(0, l_m[i], darkStatus.getBokoAlpha(i));
+        dComIfGd_setSpotModel(0, l_m[i], darkStatus.getNonAlpha(i));
     }
 }
 
@@ -342,7 +341,7 @@ dStage_darkStatus_c* dStage_roomControl_c::getDarkStatus() {
 }
 
 /* 80041330-80041370       .text getDarkMode__20dStage_roomControl_cFv */
-u32 dStage_roomControl_c::getDarkMode() {
+s32 dStage_roomControl_c::getDarkMode() {
     dStage_roomStatus_c * pRoomStatus = &mStatus[mStayNo];
     dStage_FileList_dt_c* plist_p = pRoomStatus->mRoomDt.mpFileList;
 
@@ -1277,7 +1276,7 @@ dStage_objectNameInf* dStage_searchName(const char* i_name) {
     dStage_objectNameInf* obj = l_objectName;
 
     for (u32 i = 0; i < ARRAY_SIZE(l_objectName); i++) {
-        if (!strcmp(obj->mName, i_name)) {
+        if (!strcmp(obj->name, i_name)) {
             return obj;
         }
         obj++;
@@ -1287,12 +1286,12 @@ dStage_objectNameInf* dStage_searchName(const char* i_name) {
 }
 
 /* 800415B4-80041608       .text dStage_getName__FsSc */
-const char* dStage_getName(s16 i_procName, s8 i_subtype) {
+const char* dStage_getName(s16 i_procName, s8 i_argument) {
     dStage_objectNameInf* obj = l_objectName;
 
     for (int i = 0; i < ARRAY_SIZE(l_objectName); i++) {
-        if (obj->mProcName == i_procName && obj->mSubtype == i_subtype) {
-            return obj->mName;
+        if (obj->procname == i_procName && obj->argument == i_argument) {
+            return obj->name;
         }
         obj++;
     }
@@ -1302,8 +1301,8 @@ const char* dStage_getName(s16 i_procName, s8 i_subtype) {
 }
 
 /* 80041608-80041628       .text dStage_getName2__FsSc */
-const char* dStage_getName2(s16 i_procName, s8 i_subtype) {
-    return dStage_getName(i_procName, i_subtype);
+const char* dStage_getName2(s16 i_procName, s8 i_argument) {
+    return dStage_getName(i_procName, i_argument);
 }
 
 /* 80041628-8004169C       .text dStage_actorCreate__FP22stage_actor_data_classP16fopAcM_prm_class */
@@ -1313,9 +1312,9 @@ void dStage_actorCreate(stage_actor_data_class* i_actorData, fopAcM_prm_class* i
     if (nameinf_p == NULL) {
         JKRHeap::free(i_actorPrm, NULL);
     } else {
-        i_actorPrm->subtype = nameinf_p->mSubtype;
-        i_actorPrm->gbaName = nameinf_p->mGbaName;
-        fopAcM_create(nameinf_p->mProcName, NULL, i_actorPrm);
+        i_actorPrm->argument = nameinf_p->argument;
+        i_actorPrm->gbaName = nameinf_p->gbaName;
+        fopAcM_create(nameinf_p->procname, NULL, i_actorPrm);
     }
 }
 
@@ -1886,7 +1885,7 @@ bool dStage_setShipPos(int param_0, int i_roomNo) {
 #else
 /* 800429C0-80042B10       .text dStage_setShipPos__Fii */
 bool dStage_setShipPos(int param_0, int i_roomNo) {
-    if (strcmp(dComIfGp_getStartStageName(), "GanonM") == 0 && !dComIfGs_isEventBit(0x3D02)) {
+    if (strcmp(dComIfGp_getStartStageName(), "GanonM") == 0 && !dComIfGs_isEventBit(dSv_event_flag_c::UNK_3D02)) {
         param_0 = 0xFF;
         i_roomNo = 0xFF;
         dComIfGp_setShipId(0xFF);
@@ -1940,7 +1939,7 @@ int dStage_shipInfoInit(dStage_dt_c* i_stage, void* i_data, int i_num, void*) {
     int shipId = dComIfGp_getShipId();
     int roomId = dComIfGp_getShipRoomId();
 
-    if (dStage_chkTaura(roomId) && !dComIfGs_isEventBit(dSv_evtBit_c::RODE_KORL)) {
+    if (dStage_chkTaura(roomId) && !dComIfGs_isEventBit(dSv_event_flag_c::RODE_KORL)) {
         if (dStage_setShipPos(0x80, roomId)) {
             shipId = 0xFF;
             roomId = 0xFF;
@@ -1949,7 +1948,7 @@ int dStage_shipInfoInit(dStage_dt_c* i_stage, void* i_data, int i_num, void*) {
         }
     }
 #if VERSION == VERSION_DEMO
-    else if (strcmp(dComIfGp_getStartStageName(), "GanonM") == 0 && !dComIfGs_isEventBit(0x3D02)) {
+    else if (strcmp(dComIfGp_getStartStageName(), "GanonM") == 0 && !dComIfGs_isEventBit(dSv_event_flag_c::UNK_3D02)) {
         shipId = 0xFF;
         roomId = 0xFF;
         dComIfGp_setShipId(0xFF);
@@ -2331,8 +2330,8 @@ int dStage_changeSceneExitId(cBgS_PolyInfo& i_poly, f32 i_speed, u32 i_mode, s8 
         return 1;
     } else if (exit_id == 0x3C) {
         if (strcmp(dComIfGp_getStartStageName(), "Asoko") == 0) {
-            if (dComIfGs_isEventBit(0x808)) {
-                if (dComIfGs_isEventBit(0x520)) {
+            if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_0808)) {
+                if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_0520)) {
                     dComIfGp_setNextStage("sea", 5, 11, -1, i_speed, i_mode);
                 } else {
                     dComIfGp_setNextStage("MajyuE", 18, 0, -1, i_speed, i_mode);
@@ -2436,8 +2435,8 @@ dStage_roomStatus_c dStage_roomControl_c::mStatus[64];
 JKRExpHeap* dStage_roomControl_c::mMemoryBlock[16];
 dStage_darkStatus_c dStage_roomControl_c::mDarkStatus[8] = {
     // TODO: member names need to be documented
-    {0x19, 0x06, 0x06, 0.8f, 0.8f, 0x08080206, 0.8f, 1.0f, 2.0f, 5.0f},
-    {0x32, 0x06, 0x06, 0.8f, 2.6f, 0x08080309, 0.8f, 2.6f, 4.0f, 11.0f},
+    {0x19, 0x06, 0x06, 0.8f, 0.8f, {0x08, 0x08, 0x02, 0x06}, 0.8f, 1.0f, 2.0f, 5.0f},
+    {0x32, 0x06, 0x06, 0.8f, 2.6f, {0x08, 0x08, 0x03, 0x09}, 0.8f, 2.6f, 4.0f, 11.0f},
     {},
     {},
     {},

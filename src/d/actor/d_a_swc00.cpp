@@ -3,6 +3,7 @@
 // Translation Unit: d_a_swc00.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_swc00.h"
 #include "f_op/f_op_actor_mng.h"
 #include "d/d_procname.h"
@@ -67,7 +68,7 @@ static cPhs_State daSwc00_Create(fopAc_ac_c* i_this) {
 
     i_this->scale.x *= 100.0f;
     i_this->scale.x += 30.0f;
-    i_this->scale.x *= i_this->scale.x;
+    i_this->scale.x = SQUARE(i_this->scale.x);
     i_this->scale.y *= 100.0f;
 
     return cPhs_COMPLEATE_e;

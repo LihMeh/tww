@@ -3,6 +3,7 @@
  * NPC - Bomb-Master Cannon (Windfall Bomb Shop shopkeeper)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_npc_bms1.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -31,11 +32,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 30.0f,
         /* Height */ 80.0f,
-    },
+    }},
 };
 
 

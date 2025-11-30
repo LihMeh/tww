@@ -3,6 +3,7 @@
 // Translation Unit: d_a_door10.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_door10.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -132,7 +133,7 @@ BOOL daDoor10_c::chkStopOpen() {
 
     if ((mFrontCheck == 0 && cVar3 == 2) || (mFrontCheck == 1 && cVar3 == 5)) {
 #if VERSION == VERSION_DEMO
-        if (!dComIfGp_event_runCheck() != FALSE) {
+        if (dComIfGp_event_runCheck() == FALSE) {
             if (dComIfGp_roomControl_checkRoomDisp(roomNo)) {
                 if (fopAcM_myRoomSearchEnemy(roomNo) == NULL) {
                     if (m2A1 != 0) {
@@ -154,7 +155,7 @@ BOOL daDoor10_c::chkStopOpen() {
             m2A1 = 0x41;
         }
 #else
-        if (!dComIfGp_event_runCheck() != FALSE || m2A1 == 0) {
+        if (dComIfGp_event_runCheck() == FALSE || m2A1 == 0) {
             if (dComIfGp_roomControl_checkRoomDisp(roomNo)) {
                 if (fopAcM_myRoomSearchEnemy(roomNo) == NULL) {
                     if (m2A1 != 0) {
@@ -253,12 +254,12 @@ const char* daDoor10_c::getDzbName() {
 f32 daDoor10_c::getSize2X() {
     switch (getType()) {
         case 3:
-            return 15.0f * 15.0f;
+            return SQUARE(15.0f);
     }
-    return 110.0f * 110.0f;
+    return SQUARE(110.0f);
 }
 
-static const char daDoor10_c::M_arcname[] = "door10";
+const char daDoor10_c::M_arcname[] = "door10";
 
 /* 000007CC-000007EC       .text CheckCreateHeap__FP10fopAc_ac_c */
 static BOOL CheckCreateHeap(fopAc_ac_c* a_this) {
@@ -382,7 +383,7 @@ void daDoor10_c::setEventPrm() {
         }
     }
 
-    if (checkArea(getSize2X(), 110.0f * 110.0f, 250.0f * 250.0f)) {
+    if (checkArea(getSize2X(), SQUARE(110.0f), SQUARE(250.0f))) {
         eventInfo.setEventId(mEventIdx[m2C6]);
         eventInfo.setToolId(mToolId[m2C6]);
         eventInfo.onCondition(dEvtCnd_CANDOOR_e);

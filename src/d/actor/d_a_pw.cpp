@@ -3,6 +3,7 @@
  * Enemy - Poe
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_pw.h"
 #include "d/actor/d_a_player.h"
 #include "d/d_bg_s_lin_chk.h"
@@ -509,11 +510,11 @@ static cPhs_State daPW_Create(fopAc_ac_c* i_actor) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGCylS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
             /* Height */ 0.0f,
-        },
+        }},
     };
     static dCcD_SrcSph kantera_co_sph_src = {
         // dCcD_SrcGObjInf
@@ -538,10 +539,10 @@ static cPhs_State daPW_Create(fopAc_ac_c* i_actor) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
-        },
+        }},
     };
     fopAcM_SetupActor(i_actor, pw_class);
 }

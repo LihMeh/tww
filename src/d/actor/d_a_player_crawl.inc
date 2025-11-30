@@ -10,6 +10,7 @@
  * based on the original names of the functions it contains.
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/actor/d_a_player_HIO.h"
 #include "d/actor/d_a_player_main.h"
 #include "d/actor/d_a_player_main_data.h"
@@ -100,7 +101,7 @@ BOOL daPy_lk_c::changeCrawlAutoMoveProc(cXyz* param_1) {
     sp70.x = param_1->x + (75.0f * temp_f31);
     sp70.y = param_1->y;
     sp70.z = param_1->z + (75.0f * temp_f30);
-    mLinkLinChk.Set(param_1, &sp70, (fopAc_ac_c*)this);
+    mLinkLinChk.Set(param_1, &sp70, this);
     if (!dComIfG_Bgsp()->LineCross(&mLinkLinChk)) {
         sp4C.x = sp70.x + (50.0f * temp_f30);
         sp4C.y = sp70.y;
@@ -117,7 +118,7 @@ BOOL daPy_lk_c::changeCrawlAutoMoveProc(cXyz* param_1) {
     sp4C.z = param_1->z - (50.0f * temp_f29);
 
     sp40 = (*param_1 * 2.0f) - sp4C;
-    mLinkLinChk.Set(param_1, &sp4C, (fopAc_ac_c*)this);
+    mLinkLinChk.Set(param_1, &sp4C, this);
     if (dComIfG_Bgsp()->LineCross(&mLinkLinChk)) {
         var_r29 |= 8;
         sp58.x = sp40.x + (75.0f * temp_f29);
@@ -134,7 +135,7 @@ BOOL daPy_lk_c::changeCrawlAutoMoveProc(cXyz* param_1) {
         if (!checkCrawlSideWall(&sp4C, &sp58, &sp34, &sp28, &spA, &sp8)) {
             return false;
         }
-        mLinkLinChk.Set(param_1, &sp40, (fopAc_ac_c*)this);
+        mLinkLinChk.Set(param_1, &sp40, this);
         if (!dComIfG_Bgsp()->LineCross(&mLinkLinChk)) {
             var_r29 |= 8;
         }
@@ -625,7 +626,7 @@ BOOL daPy_lk_c::procCrawlAutoMove() {
                 m34D0 = -1;
             }
             if (m34D0 == -1) {
-                g_dComIfG_gameInfo.play.mDirection = 0;
+                dComIfGp_setAdvanceDirection(0);
                 if (shape_angle.y == current.angle.y) {
                     frameCtrl.setRate(2.0f);
                     frameCtrl.setLoop(0);

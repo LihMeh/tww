@@ -3,6 +3,7 @@
  * Enemy - Bokoblin
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_bk.h"
 #include "d/d_bg_s_gnd_chk.h"
 #include "d/res/res_bk.h"
@@ -28,9 +29,6 @@
 #include "d/d_material.h"
 #include "d/d_snap.h"
 #include "JSystem/JUtility/JUTReport.h"
-
-#include "weak_bss_936_to_1036.h" // IWYU pragma: keep
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 static u8 hio_set;
 static u8 another_hit;
@@ -671,8 +669,7 @@ static s32 target_info_count;
 static void* s_w_sub(void* param_1, void*) {
     if (fopAc_IsActor(param_1) && fopAcM_GetName(param_1) == PROC_BOKO) {
         daBoko_c* boko = (daBoko_c*)param_1;
-        // TODO: enum for boko type
-        if (fopAcM_GetParam(boko) != 4 && !fopAcM_checkCarryNow(boko)) {
+        if (fopAcM_GetParam(boko) != daBoko_c::Type_MOBLIN_SPEAR_e && !fopAcM_checkCarryNow(boko)) {
             if (target_info_count < (s32)ARRAY_SIZE(target_info)) {
                 target_info[target_info_count] = boko;
                 target_info_count++;
@@ -1076,7 +1073,7 @@ static void jyunkai(bk_class* i_this) {
                         i_this->m1217 = -1;
                         i_this->m1216 = i_this->ppd->m_num - 2;
                     }
-                    if ((i_this->ppd->m_nextID & 0xFFFF) != 0xFFFF) {
+                    if ((s32)i_this->ppd->m_nextID != 0xFFFF) {
                         i_this->ppd = dPath_GetRoomPath(i_this->ppd->m_nextID, fopAcM_GetRoomNo(i_this));
                         JUT_ASSERT(VERSION_SELECT(2907, 2907, 2924, 2924), i_this->ppd != NULL);
                     }
@@ -2134,7 +2131,7 @@ static fopAc_ac_c* yari_hit_check(bk_class* i_this) {
         i_this->m1040.MoveCAt(i_this->m11A8);
         dComIfG_Ccsp()->Set(&i_this->m1040);
         if (i_this->m02D5 != 0) {
-            dComIfG_Ccsp_SetMass(&i_this->m1040, 3);
+            dComIfG_Ccsp()->SetMass(&i_this->m1040, 3);
         }
         if (i_this->m1040.ChkAtHit()) {
             i_this->m0B78 = 5;
@@ -2649,10 +2646,10 @@ static void fail(bk_class* i_this) {
         fopAcM_onActor(i_this);
         
         if (i_this->mType != 4) {
-            if (dComIfGs_isEventBit(0x0301)) {
-                dComIfGs_onEventBit(0x0480);
+            if (dComIfGs_isEventBit(dSv_event_flag_c::UNK_0301)) {
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_0480);
             } else {
-                dComIfGs_onEventBit(0x0301);
+                dComIfGs_onEventBit(dSv_event_flag_c::UNK_0301);
             }
         }
         break;
@@ -2818,7 +2815,7 @@ static void wepon_search(bk_class* i_this) {
         if (i_this->m0300[1] == 24) {
             if (boko != NULL && !fopAcM_checkCarryNow(boko)) {
                 i_this->m0B30 = 2;
-                if (fopAcM_GetParam(boko) == 0) {
+                if (fopAcM_GetParam(boko) == daBoko_c::Type_BOKO_STICK_e) {
                     i_this->m02D5 = 0;
                     i_this->m1040.SetAtType(AT_TYPE_UNK2000);
                     i_this->m1040.SetAtSe(dCcG_SE_UNK4);
@@ -2902,7 +2899,7 @@ static void d_dozou(bk_class* i_this) {
     case 1:
         if (
             (i_this->m02B7 != 0xFF && dComIfGs_isSwitch(i_this->m02B7, fopAcM_GetRoomNo(i_this))) ||
-            (i_this->m02B7 == 0xFF && dComIfGs_isEventBit(0x3802))
+            (i_this->m02B7 == 0xFF && dComIfGs_isEventBit(dSv_event_flag_c::COLORS_IN_HYRULE))
         ) {
             i_this->mpMorf->setPlaySpeed(1.0f);
             i_this->dr.mMode = 2;
@@ -2936,7 +2933,7 @@ static void carry_drop(bk_class* i_this) {
     
     switch (i_this->dr.mMode) {
     case 0:
-        dComIfGs_onEventBit(0x0004);
+        dComIfGs_onEventBit(dSv_event_flag_c::UNK_0004);
         i_this->dr.mMode = 1;
         anm_init(i_this, BK_BCK_BK_KOUKA, 3.0f, J3DFrameCtrl::EMode_NONE, 1.0f, -1);
         // Fall-through
@@ -3332,7 +3329,7 @@ static void Bk_move(bk_class* i_this) {
             i_this->m1040.OffAtVsPlayerBit();
             i_this->m1040.SetAtSpl(dCcG_At_Spl_UNK1);
             dComIfG_Ccsp()->Set(&i_this->m1040);
-            dComIfG_Ccsp_SetMass(&i_this->m1040, 3);
+            dComIfG_Ccsp()->SetMass(&i_this->m1040, 3);
             
             if (i_this->m1040.ChkAtHit() && actor->speed.y < -50.0f) {
                 actor->speed.y = 0.0f;
@@ -4209,13 +4206,13 @@ static BOOL daBk_Execute(bk_class* i_this) {
         }
         
         if (i_this->m1214 != 0) {
-            daBoko_c* temp = (daBoko_c*)fopAcM_SearchByID(i_this->m1200);
-            if (temp != NULL) {
+            daBoko_c* boko = (daBoko_c*)fopAcM_SearchByID(i_this->m1200);
+            if (boko != NULL) {
                 i_this->m1214 = 0;
                 i_this->m0B30 = 1;
-                fopAcM_setCarryNow(temp, FALSE);
+                fopAcM_setCarryNow(boko, FALSE);
                 MtxTrans(-10000.0f, -10000.0f, 0.0f, 0);
-                temp->setMatrix(*calc_mtx);
+                boko->setMatrix(*calc_mtx);
             }
         }
         
@@ -4361,9 +4358,9 @@ static BOOL daBk_Execute(bk_class* i_this) {
     enemy_fire(&i_this->mEnemyFire);
     
     if (i_this->m0B30 != 0) {
-        daBoko_c* r29 = (daBoko_c*)fopAcM_SearchByID(i_this->m1200);
-        if (r29 != NULL) {
-            if (fopAcM_checkCarryNow(r29)) {
+        daBoko_c* boko = (daBoko_c*)fopAcM_SearchByID(i_this->m1200);
+        if (boko != NULL) {
+            if (fopAcM_checkCarryNow(boko)) {
                 if (i_this->m0B7B == 0) {
                     int jointIdx = 0x2C; // buki joint
                     MTXCopy(i_this->mpMorf->getModel()->getAnmMtx(jointIdx), *calc_mtx);
@@ -4396,7 +4393,7 @@ static BOOL daBk_Execute(bk_class* i_this) {
                     s16 angleX = 0x5B1B + REG8_S(5);
                     cMtx_XrotM(*calc_mtx, angleX);
                 }
-                r29->setMatrix(*calc_mtx);
+                boko->setMatrix(*calc_mtx);
                 cXyz sp64;
                 sp64.x = REG8_F(12);
                 sp64.y = REG8_F(13);
@@ -4418,7 +4415,7 @@ static BOOL daBk_Execute(bk_class* i_this) {
     MtxPosition(&sp58, &sp4C);
     i_this->m0B88.SetC(sp4C);
     dComIfG_Ccsp()->Set(&i_this->m0B88);
-    dComIfG_Ccsp_SetMass(&i_this->m0B88, 3);
+    dComIfG_Ccsp()->SetMass(&i_this->m0B88, 3);
     
     cXyz sp40 = i_this->m116C;
     cXyz sp34 = i_this->current.pos;
@@ -4625,91 +4622,91 @@ static BOOL useHeapInit(fopAc_ac_c* i_actor) {
     };
     static __jnt_hit_data_c search_data[] = {
         {
-            /* mShapeType  */ 1, // Sphere
+            /* mShapeType  */ JntHitType_SPH_e,
             /* mJointIndex */ 0x01, // hip1 joint
             /* mRadius     */ 20.0f,
             /* mpOffsets   */ hip_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x03, // momoL joint
             /* mRadius     */ 5.0f,
             /* mpOffsets   */ momo_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x04, // suneL1 joint
             /* mRadius     */ 2.5f,
             /* mpOffsets   */ sune_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x08, // momorR joint
             /* mRadius     */ 5.0f,
             /* mpOffsets   */ momo_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x09, // suneR1 joint
             /* mRadius     */ 2.5f,
             /* mpOffsets   */ sune_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x0C, // sippo1 joint
             /* mRadius     */ 3.0f,
             /* mpOffsets   */ shipo_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x0D, // sippo2 joint
             /* mRadius     */ 2.5f,
             /* mpOffsets   */ shipo_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x0E, // sippo3 joint
             /* mRadius     */ 1.5f,
             /* mpOffsets   */ shipo_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x0F, // sippo4 joint
             /* mRadius     */ 2.5f,
             /* mpOffsets   */ shipo_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x10, // mune joint
             /* mRadius     */ 20.0f,
             /* mpOffsets   */ mune1_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x10, // mune joint
             /* mRadius     */ 15.0f,
             /* mpOffsets   */ mune2_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x21, // udeL2 joint
             /* mRadius     */ 6.0f,
             /* mpOffsets   */ udeL_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x22, // udeL3 joint
             /* mRadius     */ 3.0f,
             /* mpOffsets   */ udeL_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x29, // udeR2 joint
             /* mRadius     */ 6.0f,
             /* mpOffsets   */ udeR_offset,
         },
         {
-            /* mShapeType  */ 0, // Cylinder
+            /* mShapeType  */ JntHitType_CYL_e,
             /* mJointIndex */ 0x2A, // udeR3 joint
             /* mRadius     */ 3.0f,
             /* mpOffsets   */ udeR_offset,
@@ -4913,11 +4910,11 @@ static cPhs_State daBk_Create(fopAc_ac_c* i_actor) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGCylS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 62.5f,
                 /* Height */ 100.0f,
-            },
+            }},
         };
         i_this->m0B88.Set(co_cyl_src);
         i_this->m0B88.SetStts(&i_this->dr.mStts);
@@ -4944,11 +4941,11 @@ static cPhs_State daBk_Create(fopAc_ac_c* i_actor) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGCylS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 30.0f,
                 /* Height */ 112.5f,
-            },
+            }},
         };
         i_this->m0CB8.Set(tg_cyl_src);
         i_this->m0CB8.SetStts(&i_this->dr.mStts);
@@ -4975,10 +4972,10 @@ static cPhs_State daBk_Create(fopAc_ac_c* i_actor) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGSphS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 37.5f,
-            },
+            }},
         };
         i_this->m0DE8.Set(head_sph_src);
         i_this->m0DE8.SetStts(&i_this->dr.mStts);
@@ -5005,10 +5002,10 @@ static cPhs_State daBk_Create(fopAc_ac_c* i_actor) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGSphS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 100.0f,
-            },
+            }},
         };
         i_this->m1040.Set(wepon_sph_src);
         i_this->m1040.SetStts(&i_this->dr.mStts);
@@ -5035,10 +5032,10 @@ static cPhs_State daBk_Create(fopAc_ac_c* i_actor) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGSphS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 62.5f,
-            },
+            }},
         };
         i_this->m0F14.Set(defence_sph_src);
         i_this->m0F14.SetStts(&i_this->dr.mStts);

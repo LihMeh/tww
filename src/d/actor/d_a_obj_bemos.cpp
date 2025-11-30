@@ -3,6 +3,7 @@
  * Enemy - Beamos
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_bemos.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -31,11 +32,11 @@ static dCcD_SrcCyl l_cyl_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGCylS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 70.0f,
         /* Height */ 210.0f,
-    },
+    }},
 };
 
 
@@ -62,10 +63,10 @@ static dCcD_SrcSph l_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 65.0f,
-    },
+    }},
 };
 
 

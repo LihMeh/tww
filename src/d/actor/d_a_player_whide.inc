@@ -10,6 +10,7 @@
  * based on the original names of the functions it contains.
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/actor/d_a_player_HIO.h"
 #include "d/actor/d_a_player_main.h"
 
@@ -198,7 +199,7 @@ BOOL daPy_lk_c::checkWHideBackWall(cXyz* param_0) {
 
     cXyz local_18;
     local_18.set(param_0->x - 25.0f * cM_ssin(shape_angle.y), param_0->y, param_0->z - 25.0f * cM_scos(shape_angle.y));
-    mLinkLinChk.Set(param_0, &local_18, (fopAc_ac_c*)this);
+    mLinkLinChk.Set(param_0, &local_18, this);
     if (dComIfG_Bgsp()->LineCross(&mLinkLinChk)) {
         return true;
     }

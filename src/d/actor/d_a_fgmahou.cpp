@@ -3,6 +3,7 @@
 // Translation Unit: d_a_fgmahou.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_fgmahou.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -69,10 +70,10 @@ static cPhs_State daFgmahou_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 60.0f,
-        },
+        }},
     };
     static dCcD_SrcSph at_sph_src = {
         // dCcD_SrcGObjInf
@@ -97,10 +98,10 @@ static cPhs_State daFgmahou_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 30.0f,
-        },
+        }},
     };
 }
 

@@ -3,6 +3,7 @@
  * Enemy - Molgera Larva
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_bwds.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -119,10 +120,10 @@ static cPhs_State daBwds_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
-        },
+        }},
     };
     static dCcD_SrcSph body_sph_src = {
         // dCcD_SrcGObjInf
@@ -147,10 +148,10 @@ static cPhs_State daBwds_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
-        },
+        }},
     };
     static dCcD_SrcSph hs_sph_src = {
         // dCcD_SrcGObjInf
@@ -175,10 +176,10 @@ static cPhs_State daBwds_Create(fopAc_ac_c*) {
             /* SrcGObjCo SPrm    */ 0,
         },
         // cM3dGSphS
-        {
-            /* Center */ 0.0f, 0.0f, 0.0f,
+        {{
+            /* Center */ {0.0f, 0.0f, 0.0f},
             /* Radius */ 15.0f,
-        },
+        }},
     };
 }
 

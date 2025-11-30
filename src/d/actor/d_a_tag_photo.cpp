@@ -3,6 +3,7 @@
 // Translation Unit: d_a_tag_photo.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_tag_photo.h"
 #include "d/actor/d_a_npc_photo.h"
 #include "d/d_a_obj.h"
@@ -11,8 +12,6 @@
 #include "d/d_procname.h"
 #include "d/d_priority.h"
 #include "f_op/f_op_actor_mng.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 static u32 l_msg_talk[] = {
     0x2A6D,
@@ -223,7 +222,7 @@ void daTagPhoto_c::eventOrder() {
 void daTagPhoto_c::eventMove() {
     if(dComIfGp_evmng_endCheck(mPhotoTalkEventIdx) || dComIfGp_evmng_endCheck(mPhotoTalk2EventIdx)) {
         dComIfGp_event_reset();
-        dComIfGs_onEventBit(0x1601);
+        dComIfGs_onEventBit(dSv_event_flag_c::UNK_1601);
     }
     else {
         bool attn = mEventCut.getAttnFlag();

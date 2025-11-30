@@ -3,6 +3,7 @@
  * NPC - Helmaroc King (Forsaken Fortress 1 exterior)
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_demo_dk.h"
 #include "d/d_procname.h"
 #include "d/d_priority.h"
@@ -115,7 +116,7 @@ static BOOL useHeapInit(fopAc_ac_c* a_this) {
         (J3DAnmTransform*)dComIfG_getObjectRes("DEMO_DK", DEMO_DK_BCK_DK_L_WAIT1),
         J3DFrameCtrl::EMode_LOOP, 1.0f, 0, -1, 1, NULL, 0, 0x11020203);
     
-    if (i_this->mpMorf == NULL || i_this->mpMorf->mpModel == NULL) {
+    if (i_this->mpMorf == NULL || i_this->mpMorf->getModel() == NULL) {
         return FALSE;
     }
     return TRUE;

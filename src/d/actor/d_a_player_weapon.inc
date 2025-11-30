@@ -10,6 +10,7 @@
  * based on the original names of the functions it contains.
  */
 
+#include "d/dolzel.h" // IWYU pragma: keep
 #include "d/actor/d_a_player_main.h"
 #include "d/actor/d_a_player_HIO.h"
 #include "d/actor/d_a_boko.h"
@@ -17,12 +18,12 @@
 /* 80153554-801535D8       .text setEnemyWeaponAtParam__9daPy_lk_cFi */
 void daPy_lk_c::setEnemyWeaponAtParam(BOOL r4) {
     static const u8 cut_type[] = {
-        0x0B,
-        0x0D,
-        0x14,
-        0x16,
-        0x18,
-        0x1C,
+        /* daBoko_c::Type_STICK_e    */ 0x0B,
+        /* daBoko_c::Type_MACHETE_e  */ 0x0D,
+        /* daBoko_c::Type_CLUB_e     */ 0x14,
+        /* daBoko_c::Type_DN_SWORD_e */ 0x16,
+        /* daBoko_c::Type_SPEAR_e    */ 0x18,
+        /* daBoko_c::Type_PG_SWORD_e */ 0x1C,
     };
     daBoko_c* boko = (daBoko_c*)mActorKeepEquip.getActor();
     u8 cutType = cut_type[fopAcM_GetParam(boko)];
@@ -394,8 +395,7 @@ BOOL daPy_lk_c::procWeaponThrow() {
                 uVar2 = cM_atan2s(-local_34.y, dVar5);
             }
         }
-        boko->m2BA = 1;
-        boko->m2CA = uVar2;
+        boko->setThrow(uVar2);
         voiceStart(0);
         deleteEquipItem(FALSE);
     }

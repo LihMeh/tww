@@ -3,6 +3,7 @@
  * Object - Great Sea enemy cannon
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_obj_canon.h"
 #include "JSystem/J3DGraphAnimator/J3DModel.h"
 #include "JSystem/J3DGraphAnimator/J3DNode.h"
@@ -18,8 +19,6 @@
 #include "d/actor/d_a_bomb.h"
 #include "d/d_s_play.h"
 #include "d/res/res_wallbom.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 daObj_Canon_HIO_c l_HIO;
 
@@ -48,10 +47,10 @@ const dCcD_SrcSph daObj_Canon_c::m_sph_src = {
         /* SrcGObjCo SPrm    */ 0,
     },
     // cM3dGSphS
-    {
-        /* Center */ 0.0f, 0.0f, 0.0f,
+    {{
+        /* Center */ {0.0f, 0.0f, 0.0f},
         /* Radius */ 75.0f,
-    },
+    }},
 };
 
 
@@ -497,7 +496,7 @@ bool daObj_Canon_c::_execute() {
 
     if(field_0x470.getEmitter()) {
         if(cLib_calcTimer(&field_0x484) == 0) {
-            field_0x470.end();
+            field_0x470.remove();
         }
     }
 
@@ -605,7 +604,7 @@ cPhs_State daObj_Canon_c::_create() {
 /* 00001BEC-00001C50       .text _delete__13daObj_Canon_cFv */
 bool daObj_Canon_c::_delete() {
     dComIfG_resDelete(&mPhs, m_arc_name);
-    field_0x470.end();
+    field_0x470.remove();
 #if VERSION > VERSION_DEMO
     mDoAud_seDeleteObject(&field_0x450);
 #endif

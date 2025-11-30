@@ -3,6 +3,7 @@
  * Enemy - Armos
  */
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_am2.h"
 #include "d/res/res_am2.h"
 #include "f_op/f_op_actor_mng.h"
@@ -22,8 +23,6 @@
 #include "SSystem/SComponent/c_lib.h"
 #include "f_op/f_op_camera.h"
 #include "f_op/f_op_kankyo_mng.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 enum Action {
     ACTION_DOUSA       = 0x0,
@@ -1238,13 +1237,13 @@ static BOOL useHeapInit(fopAc_ac_c* i_this) {
     };
     static __jnt_hit_data_c search_data[] = {
         {
-            /* mShapeType  */ 2, // Cylinder
+            /* mShapeType  */ JntHitType_CYL2_e,
             /* mJointIndex */ 0x00, // body joint
             /* mRadius     */ 20.0f,
             /* mpOffsets   */ cyl_eye_offset,
         },
         {
-            /* mShapeType  */ 1, // Sphere
+            /* mShapeType  */ JntHitType_SPH_e,
             /* mJointIndex */ 0x00, // body joint
             /* mRadius     */ 20.0f,
             /* mpOffsets   */ sph_offset,
@@ -1347,10 +1346,10 @@ static cPhs_State daAM2_Create(fopAc_ac_c* i_this) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGSphS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 15.0f,
-            },
+            }},
         };
         a_this->mEyeSph.Set(eye_co_sph_src);
         a_this->mEyeSph.SetStts(&a_this->mStts);
@@ -1379,10 +1378,10 @@ static cPhs_State daAM2_Create(fopAc_ac_c* i_this) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGSphS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 15.0f,
-            },
+            }},
         };
         a_this->mWeakSph.Set(week_co_sph_src);
         a_this->mWeakSph.SetStts(&a_this->mStts);
@@ -1411,11 +1410,11 @@ static cPhs_State daAM2_Create(fopAc_ac_c* i_this) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGCylS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 15.0f,
                 /* Height */ 0.0f,
-            },
+            }},
         };
         a_this->mBodyCyl.Set(body_co_cyl_src);
         a_this->mBodyCyl.SetStts(&a_this->mStts);
@@ -1443,11 +1442,11 @@ static cPhs_State daAM2_Create(fopAc_ac_c* i_this) {
                 /* SrcGObjCo SPrm    */ 0,
             },
             // cM3dGCylS
-            {
-                /* Center */ 0.0f, 0.0f, 0.0f,
+            {{
+                /* Center */ {0.0f, 0.0f, 0.0f},
                 /* Radius */ 15.0f,
                 /* Height */ 0.0f,
-            },
+            }},
         };
         a_this->mNeedleCyl.Set(sword_co_cyl_src);
         a_this->mNeedleCyl.SetStts(&a_this->mStts);

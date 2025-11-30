@@ -3,6 +3,7 @@
 // Translation Unit: d_a_ghostship.cpp
 //
 
+#include "d/dolzel_rel.h" // IWYU pragma: keep
 #include "d/actor/d_a_ghostship.h"
 #include "d/res/res_ayush.h"
 #include "SSystem/SComponent/c_math.h"
@@ -13,8 +14,6 @@
 #include "d/d_s_play.h"
 #include "d/d_kankyo_wether.h"
 #include "d/res/res_cloth.h"
-
-#include "weak_data_1811.h" // IWYU pragma: keep
 
 const u32 daGhostship_c::m_heapsize = 0x1EA0;
 const char daGhostship_c::m_arc_name[] = "Ayush";
@@ -251,7 +250,7 @@ cPhs_State daGhostship_c::_create() {
 
     getArg();
 
-    if((s32)dComIfGs_getEventReg(0x8803) == 3) {
+    if((s32)dComIfGs_getEventReg(dSv_event_flag_c::UNK_8803) == 3) {
         return cPhs_ERROR_e;
     }
 
@@ -361,7 +360,7 @@ bool daGhostship_c::_execute() {
     }
 
     if(mAlpha == l_HIO.shipAlpha && dist < l_HIO.shipEnterDist) {
-        u8 r29 = dComIfGs_getEventReg(0x8803);
+        u8 r29 = dComIfGs_getEventReg(dSv_event_flag_c::UNK_8803);
         if (r29 < 3
 #if VERSION > VERSION_DEMO
             && !mbEnteredShip
@@ -372,8 +371,8 @@ bool daGhostship_c::_execute() {
             JUT_ASSERT(DEMO_SELECT(457, 463), scls_data != NULL)
 
             u8 startCode = scls_data->mStart;
-            dComIfGs_setEventReg(0xC3FF, scls_data->mRoom);
-            dComIfGs_setEventReg(0x85FF, startCode);
+            dComIfGs_setEventReg(dSv_event_flag_c::UNK_C3FF, scls_data->mRoom);
+            dComIfGs_setEventReg(dSv_event_flag_c::UNK_85FF, startCode);
 #if VERSION == VERSION_DEMO
             dComIfGp_setNextStage("PShip", 0, r29);
 #else
@@ -452,7 +451,7 @@ bool daGhostship_c::_draw() {
             modelData->getMaterialNodePointer(i)->getTevKColor(3)->mColor.a = alpha;
         }
 
-        mBtk.entry(modelData, mBtk.getFrame());
+        mBtk.entry(modelData);
         mDoExt_modelUpdateDL(mpModel);
         mBtk.remove(modelData);
 
