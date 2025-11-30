@@ -34,3 +34,7 @@ compile_commands.json
 /*.txt
 *.exe
 .DS_Store
+
+shell.nix
+objdiff-linux-x86_64
+ghidra_11.4_DEV
